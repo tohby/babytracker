@@ -14,8 +14,8 @@
 #   └── public_html/        <- web root: contents of api/public + built assets
 #
 # Overridable via environment variables:
-#   PHP_BIN       php binary         (default: php)
-#   COMPOSER_BIN  composer command   (default: composer)
+#   PHP_BIN       php binary         (default: first PHP 8.3+ found)
+#   COMPOSER_BIN  composer command   (default: composer run with PHP_BIN)
 #   PUBLIC_HTML   web root           (default: <repo>/../public_html)
 #
 # Hostinger tip: the default `php` on SSH may be old. Use e.g.
@@ -26,8 +26,24 @@ set -euo pipefail
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 API_DIR="$REPO_DIR/api"
 PUBLIC_HTML="${PUBLIC_HTML:-$REPO_DIR/../public_html}"
+
+# Non-interactive SSH (e.g. GitHub Actions) doesn't load ~/.bashrc, so settings
+# saved by install.sh live in a file we source explicitly.
+# shellcheck disable=SC1091
+[ -f "$HOME/.babytracker-deploy.env" ] && . "$HOME/.babytracker-deploy.env"
+
+php_ok() { "$1" -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);' >/dev/null 2>&1; }
+if [ -z "${PHP_BIN:-}" ]; then
+    for c in /opt/alt/php85/usr/bin/php /opt/alt/php84/usr/bin/php /opt/alt/php83/usr/bin/php php8.4 php8.3 php; do
+        if command -v "$c" >/dev/null 2>&1 && php_ok "$c"; then PHP_BIN="$(command -v "$c")"; break; fi
+    done
+fi
 PHP_BIN="${PHP_BIN:-php}"
-COMPOSER_BIN="${COMPOSER_BIN:-composer}"
+if [ -z "${COMPOSER_BIN:-}" ]; then
+    COMPOSER_PATH="$(command -v composer || true)"
+    [ -n "$COMPOSER_PATH" ] || COMPOSER_PATH="$HOME/.local/bin/composer.phar"
+    COMPOSER_BIN="$PHP_BIN $COMPOSER_PATH"
+fi
 
 log() { printf '\n\033[1;34m==>\033[0m %s\n' "$*"; }
 die() { printf '\n\033[1;31mERROR:\033[0m %s\n' "$*" >&2; exit 1; }

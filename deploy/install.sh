@@ -199,6 +199,13 @@ main() {
         } >> "$HOME/.bashrc"
     fi
 
+    # Non-interactive SSH (GitHub Actions auto-deploy) skips ~/.bashrc, so also
+    # save the settings where deploy.sh sources them explicitly.
+    {
+        echo "export PHP_BIN=\"$PHP_BIN\""
+        echo "export COMPOSER_BIN=\"$COMPOSER_BIN\""
+    } > "$HOME/.babytracker-deploy.env"
+
     # --------------------------------------------------------------- deploy
     log "Running first deploy"
     PHP_BIN="$PHP_BIN" COMPOSER_BIN="$COMPOSER_BIN" PUBLIC_HTML="$PUBLIC_HTML" \

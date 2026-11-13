@@ -2,7 +2,9 @@ name: release
 
 # Pushing a tag like v1.0.0 builds the frontend assets (npm doesn't run on the
 # shared host) and publishes them as build.tar.gz on a GitHub Release.
-# On the server, deploy/deploy.sh pulls that tag and downloads the assets.
+# The deploy job then SSHes into Hostinger and runs deploy/deploy.sh for the tag.
+# Required repo secrets: HOSTINGER_HOST, HOSTINGER_PORT, HOSTINGER_USER,
+# HOSTINGER_SSH_KEY, HOSTINGER_KNOWN_HOSTS, HOSTINGER_APP_DIR (absolute path of the clone).
 
 on:
   push:
@@ -65,3 +67,26 @@ jobs:
             --repo "$GITHUB_REPOSITORY" \
             --title "$GITHUB_REF_NAME" \
             --generate-notes
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy over SSH
+        env:
+          SSH_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS }}
+          HOST: ${{ secrets.HOSTINGER_HOST }}
+          PORT: ${{ secrets.HOSTINGER_PORT }}
+          REMOTE_USER: ${{ secrets.HOSTINGER_USER }}
+          APP_DIR: ${{ secrets.HOSTINGER_APP_DIR }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          # Quote the remote command so tag and path are passed as plain arguments.
+          ssh -i ~/.ssh/deploy_key -p "$PORT" -o IdentitiesOnly=yes \
+              -o StrictHostKeyChecking=yes \
+              "$REMOTE_USER@$HOST" \
+              "bash $(printf '%q' "$APP_DIR")/deploy/deploy.sh $(printf '%q' "$GITHUB_REF_NAME")"
