@@ -146,7 +146,7 @@ main() {
         log "Configuring the app"
         local default_host app_name app_url db_host db_name db_user db_pass
         default_host="$(basename "$DOMAIN_DIR")"
-        app_name="$(ask 'App name' 'Baby Tracker')"
+        app_name="$(ask 'App name' 'Tinylog')"
         app_url="$(ask 'App URL' "https://$default_host")"
         echo "Create the MySQL database in hPanel first (Databases > Management)."
         db_host="$(ask 'DB host' 'localhost')"
