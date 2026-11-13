@@ -8,7 +8,8 @@
 # app URL and database credentials, writes api/.env, then runs deploy.sh.
 # Safe to re-run: an existing clone and .env are left alone.
 #
-# Overridable: REPO_URL, APP_DIR_NAME (default: babytracker), DOMAIN_DIR.
+# Overridable: REPO_URL, APP_DIR_NAME (default: babytracker), DOMAIN_DIR,
+# PUBLIC_HTML (web root, for subdomains), REPO_DIR (where to clone).
 
 set -euo pipefail
 
@@ -58,27 +59,51 @@ main() {
     command -v git  >/dev/null || die "git is not installed."
     command -v curl >/dev/null || die "curl is not installed."
 
-    # -------------------------------------------------------- domain folder
-    if [ -z "${DOMAIN_DIR:-}" ]; then
-        if [ -d "$PWD/public_html" ]; then
-            DOMAIN_DIR="$PWD"
-        else
-            local candidates=()
-            while IFS= read -r d; do candidates+=("$(dirname "$d")"); done < <(ls -d "$HOME"/domains/*/public_html 2>/dev/null)
-            [ "${#candidates[@]}" -gt 0 ] || die "Couldn't find ~/domains/*/public_html. Set DOMAIN_DIR=/path/to/domain and re-run."
-            if [ "${#candidates[@]}" -eq 1 ]; then
-                DOMAIN_DIR="${candidates[0]}"
+    # --------------------------------------------- web root + repo location
+    # Layout A (main domain):  <domain>/public_html  +  <domain>/babytracker
+    # Layout B (subdomain whose web root is nested inside the main domain's
+    #           public_html): web root = that folder, repo lives in ~/babytracker
+    #           (outside every web root).
+    if [ -z "${PUBLIC_HTML:-}" ] && [ -z "${DOMAIN_DIR:-}" ]; then
+        if [[ "$PWD" == */public_html/* ]]; then
+            warn "You are inside a web root: $PWD"
+            if confirm "Use this folder as the web root (subdomain install)?"; then
+                PUBLIC_HTML="$PWD"
             else
-                echo "Which domain is this app for?"
-                select DOMAIN_DIR in "${candidates[@]}"; do [ -n "${DOMAIN_DIR:-}" ] && break; done < /dev/tty
+                die "Aborted. cd to the folder you want to serve (or set PUBLIC_HTML=...) and re-run."
             fi
         fi
     fi
-    DOMAIN_DIR="$(cd "$DOMAIN_DIR" && pwd)"
-    PUBLIC_HTML="$DOMAIN_DIR/public_html"
-    REPO_DIR="$DOMAIN_DIR/$APP_DIR_NAME"
-    [ -d "$PUBLIC_HTML" ] || die "$PUBLIC_HTML does not exist."
-    log "Installing into $DOMAIN_DIR"
+
+    if [ -n "${PUBLIC_HTML:-}" ]; then
+        [ -d "$PUBLIC_HTML" ] || die "$PUBLIC_HTML does not exist."
+        PUBLIC_HTML="$(cd "$PUBLIC_HTML" && pwd)"
+        DOMAIN_DIR="${DOMAIN_DIR:-$HOME}"
+        REPO_DIR="${REPO_DIR:-$HOME/$APP_DIR_NAME}"
+    else
+        if [ -z "${DOMAIN_DIR:-}" ]; then
+            if [ -d "$PWD/public_html" ]; then
+                DOMAIN_DIR="$PWD"
+            else
+                local candidates=()
+                while IFS= read -r d; do candidates+=("$(dirname "$d")"); done < <(ls -d "$HOME"/domains/*/public_html 2>/dev/null)
+                [ "${#candidates[@]}" -gt 0 ] || die "Couldn't find ~/domains/*/public_html. Set DOMAIN_DIR=/path/to/domain and re-run."
+                if [ "${#candidates[@]}" -eq 1 ]; then
+                    DOMAIN_DIR="${candidates[0]}"
+                else
+                    echo "Which domain is this app for?"
+                    select DOMAIN_DIR in "${candidates[@]}"; do [ -n "${DOMAIN_DIR:-}" ] && break; done < /dev/tty
+                fi
+            fi
+        fi
+        DOMAIN_DIR="$(cd "$DOMAIN_DIR" && pwd)"
+        PUBLIC_HTML="$DOMAIN_DIR/public_html"
+        REPO_DIR="${REPO_DIR:-$DOMAIN_DIR/$APP_DIR_NAME}"
+        [ -d "$PUBLIC_HTML" ] || die "$PUBLIC_HTML does not exist."
+    fi
+    log "Web root: $PUBLIC_HTML"
+    log "App code: $REPO_DIR"
+    confirm "Continue?" || die "Aborted."
 
     # ------------------------------------------------------------------ PHP
     if [ -z "${PHP_BIN:-}" ]; then
