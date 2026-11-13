@@ -1,0 +1,67 @@
+name: release
+
+# Pushing a tag like v1.0.0 builds the frontend assets (npm doesn't run on the
+# shared host) and publishes them as build.tar.gz on a GitHub Release.
+# On the server, deploy/deploy.sh pulls that tag and downloads the assets.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          coverage: none
+
+      - name: Setup Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+
+      # Wayfinder generates TS route helpers via artisan during the Vite build,
+      # so PHP + vendor + a throwaway .env are needed here.
+      - name: Install PHP dependencies
+        run: composer install --no-dev --no-interaction --prefer-dist
+
+      - name: Prepare throwaway environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Install JS dependencies
+        run: npm ci
+
+      - name: Build assets
+        run: npm run build
+
+      - name: Package assets
+        run: tar -czf "$RUNNER_TEMP/build.tar.gz" -C public build
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        working-directory: ${{ github.workspace }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "$RUNNER_TEMP/build.tar.gz" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes
