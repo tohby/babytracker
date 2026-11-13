@@ -14,18 +14,25 @@ domains/example.com/
 
 ## One-time server setup
 
+Create the MySQL database in hPanel and set the domain's PHP version to 8.3+, then over SSH:
+
 ```bash
-cd ~/domains/example.com
-rm -rf public_html/*            # remove Hostinger's placeholder (check it first)
-git clone https://github.com/<you>/babytracker.git
-export PHP_BIN=/opt/alt/php83/usr/bin/php   # needs PHP 8.3+; add to ~/.bashrc too
-bash babytracker/deploy/deploy.sh           # 1st run creates api/.env and stops
-nano babytracker/api/.env                   # APP_ENV=production, APP_DEBUG=false,
-                                            # APP_URL, DB_* (Hostinger MySQL)
-bash babytracker/deploy/deploy.sh           # 2nd run does the real deploy
+curl -fsSL https://raw.githubusercontent.com/tohby/babytracker/main/deploy/install.sh | bash
 ```
 
-In hPanel, set PHP to 8.3+ for the domain and create the MySQL database first.
+The installer finds your domain folder and PHP 8.3, clones the repo next to `public_html`, asks for the app URL and DB credentials, writes `api/.env` (production defaults), offers to move any existing `public_html` files to a backup folder, saves `PHP_BIN`/`COMPOSER_BIN` to `~/.bashrc`, and runs the first deploy. Re-running it is safe: an existing clone and `.env` are kept.
+
+<details><summary>Manual setup instead</summary>
+
+```bash
+cd ~/domains/example.com
+git clone https://github.com/tohby/babytracker.git
+export PHP_BIN=/opt/alt/php83/usr/bin/php
+bash babytracker/deploy/deploy.sh     # 1st run creates api/.env and stops
+nano babytracker/api/.env             # APP_ENV=production, APP_DEBUG=false, APP_URL, DB_*
+bash babytracker/deploy/deploy.sh     # real deploy
+```
+</details>
 
 ## Releasing
 
