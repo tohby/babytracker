@@ -1,4 +1,5 @@
 import * as Device from 'expo-device';
+import { useEffect, useState } from 'react';
 import { Platform, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -7,6 +8,7 @@ import { HintRow } from '@/components/hint-row';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { WebBadge } from '@/components/web-badge';
+import { API_URL, ping } from '@/lib/api';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 
 function getDevMenuHint() {
@@ -28,7 +30,18 @@ function getDevMenuHint() {
   );
 }
 
+function useApiStatus() {
+  const [status, setStatus] = useState('checking…');
+  useEffect(() => {
+    ping()
+      .then((res) => setStatus(`connected to ${res.app}`))
+      .catch((err: Error) => setStatus(`unreachable (${err.message})`));
+  }, []);
+  return status;
+}
+
 export default function HomeScreen() {
+  const apiStatus = useApiStatus();
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
@@ -48,6 +61,11 @@ export default function HomeScreen() {
             title="Try editing"
             hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
           />
+          <HintRow
+            title="API"
+            hint={<ThemedText type="small">{apiStatus}</ThemedText>}
+          />
+          <ThemedText type="small">{API_URL}</ThemedText>
           <HintRow title="Dev tools" hint={getDevMenuHint()} />
           <HintRow
             title="Fresh start"
