@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Tinylog",
-    "slug": "tinylog",
+    "name": "Nappa",
+    "slug": "nappa",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "tinylog",
+    "scheme": "nappa",
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/expo.icon"
