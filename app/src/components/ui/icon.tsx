@@ -1,0 +1,33 @@
+import { Image } from 'expo-image';
+
+/** Every icon in the app. Add a new SVG to assets/icons and list it here. */
+const icons = {
+  arrow: require('@/assets/icons/arrow.svg'),
+  bell: require('@/assets/icons/bell.svg'),
+  family: require('@/assets/icons/family.svg'),
+  home: require('@/assets/icons/home.svg'),
+  moon: require('@/assets/icons/moon.svg'),
+  plus: require('@/assets/icons/plus.svg'),
+  settings: require('@/assets/icons/settings.svg'),
+  timeline: require('@/assets/icons/timeline.svg'),
+};
+
+export type IconName = keyof typeof icons;
+
+type IconProps = {
+  name: IconName;
+  /** Any CSS color. Recolors the whole icon. */
+  color: string;
+  size?: number;
+};
+
+export function Icon({ name, color, size = 24 }: IconProps) {
+  return (
+    <Image
+      source={icons[name]}
+      tintColor={color}
+      style={{ width: size, height: size }}
+      accessibilityElementsHidden
+    />
+  );
+}

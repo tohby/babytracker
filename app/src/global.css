@@ -1,3 +1,59 @@
+@import 'tailwindcss';
+@import 'uniwind';
+
+/* Nappa design tokens. Names mirror the Figma variables so
+   `plum/900` in Figma is `text-plum-900` here. */
+@theme {
+  /* Spacing (Figma "Nappa Spacing"): p-lg, gap-md, px-page, mb-xl ... */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-page: 20px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 32px;
+
+  /* Palette */
+  --color-plum-600: #7a6a82;
+  --color-plum-900: #3e2a47;
+  --color-cream-50: #fbf6f2;
+  --color-orange-500: #f28a3c;
+  --color-yellow-400: #f6c65b;
+  --color-mint-400: #7fc8a9;
+  --color-lavender-500: #9b86d6;
+
+  /* Corner radii: rounded-card, rounded-tile */
+  --radius-card: 34px;
+  --radius-tile: 28px;
+
+  /* Outfit font files (loaded in the root layout): font-outfit-medium ... */
+  --font-outfit-light: 'Outfit_300Light';
+  --font-outfit-regular: 'Outfit_400Regular';
+  --font-outfit-medium: 'Outfit_500Medium';
+  --font-outfit-semibold: 'Outfit_600SemiBold';
+}
+
+/* Semantic colors, light/dark. Only light is designed in Figma so far;
+   dark values are placeholders until a dark palette exists. */
+@layer theme {
+  :root {
+    @variant light {
+      --color-background: #ffffff;
+      --color-surface: #fbf6f2;
+      --color-surface-selected: #e0e1e6;
+      --color-foreground: #3e2a47;
+      --color-muted: #7a6a82;
+    }
+    @variant dark {
+      --color-background: #000000;
+      --color-surface: #212225;
+      --color-surface-selected: #2e3135;
+      --color-foreground: #ffffff;
+      --color-muted: #b0b4ba;
+    }
+  }
+}
+
 :root {
   --font-display:
     Spline Sans, Inter, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji,
