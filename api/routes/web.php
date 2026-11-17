@@ -9,3 +9,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 require __DIR__.'/settings.php';
+
+if (app()->isLocal()) {
+    require __DIR__.'/dev.php';
+}

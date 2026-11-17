@@ -21,9 +21,9 @@ class AccountAlreadyExists extends Notification
     {
         return (new MailMessage)
             ->subject(__('notifications.account_exists.subject'))
-            ->greeting(__('notifications.account_exists.greeting'))
-            ->line(__('notifications.account_exists.intro'))
-            ->line(__('notifications.account_exists.action'))
-            ->line(__('notifications.account_exists.ignore'));
+            ->view(['mail.account-exists', 'mail.text.account-exists'], [
+                'signInUrl' => config('nappa.emails.sign_in_url') ?: route('login'),
+                'email' => $notifiable->routeNotificationFor('mail', $this),
+            ]);
     }
 }

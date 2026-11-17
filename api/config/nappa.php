@@ -28,4 +28,14 @@ return [
         'max_kb' => 8192,
         'url_minutes' => 60 * 24,
     ],
+
+    // Links and details in emails. Footer links and the address are left out until set.
+    'emails' => [
+        // Where "Sign in to Nappa" buttons go. Swap for a universal link / store page once the app ships.
+        'sign_in_url' => env('NAPPA_SIGN_IN_URL'),
+        'privacy_url' => env('NAPPA_PRIVACY_URL'),
+        'help_url' => env('NAPPA_HELP_URL'),
+        'contact_email' => env('NAPPA_CONTACT_EMAIL'),
+        'company_address' => env('NAPPA_COMPANY_ADDRESS'),
+    ],
 ];

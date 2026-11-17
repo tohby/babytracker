@@ -3,8 +3,11 @@
 namespace App\Providers;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\RateLimiter;
@@ -28,6 +31,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureDefaults();
         $this->configureRateLimits();
+        $this->configureAuthEmails();
     }
 
     /**
@@ -81,5 +85,35 @@ class AppServiceProvider extends ServiceProvider
 
         // Delete account, sign out everywhere, set PIN, upload avatar.
         RateLimiter::for('auth-sensitive', fn (Request $request): Limit => Limit::perMinute(5)->by('sensitive|user:'.$request->user()?->id));
+    }
+
+    /**
+     * Laravel's built-in reset-password and verify-email notifications, in the Nappa email design
+     * (resources/views/mail). Links and expiry are the same as Laravel's defaults.
+     */
+    protected function configureAuthEmails(): void
+    {
+        ResetPassword::toMailUsing(function (object $notifiable, string $token): MailMessage {
+            $url = url(route('password.reset', [
+                'token' => $token,
+                'email' => $notifiable->getEmailForPasswordReset(),
+            ], false));
+
+            return (new MailMessage)
+                ->subject(__('notifications.reset_password.subject'))
+                ->view(['mail.reset-password', 'mail.text.reset-password'], [
+                    'url' => $url,
+                    'minutes' => (int) config('auth.passwords.'.config('auth.defaults.passwords').'.expire'),
+                    'email' => $notifiable->getEmailForPasswordReset(),
+                ]);
+        });
+
+        VerifyEmail::toMailUsing(fn (object $notifiable, string $url): MailMessage => (new MailMessage)
+            ->subject(__('notifications.verify_email.subject'))
+            ->view(['mail.verify-email', 'mail.text.verify-email'], [
+                'url' => $url,
+                'minutes' => (int) config('auth.verification.expire', 60),
+                'email' => $notifiable->getEmailForVerification(),
+            ]));
     }
 }

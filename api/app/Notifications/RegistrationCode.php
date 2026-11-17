@@ -20,10 +20,10 @@ class RegistrationCode extends Notification
     {
         return (new MailMessage)
             ->subject(__('notifications.registration_code.subject'))
-            ->greeting(__('notifications.registration_code.greeting'))
-            ->line(__('notifications.registration_code.intro'))
-            ->line('**'.$this->code.'**')
-            ->line(__('notifications.registration_code.expiry', ['minutes' => PendingRegistration::CODE_TTL_MINUTES]))
-            ->line(__('notifications.registration_code.ignore'));
+            ->view(['mail.registration-code', 'mail.text.registration-code'], [
+                'code' => $this->code,
+                'minutes' => PendingRegistration::CODE_TTL_MINUTES,
+                'email' => $notifiable->routeNotificationFor('mail', $this),
+            ]);
     }
 }
