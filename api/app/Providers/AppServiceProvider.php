@@ -3,8 +3,11 @@
 namespace App\Providers;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -24,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+        $this->configureRateLimits();
     }
 
     /**
@@ -46,5 +50,16 @@ class AppServiceProvider extends ServiceProvider
                 ->uncompromised()
             : null,
         );
+    }
+
+    /**
+     * Slow down password guessing on the app's login and sign-up endpoints.
+     */
+    protected function configureRateLimits(): void
+    {
+        RateLimiter::for('api-auth', fn (Request $request): array => [
+            Limit::perMinute(10)->by('email:'.strtolower((string) $request->input('email')).'|'.$request->ip()),
+            Limit::perMinute(30)->by('ip:'.$request->ip()),
+        ]);
     }
 }

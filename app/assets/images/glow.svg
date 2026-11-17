@@ -1,9 +1,0 @@
-<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="340" height="340" viewBox="0 0 340 340" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle id="Glow" cx="170" cy="170" r="170" fill="url(#paint0_linear_0_193)"/>
-<defs>
-<linearGradient id="paint0_linear_0_193" x1="0" y1="0" x2="242.857" y2="242.857" gradientUnits="userSpaceOnUse">
-<stop stop-color="#F4EEFC"/>
-<stop offset="1" stop-color="#FDE6D3"/>
-</linearGradient>
-</defs>
-</svg>
