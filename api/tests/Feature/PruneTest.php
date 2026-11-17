@@ -92,11 +92,15 @@ test('removes access tokens a day after they expire', function () {
     expect($user->tokens()->pluck('name')->sort()->values()->all())->toBe(['live', 'recent']);
 });
 
-test('both cleanups are scheduled daily', function () {
+test('the queue runs every minute and the cleanups run nightly', function () {
     $events = collect(app(Schedule::class)->events())
         ->mapWithKeys(fn (Event $e) => [Str::after($e->command, "'artisan' ") => $e->expression]);
 
-    expect($events)->toHaveKey('model:prune')
-        ->and($events['model:prune'])->toBe('0 0 * * *')
-        ->and($events['sanctum:prune-expired --hours=24'])->toBe('0 0 * * *');
+    expect($events->all())->toBe([
+        'queue:work --stop-when-empty --max-time=50 --tries=3' => '* * * * *',
+        'model:prune' => '0 3 * * *',
+        'sanctum:prune-expired --hours=24' => '5 3 * * *',
+        'auth:clear-resets' => '10 3 * * *',
+        'queue:prune-failed --hours=168' => '15 3 * * *',
+    ]);
 });

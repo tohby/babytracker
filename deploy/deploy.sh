@@ -127,6 +127,9 @@ artisan config:cache
 artisan route:cache
 artisan view:cache
 artisan event:cache
+# A queue worker started by the scheduler may still be running old code: tell it
+# to exit after its current job (the next minute's run starts a fresh one).
+artisan queue:restart
 
 echo "$TAG" > "$API_DIR/storage/app/.deployed_tag"
 log "Deployed $TAG"
