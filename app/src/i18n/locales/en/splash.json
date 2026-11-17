@@ -1,0 +1,15 @@
+{
+  "brandName": "Nappa",
+  "tagline": "Calmer days start with knowing what’s next",
+  "loadingLabel": "Opening Nappa",
+  "slow": "Taking a little longer than usual…",
+  "offline": {
+    "title": "You’re offline",
+    "detail": "Opening with what’s saved on this phone. We’ll sync when you’re back online."
+  },
+  "error": {
+    "title": "Nappa couldn’t start",
+    "detail": "Check your connection, then try again.",
+    "retry": "Try again"
+  }
+}

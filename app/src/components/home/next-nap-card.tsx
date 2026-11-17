@@ -1,49 +1,30 @@
-import { Image } from 'expo-image';
-import { View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { HeroCard } from '@/components/home/hero-card';
-import { Chip } from '@/components/ui/chip';
-import { IconButton } from '@/components/ui/icon-button';
 import { Text } from '@/components/ui/text';
-import { Gradients, Palette } from '@/constants/theme';
 import type { HomeData } from '@/data/home';
+import { elapsedMs, formatDuration, formatTime } from '@/lib/format';
 
 type NextNapCardProps = {
   nextNap: HomeData['nextNap'];
-  onOpenPress?: () => void;
+  now: number;
 };
 
-export function NextNapCard({ nextNap, onOpenPress }: NextNapCardProps) {
+export function NextNapCard({ nextNap, now }: NextNapCardProps) {
+  const { t } = useTranslation('home');
+  const msUntil = elapsedMs(now, nextNap.windowStart);
+  const startsIn =
+    msUntil < 60_000 ? t('nextNap.startsNow') : t('nextNap.startsIn', { duration: formatDuration(msUntil, 'short') });
+
   return (
-    <HeroCard gradient={Gradients.nextNap} width={292}>
-      {/* Sleepy cloud mascot, peeking in from the bottom-left corner. */}
-      <Image
-        source={require('@/assets/images/mascot/cloud.svg')}
-        style={{ position: 'absolute', left: -18, bottom: 2, width: 144, height: 108 }}
-        accessibilityElementsHidden
-      />
-
-      <View className="flex-1 items-end justify-between p-page">
-        <View className="items-end gap-xs">
-          <Chip label="Next nap" />
-          <Text variant="display" tone="inverse">
-            {nextNap.time}
-          </Text>
-          <View className="items-end">
-            <Text tone="inverse">{nextNap.windowUntil}</Text>
-            <Text tone="inverse">{nextNap.startsIn}</Text>
-          </View>
-        </View>
-
-        <IconButton
-          icon="arrow"
-          label="Open next nap details"
-          size={44}
-          backgroundClassName="bg-white/30"
-          iconColor={Palette.white}
-          onPress={onOpenPress}
-        />
-      </View>
+    <HeroCard tone="nap" chip={t('nextNap.chip')} mascot="sleeping">
+      <Text variant="title" numberOfLines={1} adjustsFontSizeToFit>
+        {formatTime(nextNap.windowStart)}
+      </Text>
+      <Text variant="label">{t('nextNap.windowUntil', { time: formatTime(nextNap.windowEnd) })}</Text>
+      <Text variant="caption" tone="heroMuted">
+        {startsIn}
+      </Text>
     </HeroCard>
   );
 }

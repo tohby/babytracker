@@ -50,6 +50,16 @@ The app is English-only now but must stay translatable. Plan and rationale: `../
 - Language follows the device; per-app language comes from the OS via the `expo-localization` plugin's `supportedLocales`. Re-read `getLocales()` when the app returns to the foreground (Android does not restart on language change).
 - Outfit has no Chinese glyphs; do not assume the brand font renders every language.
 
+## Colours and dark mode
+
+The app follows the device light/dark setting (Uniwind adaptive themes). Dark is the Figma "Dark A" mode.
+
+- `src/constants/color-tokens.ts` is the only place colour values live, keyed by the Figma "Nappa Colors" variable names (`text/primary`, `glass/fill`, `plum/900`). `{name}` values are aliases.
+- After editing it, run `npm run theme:generate`; it rewrites the `<color-tokens>` block in `src/global.css`. Never edit that block by hand. `npm run theme:check` fails if it is stale.
+- In components use classes: Figma `text/primary` is `text-text-primary`, `glass/fill` is `bg-glass-fill`. Where a class can't reach (icon `color`, `LinearGradient` stops), use `useThemeColors()['icon/primary']`.
+- Prefer role tokens (`text/*`, `icon/*`, `glass/*`, `hero/*`) over palette tokens: in dark, `white` is a dark surface and `plum/900` is near-white.
+- No hex, `rgb()` or `rgba()` literals in components. A colour that must not change with the theme uses `static/black` / `static/white`.
+
 ## Rules
 
 - If `ios/` and `android/` directories do not exist, they are generated (Continuous Native Generation). Never create or edit them by hand — configure native behavior in `app.json` and config plugins.

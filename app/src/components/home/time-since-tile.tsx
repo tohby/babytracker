@@ -1,7 +1,17 @@
 import { View } from 'react-native';
 
 import { Text } from '@/components/ui/text';
-import type { TileAccent, TimeSinceTileData } from '@/data/home';
+import { Shadows } from '@/constants/theme';
+
+export type TileAccent = 'orange' | 'lavender' | 'mint' | 'yellow';
+
+type TimeSinceTileProps = {
+  accent: TileAccent;
+  title: string;
+  /** The big number, already formatted, e.g. "2h 10m". */
+  value: string;
+  caption: string;
+};
 
 /** Full class names (not built from strings) so Tailwind can find them. */
 const accentDotClasses: Record<TileAccent, string> = {
@@ -11,10 +21,12 @@ const accentDotClasses: Record<TileAccent, string> = {
   yellow: 'bg-yellow-400',
 };
 
-/** One "time since" stat: coloured label on top, big number, small caption. */
-export function TimeSinceTile({ accent, title, value, caption }: Omit<TimeSinceTileData, 'id'>) {
+/** One "time since" stat on frosted glass (Figma `Tile/Time since`): label, big number, caption. */
+export function TimeSinceTile({ accent, title, value, caption }: TimeSinceTileProps) {
   return (
-    <View className="h-[128px] grow basis-[48%] justify-between rounded-tile bg-cream-50 p-lg">
+    <View
+      style={{ boxShadow: Shadows.glass }}
+      className="min-h-[128px] grow basis-[48%] justify-between gap-xs rounded-tile border border-glass-stroke bg-glass-fill p-lg">
       <View className="flex-row items-center gap-sm">
         <View className={`size-[10px] rounded-full ${accentDotClasses[accent]}`} />
         <Text variant="label" tone="muted">
@@ -23,7 +35,10 @@ export function TimeSinceTile({ accent, title, value, caption }: Omit<TimeSinceT
       </View>
 
       <View className="gap-xs">
-        <Text variant="numeral">{value}</Text>
+        {/* One line always: shrinks rather than wraps when a value ("12h 45m") is wider than the tile. */}
+        <Text variant="numeral" numberOfLines={1} adjustsFontSizeToFit>
+          {value}
+        </Text>
         <Text variant="caption" tone="muted">
           {caption}
         </Text>

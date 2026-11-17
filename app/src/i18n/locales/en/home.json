@@ -1,0 +1,48 @@
+{
+  "greeting": {
+    "morning": "Good morning,",
+    "afternoon": "Good afternoon,",
+    "evening": "Good evening,"
+  },
+  "familyName": "{{name}}'s family",
+  "nextNap": {
+    "chip": "Next nap",
+    "windowUntil": "Window until {{time}}",
+    "startsIn": "in about {{duration}}",
+    "startsNow": "any minute now"
+  },
+  "feedDue": {
+    "chip": "Feed due",
+    "approxTime": "~{{time}}",
+    "usualInterval": "Usually every {{duration}}"
+  },
+  "sinceLast": {
+    "heading": "Since last",
+    "syncedWith": "Synced with {{name}}"
+  },
+  "tiles": {
+    "feed": {
+      "title": "Last feed",
+      "bottle": "Bottle · {{volume}}",
+      "bottlePlain": "Bottle",
+      "breastLeft": "Breast · left",
+      "breastRight": "Breast · right",
+      "solids": "Solids"
+    },
+    "awake": {
+      "title": "Awake for",
+      "woke": "Woke {{time}}"
+    },
+    "nappy": {
+      "title": "Last nappy",
+      "wet": "Wet",
+      "dirty": "Dirty",
+      "mixed": "Wet and dirty"
+    },
+    "sleep": {
+      "title": "Sleep today",
+      "naps_one": "{{count}} nap so far",
+      "naps_other": "{{count}} naps so far"
+    }
+  }
+}

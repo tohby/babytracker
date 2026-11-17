@@ -9,14 +9,21 @@ const variantClasses = {
   title: 'font-outfit-semibold text-[28px] leading-[34px] tracking-[-0.56px]',
   display: 'font-outfit-semibold text-[34px] leading-[41px] tracking-[-0.68px]',
   numeral: 'font-outfit-light text-[44px] leading-[44px] tracking-[-0.88px]',
+  /** Figma `Nappa/Display` (56): the "Nappa" wordmark on the splash. */
+  wordmark: 'font-outfit-semibold text-[56px] leading-[64px] tracking-[-1.12px]',
 } as const;
 
-/** Text colors. Kept separate from variants so the two never conflict. */
+/** Text colors (Figma role tokens). Kept separate from variants so the two never conflict. */
 const toneClasses = {
-  default: 'text-plum-900',
-  muted: 'text-plum-600',
-  inverse: 'text-white',
-  accent: 'text-orange-500',
+  default: 'text-text-primary',
+  muted: 'text-text-secondary',
+  /** Captions on the pastel hero cards. */
+  heroMuted: 'text-text-hero-muted',
+  /** On saturated fills (avatar gradient); white in every theme. */
+  inverse: 'text-static-white',
+  accent: 'text-accent-primary',
+  /** Labels on `accent/primary` (orange buttons). Dark plum in every theme for AA. */
+  onAccent: 'text-text-on-accent-ink',
 } as const;
 
 export type TextVariant = keyof typeof variantClasses;

@@ -1,7 +1,9 @@
-/** "Good morning," / "Good afternoon," / "Good evening," for the given time. */
-export function getGreeting(now: Date = new Date()): string {
+export type GreetingPeriod = 'morning' | 'afternoon' | 'evening';
+
+/** Which greeting fits the given time. The text comes from `home:greeting.<period>`. */
+export function getGreetingPeriod(now: Date = new Date()): GreetingPeriod {
   const hour = now.getHours();
-  if (hour < 12) return 'Good morning,';
-  if (hour < 18) return 'Good afternoon,';
-  return 'Good evening,';
+  if (hour < 12) return 'morning';
+  if (hour < 18) return 'afternoon';
+  return 'evening';
 }

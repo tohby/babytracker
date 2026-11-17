@@ -25,58 +25,38 @@ do it by editing the file. Both edit the same file, so they stay in sync.
 
 ## Todo
 
-### Commit the Home UI, theme and Uniwind work
-
-  - tags: [M1, @tobi]
-  - priority: high
-  - workload: Easy
-
 ### Add a 12 step to Spacing in theme.ts and drop the 2px step
 
   - tags: [M1, @tobi]
   - priority: low
   - workload: Easy
 
-### i18n foundation: i18next, expo-localization, en resources, format helpers
-
-  - tags: [M1, @tobi]
-  - priority: high
-  - workload: Normal
-    ```md
-    Do before login/onboarding screens. Plan in docs/i18n.md Phase 0: install with `npx expo install`, add `expo-localization` plugin (supportedLocales ["en"]), create src/i18n and src/lib/format.ts, verify Intl (PluralRules, DateTimeFormat, NumberFormat, RelativeTimeFormat) on a device.
-    ```
-
-### Extract Home strings to en resources; make data/home.ts raw values
-
-  - tags: [M1, @tobi]
-  - priority: high
-  - workload: Normal
-    ```md
-    Replace pre-formatted sample strings ('2h 10m', 'Window until 2:10 pm') with timestamps/ms/ml formatted at render. Greeting uses t().
-    ```
-
 ### API locale support: user.locale, Accept-Language, api/lang, localised push text
 
   - tags: [M1, @tobi]
   - priority: medium
   - workload: Normal
+  - steps:
+    - [x] users.locale column, set on register
+    - [x] API errors return codes, not sentences
+    - [ ] Accept-Language middleware, api/lang, localised mail and push
     ```md
     Errors return codes, not display sentences. Push text uses the recipient's locale.
     ```
 
-### Auth API: register, login, logout, token (Sanctum)
+### Sign in with Apple and Google (app + API)
 
   - tags: [M1, @tobi]
-  - priority: high
-  - workload: Normal
-
-### Babies table and API (name, birth date, timezone)
-
-  - tags: [M1, @tobi]
-  - priority: high
-  - workload: Normal
+  - priority: medium
+  - workload: Hard
+  - steps:
+    - [ ] Pick bundle ID / Android package; set in app.json; add eas.json
+    - [ ] Apple: confirm Developer Program, enable Sign in with Apple, create .p8 key (Team ID, Key ID)
+    - [ ] Google Cloud: consent screen + iOS, Android (SHA-1), Web client IDs
+    - [ ] API: POST /api/v1/auth/{apple|google}, verify ID token, social_accounts table, link by verified email only
+    - [ ] App: expo-apple-authentication (iOS only) and @react-native-google-signin/google-signin
     ```md
-    Design for multiple babies per account from the start (twins).
+    Blocked on the IDs above, not on code. Apple sends name/email only on first sign-in: send them to the API then. Account deletion must revoke the Apple token (needs the .p8). Can slip to M2 without blocking M1.
     ```
 
 ### Build login and create-account screens
@@ -282,9 +262,66 @@ do it by editing the file. Both edit the same file, so they stay in sync.
 
 ## In Progress
 
+### i18n foundation: i18next, expo-localization, en resources, format helpers
+
+  - tags: [M1, @tobi]
+  - priority: high
+  - workload: Normal
+  - steps:
+    - [x] Install i18next, react-i18next, expo-localization; plugin supportedLocales ["en"]
+    - [x] src/i18n (instance, typed keys, AppState re-read for Android) and lib/format.ts
+    - [ ] Check the dev log `[i18n] ... Intl support` on a real iOS and Android device
+    ```md
+    Do before login/onboarding screens. Plan in docs/i18n.md Phase 0: install with `npx expo install`, add `expo-localization` plugin (supportedLocales ["en"]), create src/i18n and src/lib/format.ts, verify Intl (PluralRules, DateTimeFormat, NumberFormat, RelativeTimeFormat) on a device.
+    ```
+
+### Extract Home strings to en resources; make data/home.ts raw values
+
+  - tags: [M1, @tobi]
+  - priority: high
+  - workload: Normal
+  - steps:
+    - [x] common.json + home.json; Home, header, nav, tiles use t()
+    - [x] data/home.ts holds ISO timestamps, ms, ml and enums; useNow keeps times live
+    - [ ] Check Home on a device (feed-due card shrinks "~3:10 pm" to fit)
+    ```md
+    Replace pre-formatted sample strings ('2h 10m', 'Window until 2:10 pm') with timestamps/ms/ml formatted at render. Greeting uses t().
+    ```
+
+
 ## Blocked
 
 ## Done
+
+### Auth API: register, login, logout, token (Sanctum)
+
+  - tags: [M1, @tobi]
+  - priority: high
+  - workload: Normal
+  - due: 2026-11-15
+    ```md
+    /api/v1/auth/register|login|logout and /api/v1/me. One Sanctum token per device. Errors are codes ({"code":"validation_failed","errors":{"email":["unique"]}}), handled in app/Http/Api/ApiErrors.php. Login throttled (api-auth limiter). No email verification mail sent yet.
+    ```
+
+### Babies table and API (name, birth date, timezone)
+
+  - tags: [M1, @tobi]
+  - priority: high
+  - workload: Normal
+  - due: 2026-11-15
+    ```md
+    Design for multiple babies per account from the start (twins).
+    Done: ULID ids, baby_user pivot with owner/caregiver role (ready for M4), soft deletes, /api/v1/babies CRUD, BabyPolicy (strangers get 404, only owner deletes).
+    ```
+
+
+### Commit the Home UI, theme and Uniwind work
+
+  - tags: [M1, @tobi]
+  - priority: high
+  - workload: Easy
+  - due: 2026-11-15
+
 
 ### Hostinger deploy pipeline with SSH auto-deploy
 

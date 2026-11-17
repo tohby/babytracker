@@ -1,0 +1,46 @@
+{
+  "nav": {
+    "today": "Today",
+    "timeline": "Timeline",
+    "insights": "Insights",
+    "family": "Family",
+    "logEvent": "Log an event"
+  },
+  "actions": {
+    "back": "Back",
+    "close": "Close",
+    "notifications": "Notifications",
+    "settings": "Settings",
+    "appearance": "Appearance",
+    "cancel": "Cancel"
+  },
+  "units": {
+    "duration": {
+      "narrow": {
+        "hoursMinutes": "{{hours}}h {{minutes}}m",
+        "hours": "{{hours}}h",
+        "minutes": "{{minutes}}m"
+      },
+      "short": {
+        "hoursMinutes": "{{hours}} hr {{minutes}} min",
+        "hours": "{{hours}} hr",
+        "minutes": "{{minutes}} min"
+      },
+      "long": {
+        "hoursMinutes": "{{hours}} {{minutes}}",
+        "hours_one": "{{value}} hour",
+        "hours_other": "{{value}} hours",
+        "minutes_one": "{{value}} minute",
+        "minutes_other": "{{value}} minutes"
+      }
+    },
+    "volume": {
+      "ml": "{{value}} ml",
+      "flOz": "{{value}} fl oz"
+    },
+    "weight": {
+      "kg": "{{value}} kg",
+      "lb": "{{value}} lb"
+    }
+  }
+}

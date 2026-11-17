@@ -4,13 +4,13 @@ import { FeedDueCard } from '@/components/home/feed-due-card';
 import { NextNapCard } from '@/components/home/next-nap-card';
 import type { HomeData } from '@/data/home';
 
-type HeroCardsProps = Pick<HomeData, 'nextNap' | 'feedDue'>;
+type HeroCardsProps = Pick<HomeData, 'nextNap' | 'feedDue'> & { now: number };
 
 /**
  * Side-by-side hero cards that scroll sideways. The second card peeks
  * in from the right edge to hint that there is more to swipe to.
  */
-export function HeroCards({ nextNap, feedDue }: HeroCardsProps) {
+export function HeroCards({ nextNap, feedDue, now }: HeroCardsProps) {
   return (
     <ScrollView
       horizontal
@@ -18,7 +18,7 @@ export function HeroCards({ nextNap, feedDue }: HeroCardsProps) {
       // Bleed to the screen edges, but start and end aligned with the page margin.
       contentContainerClassName="gap-md px-page"
       className="-mx-page">
-      <NextNapCard nextNap={nextNap} />
+      <NextNapCard nextNap={nextNap} now={now} />
       <FeedDueCard feedDue={feedDue} />
     </ScrollView>
   );
