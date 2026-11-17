@@ -62,8 +62,8 @@ main() {
     # --------------------------------------------- web root + repo location
     # Layout A (main domain):  <domain>/public_html  +  <domain>/babytracker
     # Layout B (subdomain whose web root is nested inside the main domain's
-    #           public_html): web root = that folder, repo lives in ~/babytracker
-    #           (outside every web root).
+    #           public_html): web root = that folder, repo lives in
+    #           domains/<main>/babytracker-app (outside every web root).
     if [ -z "${PUBLIC_HTML:-}" ] && [ -z "${DOMAIN_DIR:-}" ]; then
         if [[ "$PWD" == */public_html/* ]]; then
             warn "You are inside a web root: $PWD"
@@ -78,8 +78,13 @@ main() {
     if [ -n "${PUBLIC_HTML:-}" ]; then
         [ -d "$PUBLIC_HTML" ] || die "$PUBLIC_HTML does not exist."
         PUBLIC_HTML="$(cd "$PUBLIC_HTML" && pwd)"
+        # Subdomain nested in domains/<main>/public_html/<sub>: keep the code in
+        # domains/<main>/ (next to public_html, visible in hPanel's File Manager).
+        if [[ "$PUBLIC_HTML" =~ ^(.*/domains/[^/]+)/public_html/ ]]; then
+            DOMAIN_DIR="${DOMAIN_DIR:-${BASH_REMATCH[1]}}"
+        fi
         DOMAIN_DIR="${DOMAIN_DIR:-$HOME}"
-        REPO_DIR="${REPO_DIR:-$HOME/$APP_DIR_NAME}"
+        REPO_DIR="${REPO_DIR:-$DOMAIN_DIR/$APP_DIR_NAME-app}"
     else
         if [ -z "${DOMAIN_DIR:-}" ]; then
             if [ -d "$PWD/public_html" ]; then
@@ -204,6 +209,10 @@ main() {
     {
         echo "export PHP_BIN=\"$PHP_BIN\""
         echo "export COMPOSER_BIN=\"$COMPOSER_BIN\""
+        # Without this, deploy.sh falls back to <repo>/../public_html, which for a
+        # subdomain install is the wrong folder (on Hostinger ~/public_html is a
+        # symlink to some other domain).
+        echo "export PUBLIC_HTML=\"$PUBLIC_HTML\""
     } > "$HOME/.babytracker-deploy.env"
 
     # --------------------------------------------------------------- deploy
