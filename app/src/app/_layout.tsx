@@ -14,6 +14,7 @@ import { useMemo } from 'react';
 import { useUniwind } from 'uniwind';
 
 import { AppSplash } from '@/components/splash/app-splash';
+import { SessionProvider, useSession } from '@/hooks/use-session';
 import { ThemeModeProvider } from '@/hooks/use-theme-mode';
 import { useThemeColors } from '@/hooks/use-theme-colors';
 import { useDeviceLocaleSync } from '@/i18n';
@@ -39,7 +40,9 @@ export default function RootLayout() {
 
   return (
     <ThemeModeProvider>
-      <ThemedNavigation />
+      <SessionProvider>
+        <ThemedNavigation />
+      </SessionProvider>
     </ThemeModeProvider>
   );
 }
@@ -48,6 +51,8 @@ export default function RootLayout() {
 function ThemedNavigation() {
   const { theme } = useUniwind();
   const colors = useThemeColors();
+  const { status, offline } = useSession();
+  const signedIn = status === 'signedIn';
   // Navigation chrome (screen background behind transitions, headers) uses Nappa tokens.
   const navigationTheme = useMemo(() => {
     const base = theme === 'dark' ? DarkTheme : DefaultTheme;
@@ -78,14 +83,24 @@ function ThemedNavigation() {
       {/* Follows the app theme (set natively by Uniwind), not the device setting. */}
       <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
       <Stack screenOptions={{ headerShown: false }}>
-        {/* Native bottom sheet (Figma `Sheet/Bottom`): sized to its content, 36px top corners, grabber. */}
-        <Stack.Screen name="appearance" options={sheetOptions} />
-        {/* Home gear shortcut: Light / Dark / Auto + Cancel, same setting as the Appearance sheet. */}
-        <Stack.Screen name="theme-menu" options={sheetOptions} />
+        {/* Signed in: the app. When the session ends, these close and the sign-in screens open. */}
+        <Stack.Protected guard={signedIn}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="settings" />
+          <Stack.Screen name="explore" />
+          {/* Native bottom sheet (Figma `Sheet/Bottom`): sized to its content, 36px top corners, grabber. */}
+          <Stack.Screen name="appearance" options={sheetOptions} />
+          {/* Home gear shortcut: Light / Dark / Auto + Cancel, same setting as the Appearance sheet. */}
+          <Stack.Screen name="theme-menu" options={sheetOptions} />
+        </Stack.Protected>
+        {/* Signed out: Welcome back (password only) or Sign in, plus sign-up and forgot password. */}
+        <Stack.Protected guard={!signedIn}>
+          <Stack.Screen name="(auth)" />
+        </Stack.Protected>
       </Stack>
-      {/* Fonts and the saved theme are ready by the time this renders, so the app is ready now.
-          Add the session check here when it exists, and pass `problem` for offline / error. */}
-      <AppSplash ready />
+      {/* Fonts and the saved theme are ready by now; the splash stays until the saved session is
+          checked. Offline at launch: the session is kept and the splash says so before hiding. */}
+      <AppSplash ready={status !== 'loading'} problem={offline ? 'offline' : undefined} />
     </ThemeProvider>
   );
 }

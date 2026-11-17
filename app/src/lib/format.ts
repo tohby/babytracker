@@ -123,6 +123,15 @@ export function formatDuration(ms: number, style: DurationStyle = 'narrow'): str
   return showHours ? i18n.t('units.duration.narrow.hours', values) : i18n.t('units.duration.narrow.minutes', values);
 }
 
+/** A countdown in minutes and seconds, e.g. "0:45" (sign-in pause, resend timers). */
+export function formatCountdown(totalSeconds: number): string {
+  const seconds = Math.max(0, Math.round(totalSeconds));
+  return i18n.t('units.countdown', {
+    minutes: formatNumber(Math.floor(seconds / 60)),
+    seconds: formatNumber(seconds % 60, { minimumIntegerDigits: 2 }),
+  });
+}
+
 /** Milliseconds between two moments (b defaults to now). Never negative. */
 export function elapsedMs(from: Date | string | number, to: Date | string | number = Date.now()): number {
   return Math.max(0, toDate(to).getTime() - toDate(from).getTime());

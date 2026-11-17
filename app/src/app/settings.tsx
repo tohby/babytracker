@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, View } from 'react-native';
+import { Alert, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useAutoWindow } from '@/components/settings/use-auto-window';
@@ -9,6 +9,7 @@ import { IconButton } from '@/components/ui/icon-button';
 import { ListRow } from '@/components/ui/list-row';
 import { ScreenBackground } from '@/components/ui/screen-background';
 import { Text } from '@/components/ui/text';
+import { useSession } from '@/hooks/use-session';
 import { useThemeMode } from '@/hooks/use-theme-mode';
 
 /**
@@ -20,6 +21,14 @@ export default function SettingsScreen() {
   const { t } = useTranslation(['settings', 'common']);
   const { mode, applied } = useThemeMode();
   const window = useAutoWindow();
+  const { user, account, signOut } = useSession();
+  const email = user?.email ?? account?.email;
+
+  const confirmSignOut = () =>
+    Alert.alert(t('settings:account.signOutConfirmTitle'), t('settings:account.signOutConfirmDetail'), [
+      { text: t('common:actions.cancel'), style: 'cancel' },
+      { text: t('settings:account.signOutConfirm'), style: 'destructive', onPress: () => signOut() },
+    ]);
 
   const modeLabel = t(`settings:appearance.${mode}`);
   const autoSubtitle =
@@ -57,6 +66,21 @@ export default function SettingsScreen() {
             onPress={() => router.push('/appearance')}
           />
         </GlassCard>
+
+        <View className="gap-md">
+          <Text variant="label" tone="muted" accessibilityRole="header" className="px-lg">
+            {t('settings:account.title')}
+          </Text>
+          <GlassCard>
+            <ListRow
+              icon="arrow"
+              tone="orange"
+              title={t('settings:account.signOut')}
+              subtitle={email ? t('settings:account.signedInAs', { email }) : undefined}
+              onPress={confirmSignOut}
+            />
+          </GlassCard>
+        </View>
       </ScrollView>
     </View>
   );

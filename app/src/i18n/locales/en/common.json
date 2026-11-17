@@ -41,6 +41,7 @@
     "weight": {
       "kg": "{{value}} kg",
       "lb": "{{value}} lb"
-    }
+    },
+    "countdown": "{{minutes}}:{{seconds}}"
   }
 }

@@ -8,12 +8,13 @@ import { useThemeColors } from '@/hooks/use-theme-colors';
 
 type ThemeColorName = keyof ResolvedColors;
 
-export type StatusBannerType = 'error' | 'offline' | 'info';
+export type StatusBannerType = 'error' | 'offline' | 'info' | 'locked';
 
 const config: Record<StatusBannerType, { icon: IconName; iconColor: ThemeColorName; border: string }> = {
   error: { icon: 'alert-circle', iconColor: 'danger/500', border: 'border-[1.5px] border-danger-500' },
   offline: { icon: 'wifi-off', iconColor: 'icon/primary', border: 'border border-glass-stroke' },
-  info: { icon: 'alert-circle', iconColor: 'lavender/500', border: 'border border-glass-stroke' },
+  info: { icon: 'info', iconColor: 'lavender/500', border: 'border border-glass-stroke' },
+  locked: { icon: 'lock', iconColor: 'accent/primary', border: 'border border-glass-stroke' },
 };
 
 type StatusBannerProps = {

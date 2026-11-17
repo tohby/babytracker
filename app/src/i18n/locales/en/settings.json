@@ -11,5 +11,13 @@
     "rowAutoLight": "Dark {{start}} – {{end}} · light now",
     "sheetAutoDark": "Auto turns dark at {{start}} and light at {{end}}. Dark now.",
     "sheetAutoLight": "Auto turns dark at {{start}} and light at {{end}}. Light now."
+  },
+  "account": {
+    "title": "Account",
+    "signedInAs": "Signed in as {{email}}",
+    "signOut": "Sign out",
+    "signOutConfirmTitle": "Sign out of Nappa?",
+    "signOutConfirmDetail": "You can sign back in with just your password on this phone.",
+    "signOutConfirm": "Sign out"
   }
 }
