@@ -21,6 +21,8 @@ class BabyResource extends JsonResource
             'name' => $this->name,
             'birth_date' => $this->birth_date->toDateString(),
             'timezone' => $this->timezone,
+            'feeding_method' => $this->feeding_method,
+            'usual_wake_time' => $this->usual_wake_time ? substr($this->usual_wake_time, 0, 5) : null,
             // The signed-in user's role for this baby, when loaded through user->babies().
             'role' => $this->whenPivotLoaded('baby_user', fn () => $this->pivot->role),
             'created_at' => $this->created_at?->toIso8601String(),

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -44,7 +45,29 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+/**
+ * Sign in through the API with email + password and return the JSON (tokens, device, user).
+ *
+ * @return array<string, mixed>
+ */
+function apiSignIn(User $user, string $password = 'password'): array
 {
-    // ..
+    return test()->postJson(route('api.v1.auth.login'), [
+        'email' => $user->email,
+        'password' => $password,
+        'platform' => 'ios',
+    ])->assertOk()->json();
+}
+
+/**
+ * Authorization header for a token. Also clears the test app's cached signed-in user, which would
+ * otherwise carry over from the previous request and hide revoked tokens.
+ *
+ * @return array<string, string>
+ */
+function bearer(string $token): array
+{
+    app('auth')->forgetGuards();
+
+    return ['Authorization' => 'Bearer '.$token];
 }

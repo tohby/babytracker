@@ -53,13 +53,33 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
-     * Slow down password guessing on the app's login and sign-up endpoints.
+     * Request limits for the app's auth endpoints. These cap volume (per email, IP or user);
+     * the escalating pause after wrong passwords is SignInThrottle.
      */
     protected function configureRateLimits(): void
     {
+        $email = fn (Request $request): string => 'email:'.mb_strtolower(trim((string) $request->input('email')));
+
         RateLimiter::for('api-auth', fn (Request $request): array => [
-            Limit::perMinute(10)->by('email:'.strtolower((string) $request->input('email')).'|'.$request->ip()),
+            Limit::perMinute(10)->by($email($request).'|'.$request->ip()),
             Limit::perMinute(30)->by('ip:'.$request->ip()),
         ]);
+
+        RateLimiter::for('auth-register', fn (Request $request): array => [
+            Limit::perHour(5)->by('register|'.$email($request)),
+            Limit::perHour(20)->by('register|ip:'.$request->ip()),
+        ]);
+
+        // Resend code and forgot password: each sends an email.
+        RateLimiter::for('auth-email', fn (Request $request): array => [
+            Limit::perMinute(1)->by($request->route()?->getName().'|'.$email($request)),
+            Limit::perHour(5)->by($request->route()?->getName().'|hour|'.$email($request)),
+            Limit::perHour(20)->by($request->route()?->getName().'|ip:'.$request->ip()),
+        ]);
+
+        RateLimiter::for('auth-refresh', fn (Request $request): Limit => Limit::perMinute(60)->by('refresh|ip:'.$request->ip()));
+
+        // Delete account, sign out everywhere, set PIN, upload avatar.
+        RateLimiter::for('auth-sensitive', fn (Request $request): Limit => Limit::perMinute(5)->by('sensitive|user:'.$request->user()?->id));
     }
 }

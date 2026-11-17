@@ -95,6 +95,18 @@
         ],
         "pre-package-uninstall": [
             "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
+        ],
+        "test:mysql": [
+            "@php -r \"(new PDO('mysql:host=127.0.0.1;port=3306', 'root', ''))->exec('CREATE DATABASE IF NOT EXISTS nappa_mysql_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');\"",
+            "@putenv DB_CONNECTION=mysql",
+            "@putenv DB_HOST=127.0.0.1",
+            "@putenv DB_PORT=3306",
+            "@putenv DB_DATABASE=nappa_mysql_test",
+            "@putenv DB_USERNAME=root",
+            "@putenv DB_PASSWORD=",
+            "@putenv DB_URL=",
+            "@php artisan config:clear --ansi",
+            "@php artisan test"
         ]
     },
     "extra": {
@@ -115,5 +127,8 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "scripts-descriptions": {
+        "test:mysql": "Run the test suite on local MySQL (DBngin, root, no password) to match production."
+    }
 }

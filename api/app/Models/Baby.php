@@ -16,11 +16,13 @@ use Illuminate\Support\Carbon;
  * @property string $name
  * @property Carbon $birth_date
  * @property string $timezone
+ * @property string|null $feeding_method
+ * @property string|null $usual_wake_time
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  */
-#[Fillable(['name', 'birth_date', 'timezone'])]
+#[Fillable(['name', 'birth_date', 'timezone', 'feeding_method', 'usual_wake_time'])]
 class Baby extends Model
 {
     /** @use HasFactory<BabyFactory> */
@@ -29,6 +31,8 @@ class Baby extends Model
     public const ROLE_OWNER = 'owner';
 
     public const ROLE_CAREGIVER = 'caregiver';
+
+    public const FEEDING_METHODS = ['breast_milk', 'formula', 'combination', 'solids'];
 
     /**
      * Get the attributes that should be cast.
