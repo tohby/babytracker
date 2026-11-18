@@ -76,7 +76,7 @@ export default function CreateAccountScreen() {
           <PrimaryButton label={t('createAccount.submit')} onPress={submit} loading={loading} disabled={!email && !password} />
           <View className="flex-row flex-wrap items-center justify-center">
             <Text variant="label">{t('createAccount.haveAccount')}</Text>
-            <TextButton label={t('createAccount.signIn')} onPress={() => router.dismissTo('/')} />
+            <TextButton label={t('createAccount.signIn')} onPress={() => router.replace('/sign-in')} />
           </View>
         </>
       }>

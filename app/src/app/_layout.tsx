@@ -51,8 +51,10 @@ export default function RootLayout() {
 function ThemedNavigation() {
   const { theme } = useUniwind();
   const colors = useThemeColors();
-  const { status, offline } = useSession();
+  const { status, offline, user } = useSession();
   const signedIn = status === 'signedIn';
+  // Offline at launch there's no user yet: go to the app rather than restart onboarding.
+  const onboarded = user?.onboarding.completed ?? true;
   // Navigation chrome (screen background behind transitions, headers) uses Nappa tokens.
   const navigationTheme = useMemo(() => {
     const base = theme === 'dark' ? DarkTheme : DefaultTheme;
@@ -83,15 +85,22 @@ function ThemedNavigation() {
       {/* Follows the app theme (set natively by Uniwind), not the device setting. */}
       <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
       <Stack screenOptions={{ headerShown: false }}>
-        {/* Signed in: the app. When the session ends, these close and the sign-in screens open. */}
-        <Stack.Protected guard={signedIn}>
-          <Stack.Screen name="index" />
+        {/* "/" redirects to Home or Welcome. First and unprotected, so it's where the router goes
+            when a guard closes the screen that was open (sign-in succeeded, session ended). */}
+        <Stack.Screen name="index" />
+        {/* Signed in and onboarded: the app. When the session ends, these close and sign-in opens. */}
+        <Stack.Protected guard={signedIn && onboarded}>
+          <Stack.Screen name="home" />
           <Stack.Screen name="settings" />
           <Stack.Screen name="explore" />
           {/* Native bottom sheet (Figma `Sheet/Bottom`): sized to its content, 36px top corners, grabber. */}
           <Stack.Screen name="appearance" options={sheetOptions} />
-          {/* Home gear shortcut: Light / Dark / Auto + Cancel, same setting as the Appearance sheet. */}
+          {/* Home shortcut: the same Appearance sheet as Settings. */}
           <Stack.Screen name="theme-menu" options={sheetOptions} />
+        </Stack.Protected>
+        {/* Signed in, onboarding not finished: the onboarding questions. */}
+        <Stack.Protected guard={signedIn && !onboarded}>
+          <Stack.Screen name="onboarding" options={{ gestureEnabled: false }} />
         </Stack.Protected>
         {/* Signed out: Welcome back (password only) or Sign in, plus sign-up and forgot password. */}
         <Stack.Protected guard={!signedIn}>

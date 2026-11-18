@@ -53,15 +53,20 @@ export const Fonts = Platform.select({
   },
 });
 
+/**
+ * Spacing for StyleSheet code. Same names and values as the Figma "Nappa Spacing"
+ * variables and the `--spacing-*` tokens in `global.css` (`p-lg`, `gap-md`, `px-page`).
+ * Prefer the Uniwind classes; use these only where a style object is needed.
+ */
 export const Spacing = {
-  half: 2,
-  one: 4,
-  two: 8,
-  twelve: 12,
-  three: 16,
-  four: 24,
-  five: 32,
-  six: 64,
+  xs: 4,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  page: 20,
+  xl: 24,
+  '2xl': 32,
+  '3xl': 48,
 } as const;
 
 /**

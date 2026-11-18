@@ -33,6 +33,8 @@ type SessionActions = {
   signOut: () => Promise<void>;
   /** "Not you?": forget the account on this phone. */
   forgetAccount: () => Promise<void>;
+  /** Replace the signed-in user after a profile or onboarding change (keeps the remembered name in step). */
+  updateUser: (user: User) => void;
 };
 
 type Session = SessionState & SessionActions;
@@ -174,9 +176,17 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     setState((s) => ({ ...s, status: 'signedOut', user: null, account: null, signedOutReason: null }));
   }, [state.account]);
 
+  const updateUser = useCallback((user: User) => {
+    setState((s) => {
+      const account = s.account && s.account.email === user.email ? { ...s.account, name: user.name, avatarUrl: user.avatar_url } : s.account;
+      if (account && account !== s.account) saveAccount(account).catch(() => {});
+      return { ...s, user, account };
+    });
+  }, []);
+
   const value = useMemo<Session>(
-    () => ({ ...state, signIn, signInWithPassword, register, verifyEmail, signOut, forgetAccount }),
-    [state, signIn, signInWithPassword, register, verifyEmail, signOut, forgetAccount],
+    () => ({ ...state, signIn, signInWithPassword, register, verifyEmail, signOut, forgetAccount, updateUser }),
+    [state, signIn, signInWithPassword, register, verifyEmail, signOut, forgetAccount, updateUser],
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;

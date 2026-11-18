@@ -18,7 +18,7 @@ import { formatCountdown } from '@/lib/format';
  * Email + password (Figma A1–A5, D1, J2; locked and offline states from F1 and H1).
  * Shown on a phone with no remembered account, or after "Not you?".
  */
-export function SignInScreen() {
+export function SignInScreen({ canGoBack = false }: { canGoBack?: boolean }) {
   const { t } = useTranslation('auth');
   const { signIn, account } = useSession();
   const passwordRef = useRef<TextFieldRef>(null);
@@ -74,6 +74,7 @@ export function SignInScreen() {
     <AuthScreen
       hero={locked ? 'sleeping' : offline ? 'thinking' : 'icon'}
       title={title}
+      canGoBack={canGoBack}
       subtitle={locked || offline || problem ? undefined : t('signIn.subtitle')}
       actions={
         <>

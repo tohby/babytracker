@@ -1,0 +1,263 @@
+{
+  "intro": {
+    "title": "Hi, I’m Nappa",
+    "body": "I’ll learn your baby’s rhythm and tell you when the next nap is coming.",
+    "start": "Let’s go",
+    "haveAccount": "I already have an account",
+    "promise": "Calmer days start with knowing what’s next",
+    "continue": "Continue"
+  },
+  "continue": "Continue",
+  "continueCount_one": "Continue · {{count}} selected",
+  "continueCount_other": "Continue · {{count}} selected",
+  "letsGo": "Let’s go",
+  "notNow": "Not now",
+  "skip": "Skip",
+  "babyName": {
+    "message": "What’s your little one called?",
+    "label": "Baby’s name",
+    "placeholder": "Name"
+  },
+  "parentName": {
+    "message": "Lovely name! And what should I call you?",
+    "label": "Your name",
+    "placeholder": "Your name"
+  },
+  "reward": {
+    "message": "{{baby}} and {{parent}} — my favourite new team!",
+    "messageNoParent": "{{baby}} and you — my favourite new team!"
+  },
+  "getToKnow": {
+    "message": "First, let’s get to know {{baby}} a little."
+  },
+  "birthday": {
+    "message": "When was {{baby}} born?",
+    "day": "Day",
+    "month": "Month",
+    "year": "Year",
+    "age": "{{baby}} is {{age}} old",
+    "notBornYet": "{{baby}} isn’t born yet. That’s fine, Nappa will be ready."
+  },
+  "age": {
+    "months_one": "{{count}} month",
+    "months_other": "{{count}} months",
+    "weeks_one": "{{count}} week",
+    "weeks_other": "{{count}} weeks",
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days",
+    "pair": "{{first}}, {{second}}"
+  },
+  "feeding": {
+    "message": "How is {{baby}} fed right now?",
+    "breast_milk": {
+      "title": "Breast milk",
+      "subtitle": "Nursing or expressed"
+    },
+    "formula": {
+      "title": "Formula",
+      "subtitle": "Bottle feeds"
+    },
+    "combination": {
+      "title": "A bit of both",
+      "subtitle": "Combination feeding"
+    },
+    "solids": {
+      "title": "Starting solids",
+      "subtitle": "Purées or baby-led"
+    }
+  },
+  "hardest": {
+    "message": "What feels hardest right now? Pick all that fit.",
+    "shortNaps": "Short naps",
+    "nightWakings": "Night wakings",
+    "whenToFeed": "Knowing when to feed",
+    "nappies": "Keeping track of nappies",
+    "sharing": "Sharing with my partner"
+  },
+  "wakeTime": {
+    "message": "What time does {{baby}} usually wake up?",
+    "hour": "Hour",
+    "minute": "Minutes",
+    "period": "AM or PM",
+    "hint": "Mornings anchor the whole day"
+  },
+  "wakeWindows": {
+    "message": "Here’s why that matters.",
+    "title": "Babies {{baby}}’s age stay happily awake for about {{range}}",
+    "body": "Past that window they get overtired and fight sleep. Nappa counts it for you from the moment {{baby}} wakes.",
+    "awake": "Awake",
+    "sweetSpot": "Sweet spot",
+    "overtired": "Overtired",
+    "submit": "Makes sense"
+  },
+  "hoursRange": "{{min}}–{{max}} hours",
+  "reminders": {
+    "message": "Want me to nudge you before {{baby}} gets sleepy?",
+    "previewTitle": "Nap window in 15 min",
+    "previewTime": "now",
+    "previewBody": "{{baby}}’s been awake {{awake}}. Start winding down 🌙",
+    "promise": "One gentle nudge per nap. No spam, ever.",
+    "allow": "Allow reminders"
+  },
+  "reminderTiming": {
+    "message": "When should I give you the heads-up?",
+    "5": {
+      "title": "5 min before",
+      "subtitle": "Just enough to finish up"
+    },
+    "15": {
+      "title": "15 min before",
+      "subtitle": "Recommended for wind-down"
+    },
+    "30": {
+      "title": "30 min before",
+      "subtitle": "Great for bath + story"
+    },
+    "onlyWhenAsked": {
+      "title": "Only when I ask",
+      "subtitle": "I’ll check the app myself"
+    }
+  },
+  "sleepOpener": {
+    "message": "Now the big one — let’s talk sleep.",
+    "chip": "Part 2 · Sleep"
+  },
+  "sleepNeed": {
+    "message": "Quick fact for babies {{baby}}’s age:",
+    "hours": "{{min}}–{{max}}h",
+    "body": "of sleep every 24 hours, naps included",
+    "source": {
+      "nsf": {
+        "title": "National Sleep Foundation",
+        "detail": "Recommended hours for newborns 0–3 months (2015)"
+      },
+      "aasmInfant": {
+        "title": "American Academy of Sleep Medicine",
+        "detail": "Recommended hours for infants 4–12 months (2016)"
+      },
+      "aasmToddler": {
+        "title": "American Academy of Sleep Medicine",
+        "detail": "Recommended hours for toddlers 1–2 years (2016)"
+      },
+      "aasmPreschool": {
+        "title": "American Academy of Sleep Medicine",
+        "detail": "Recommended hours for children 3–5 years (2016)"
+      }
+    }
+  },
+  "sleepYesterday": {
+    "message": "Roughly how long did {{baby}} sleep yesterday?",
+    "unit": "h",
+    "label": "Hours of sleep",
+    "inRange": "Right in the healthy range",
+    "under": "A little under the usual range",
+    "over": "A little over the usual range",
+    "hint": "A rough guess is fine — Nappa learns the real number as you log."
+  },
+  "napPlace": {
+    "message": "Where does {{baby}} usually nap?",
+    "cot": {
+      "title": "In the cot",
+      "subtitle": "Same spot as night sleep"
+    },
+    "contact": {
+      "title": "Contact naps",
+      "subtitle": "On me or my partner"
+    },
+    "onTheMove": {
+      "title": "Pram or car",
+      "subtitle": "On the move"
+    },
+    "changes": {
+      "title": "It changes every day",
+      "subtitle": "No two days alike"
+    }
+  },
+  "weight": {
+    "message": "Last weigh-in — how much was {{baby}}?",
+    "label": "Weight",
+    "kg": "kg",
+    "lb": "lb",
+    "hint": "Not sure? Skip it — you can add it after the next check-up."
+  },
+  "carers": {
+    "message": "Who else looks after {{baby}}? I can keep everyone in sync.",
+    "partner": {
+      "title": "My partner",
+      "subtitle": "Shares logs in real time"
+    },
+    "grandparents": {
+      "title": "Grandparents",
+      "subtitle": "See naps, skip the details"
+    },
+    "nanny": {
+      "title": "Nanny or childminder",
+      "subtitle": "Logs while you’re away"
+    },
+    "justMe": {
+      "title": "Just me for now",
+      "subtitle": "Invite people later"
+    },
+    "summaryJustMe": "Just you",
+    "summaryOthers_one": "{{name}} + {{count}}",
+    "summaryOthers_other": "{{name}} + {{count}}"
+  },
+  "glance": {
+    "message": "Here’s what I know about {{baby}} so far.",
+    "feeding": "Feeding",
+    "wakes": "Usually wakes",
+    "naps": "Naps",
+    "weight": "Weight",
+    "carers": "Carers",
+    "notSet": "Not set",
+    "hint": "Tap any line to change it.",
+    "submit": "Looks right",
+    "edit": "Change {{item}}"
+  },
+  "saveError": {
+    "title": "Couldn’t save just now",
+    "detail": "Check your connection and try again. Your answers are safe on this phone."
+  },
+  "personalising": {
+    "title": "Personalising {{baby}}’s plan…",
+    "step1": "Reading {{baby}}’s age and feeds",
+    "step2": "Mapping wake windows",
+    "step3": "Timing nap reminders",
+    "step4": "Writing the daily rhythm",
+    "hint": "This only takes a few seconds.",
+    "dummyQuestion": "Quick one while I work — does {{baby}} use a dummy?",
+    "dummyDetail": "It changes how I time wind-down.",
+    "yes": "Yes",
+    "no": "No",
+    "sometimes": "Sometimes"
+  },
+  "planReveal": {
+    "eyebrow": "{{baby}}’s plan is ready",
+    "title": "Steady naps by {{date}}",
+    "today": "Today",
+    "week2": "Week 2",
+    "week3": "Week 3",
+    "caption": "Nap predictability as Nappa learns {{baby}}’s rhythm",
+    "submit": "See {{baby}}’s day"
+  },
+  "rhythm": {
+    "message": "Here’s a gentle rhythm to start with. I’ll adjust it as you log.",
+    "wake": {
+      "title": "Wake up",
+      "subtitle": "Start of the day"
+    },
+    "nap": "Nap {{count}}",
+    "catnap": "Catnap",
+    "about": "~{{duration}}",
+    "bathFeed": {
+      "title": "Bath & feed",
+      "subtitle": "Wind-down"
+    },
+    "bedtime": {
+      "title": "Bedtime",
+      "subtitle": "Lights out"
+    },
+    "next": "Next",
+    "submit": "Start my plan"
+  }
+}

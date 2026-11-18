@@ -7,14 +7,18 @@ import { Text } from '@/components/ui/text';
 import type { HomeData } from '@/data/home';
 import { elapsedMs, formatDuration, formatTime } from '@/lib/format';
 
-type SinceLastSectionProps = Pick<HomeData, 'lastFeed' | 'awakeSince' | 'lastNappy' | 'sleepToday' | 'syncedWith'> & {
+type SinceLastSectionProps = Pick<HomeData, 'lastFeed' | 'awakeSince' | 'lastNappy' | 'sleepToday' | 'syncedWith' | 'babyName'> & {
   now: number;
 };
 
-/** "Since last" heading with a sync note, then a two-column grid of tiles. */
-export function SinceLastSection({ lastFeed, awakeSince, lastNappy, sleepToday, syncedWith, now }: SinceLastSectionProps) {
+/**
+ * "Since last" heading with a sync note, then a two-column grid of tiles. Tiles without a log yet
+ * show a dash and what to log (Figma M1-20).
+ */
+export function SinceLastSection({ lastFeed, awakeSince, lastNappy, sleepToday, syncedWith, babyName, now }: SinceLastSectionProps) {
   const { t } = useTranslation('home');
   const feedCaption = useFeedCaption();
+  const empty = t('tiles.empty');
 
   return (
     <View className="gap-md">
@@ -23,7 +27,7 @@ export function SinceLastSection({ lastFeed, awakeSince, lastNappy, sleepToday, 
         <View className="flex-row items-center gap-sm">
           <View className="size-[8px] rounded-full bg-mint-400" />
           <Text variant="caption" tone="muted">
-            {t('sinceLast.syncedWith', { name: syncedWith })}
+            {syncedWith ? t('sinceLast.syncedWith', { name: syncedWith }) : t('sinceLast.justYou')}
           </Text>
         </View>
       </View>
@@ -32,26 +36,26 @@ export function SinceLastSection({ lastFeed, awakeSince, lastNappy, sleepToday, 
         <TimeSinceTile
           accent="orange"
           title={t('tiles.feed.title')}
-          value={formatDuration(elapsedMs(lastFeed.at, now))}
-          caption={feedCaption(lastFeed.kind, lastFeed.amountMl)}
+          value={lastFeed ? formatDuration(elapsedMs(lastFeed.at, now)) : empty}
+          caption={lastFeed ? feedCaption(lastFeed.kind, lastFeed.amountMl) : t('tiles.feed.first', { name: babyName })}
         />
         <TimeSinceTile
           accent="lavender"
           title={t('tiles.awake.title')}
-          value={formatDuration(elapsedMs(awakeSince, now))}
-          caption={t('tiles.awake.woke', { time: formatTime(awakeSince) })}
+          value={awakeSince ? formatDuration(elapsedMs(awakeSince, now)) : empty}
+          caption={awakeSince ? t('tiles.awake.woke', { time: formatTime(awakeSince) }) : t('tiles.awake.first')}
         />
         <TimeSinceTile
           accent="mint"
           title={t('tiles.nappy.title')}
-          value={formatDuration(elapsedMs(lastNappy.at, now))}
-          caption={t(`tiles.nappy.${lastNappy.kind}`)}
+          value={lastNappy ? formatDuration(elapsedMs(lastNappy.at, now)) : empty}
+          caption={lastNappy ? t(`tiles.nappy.${lastNappy.kind}`) : t('tiles.nappy.first')}
         />
         <TimeSinceTile
           accent="yellow"
           title={t('tiles.sleep.title')}
-          value={formatDuration(sleepToday.totalMs)}
-          caption={t('tiles.sleep.naps', { count: sleepToday.napCount })}
+          value={sleepToday ? formatDuration(sleepToday.totalMs) : empty}
+          caption={sleepToday && sleepToday.napCount > 0 ? t('tiles.sleep.naps', { count: sleepToday.napCount }) : t('tiles.sleep.none')}
         />
       </View>
     </View>

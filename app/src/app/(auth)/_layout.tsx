@@ -4,8 +4,8 @@ import { useSession } from '@/hooks/use-session';
 import { useThemeColors } from '@/hooks/use-theme-colors';
 
 /**
- * Signed-out screens (Figma "Sign in" page). The entry screen (index) is Welcome back when this phone
- * remembers an account, so the app opens on "password only"; otherwise it's the email form.
+ * Signed-out screens (Figma "Sign in" page). The entry screen (welcome) is Welcome back when this phone
+ * remembers an account, so the app opens on "password only"; otherwise it's the first-launch hook.
  */
 export default function AuthLayout() {
   const { account } = useSession();
@@ -13,8 +13,10 @@ export default function AuthLayout() {
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      {/* "/" while signed out: Welcome back or the email form, depending on `account`. */}
-      <Stack.Screen name="index" />
+      {/* Welcome back, or the first-launch hook, depending on `account`. */}
+      <Stack.Screen name="welcome" />
+      <Stack.Screen name="promise" />
+      <Stack.Screen name="sign-in" />
       <Stack.Screen name="forgot-password" />
       <Stack.Screen name="check-email" />
       <Stack.Screen name="create-account" />

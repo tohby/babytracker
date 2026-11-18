@@ -25,12 +25,6 @@ do it by editing the file. Both edit the same file, so they stay in sync.
 
 ## Todo
 
-### Add a 12 step to Spacing in theme.ts and drop the 2px step
-
-  - tags: [M1, @tobi]
-  - priority: low
-  - workload: Easy
-
 ### API locale support: user.locale, Accept-Language, api/lang, localised push text
 
   - tags: [M1, @tobi]
@@ -292,6 +286,16 @@ do it by editing the file. Both edit the same file, so they stay in sync.
 ## Blocked
 
 ## Done
+
+### Add a 12 step to Spacing in theme.ts and drop the 2px step
+
+  - tags: [M1, @tobi]
+  - priority: low
+  - workload: Easy
+  - due: 2026-11-17
+    ```md
+    Spacing now uses the Figma token names and values (xs 4, sm 8, md 12, lg 16, page 20, xl 24, 2xl 32, 3xl 48), the same as --spacing-* in global.css. The 2px and 64px steps are gone; only Expo starter files used them.
+    ```
 
 ### Auth API: register, login, logout, token (Sanctum)
 

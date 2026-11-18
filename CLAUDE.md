@@ -42,6 +42,6 @@ Hierarchical spacing (proximity principle, ~1.4× per nesting level, snapped to 
 - Related items are wrapped in a nested auto-layout group; the group's gap is smaller than the gap around it. A heading belongs to what it introduces (`Since last` title + tiles = `md`; hero cards → that group = `xl`).
 - No `Gap`/`Spacer` frames; use auto-layout gap.
 - Exceptions: dense list rows use 12 vertical / 16 horizontal padding; primary actions sit with their bottom edge at y=804 (40px bottom inset above the home indicator); stroke weight must not change layout (`strokesIncludedInLayout = false` on selectable cards).
-- `app/src/constants/theme.ts` `Spacing` has `half: 2` and no 12; add a 12 step and avoid the 2px step when implementing screens.
+- In code, use the Uniwind classes (`p-lg`, `gap-md`, `px-page`) from `app/src/global.css`; `Spacing` in `app/src/constants/theme.ts` has the same names for StyleSheet code.
 
 Workflow: call `create_session` with the file key first, then `get_design_context` on a screen's node id and adapt the output to Expo components and the tokens in `app/src/constants/theme.ts`. The Figma account (Tobi) has Full seats on "Tobi's Team" and "web dev".

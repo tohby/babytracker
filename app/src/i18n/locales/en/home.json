@@ -9,16 +9,23 @@
     "chip": "Next nap",
     "windowUntil": "Window until {{time}}",
     "startsIn": "in about {{duration}}",
-    "startsNow": "any minute now"
+    "startsNow": "any minute now",
+    "basedOnAge": "Based on {{name}}’s age",
+    "personalise": "Log a nap to personalise",
+    "windowUntilTomorrow": "Tomorrow · window until {{time}}"
   },
   "feedDue": {
     "chip": "Feed due",
     "approxTime": "~{{time}}",
-    "usualInterval": "Usually every {{duration}}"
+    "usualInterval": "Usually every {{duration}}",
+    "empty": "Log a feed to see this",
+    "learns": "Learns from your logs"
   },
   "sinceLast": {
     "heading": "Since last",
-    "syncedWith": "Synced with {{name}}"
+    "syncedWith": "Synced with {{name}}",
+    "justYou": "Just you for now",
+    "restoring": "Restoring your logs…"
   },
   "tiles": {
     "feed": {
@@ -27,22 +34,29 @@
       "bottlePlain": "Bottle",
       "breastLeft": "Breast · left",
       "breastRight": "Breast · right",
-      "solids": "Solids"
+      "solids": "Solids",
+      "first": "Log {{name}}’s first feed"
     },
     "awake": {
       "title": "Awake for",
-      "woke": "Woke {{time}}"
+      "woke": "Woke {{time}}",
+      "first": "Log a nap to start"
     },
     "nappy": {
       "title": "Last nappy",
       "wet": "Wet",
       "dirty": "Dirty",
-      "mixed": "Wet and dirty"
+      "mixed": "Wet and dirty",
+      "first": "Log a nappy"
     },
     "sleep": {
       "title": "Sleep today",
       "naps_one": "{{count}} nap so far",
-      "naps_other": "{{count}} naps so far"
-    }
-  }
+      "naps_other": "{{count}} naps so far",
+      "none": "No naps yet"
+    },
+    "empty": "—"
+  },
+  "familyNameFallback": "Your family",
+  "openSettings": "Account and settings"
 }

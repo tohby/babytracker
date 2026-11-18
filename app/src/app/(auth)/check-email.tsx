@@ -8,6 +8,7 @@ import { PrimaryButton } from '@/components/ui/primary-button';
 import { StatusBanner } from '@/components/ui/status-banner';
 import { TextButton } from '@/components/ui/text-button';
 import { useCountdown } from '@/hooks/use-countdown';
+import { useSession } from '@/hooks/use-session';
 import { authApi } from '@/lib/auth/endpoints';
 import { formatCountdown } from '@/lib/format';
 
@@ -17,6 +18,7 @@ const RESEND_AFTER_MS = 60_000;
 export default function CheckEmailScreen() {
   const { t } = useTranslation('auth');
   const { email = '' } = useLocalSearchParams<{ email?: string }>();
+  const { account } = useSession();
   const [resendAt, setResendAt] = useState(() => Date.now() + RESEND_AFTER_MS);
   const [sent, setSent] = useState(false);
   const [problem, setProblem] = useState<AuthProblem | null>(null);
@@ -43,7 +45,7 @@ export default function CheckEmailScreen() {
       subtitle={t('checkEmail.body', { email })}
       actions={
         <>
-          <PrimaryButton label={t('checkEmail.backToSignIn')} onPress={() => router.dismissTo('/')} />
+          <PrimaryButton label={t('checkEmail.backToSignIn')} onPress={() => router.dismissTo(account ? '/welcome' : '/sign-in')} />
           <TextButton
             label={wait > 0 ? t('checkEmail.resendIn', { time: formatCountdown(wait) }) : t('checkEmail.resend')}
             disabled={wait > 0}

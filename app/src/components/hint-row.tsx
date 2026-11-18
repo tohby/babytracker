@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   codeSnippet: {
-    borderRadius: Spacing.two,
-    paddingVertical: Spacing.half,
-    paddingHorizontal: Spacing.two,
+    borderRadius: Spacing.sm,
+    paddingVertical: Spacing.xs,
+    paddingHorizontal: Spacing.sm,
   },
 });

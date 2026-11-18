@@ -95,7 +95,8 @@ export function HeroCard({ tone, chip, children, mascot }: HeroCardProps) {
       </View>
 
       <Chip label={chip} />
-      <View className="gap-xs">{children}</View>
+      {/* Clear of the mascot in the corner, so long (translated) lines wrap instead of running under it. */}
+      <View className="gap-xs pe-[76px]">{children}</View>
     </View>
   );
 }

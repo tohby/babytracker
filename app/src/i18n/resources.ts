@@ -1,6 +1,7 @@
 import enAuth from './locales/en/auth.json';
 import enCommon from './locales/en/common.json';
 import enHome from './locales/en/home.json';
+import enOnboarding from './locales/en/onboarding.json';
 import enSettings from './locales/en/settings.json';
 import enSplash from './locales/en/splash.json';
 
@@ -13,6 +14,7 @@ export const resources = {
     auth: enAuth,
     common: enCommon,
     home: enHome,
+    onboarding: enOnboarding,
     settings: enSettings,
     splash: enSplash,
   },

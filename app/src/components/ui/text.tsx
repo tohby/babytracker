@@ -24,6 +24,8 @@ const toneClasses = {
   accent: 'text-accent-primary',
   /** Labels on `accent/primary` (orange buttons). Dark plum in every theme for AA. */
   onAccent: 'text-text-on-accent-ink',
+  /** On `surface/inverse` (dark plum in light, pale lavender in dark), e.g. the lock-screen preview. */
+  onInverse: 'text-text-on-accent',
 } as const;
 
 export type TextVariant = keyof typeof variantClasses;

@@ -18,8 +18,10 @@ export default function ForgetAccountSheet() {
 
   async function confirm() {
     setLoading(true);
-    router.back();
     await forgetAccount();
+    // Figma J2: "Sign in to another account".
+    router.dismissAll();
+    router.replace('/sign-in');
   }
 
   return (
