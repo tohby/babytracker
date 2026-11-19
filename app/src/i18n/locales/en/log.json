@@ -1,0 +1,26 @@
+{
+  "units": {
+    "ml": "ml",
+    "oz": "oz"
+  },
+  "amount": {
+    "label": "Amount",
+    "unit": "Unit",
+    "preset": "{{amount}} {{unit}}"
+  },
+  "nursing": {
+    "leftSide": "Left side",
+    "rightSide": "Right side",
+    "leftShort": "L",
+    "rightShort": "R",
+    "start": "Start"
+  },
+  "timer": {
+    "paused": "Paused",
+    "running": "Running",
+    "resume": "Resume",
+    "pause": "Pause",
+    "stopAndSave": "Stop & save",
+    "openRunning": "{{label}}, {{elapsed}}. Opens the timer."
+  }
+}

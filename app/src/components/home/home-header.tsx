@@ -43,7 +43,7 @@ export function HomeHeader({
             onPress={onAvatarPress}
             hitSlop={8}
             className="active:opacity-70">
-            <Avatar name={user.name} photo={user.photo} />
+            <Avatar initials={user.name.slice(0, 1)} photo={user.photo} size="S" />
           </Pressable>
           <Text tone="muted">{t(`home:greeting.${getGreetingPeriod()}`)}</Text>
         </View>
@@ -60,7 +60,7 @@ export function HomeHeader({
         <IconButton
           icon="bell"
           label={t('common:actions.notifications')}
-          showBadge={hasUnreadNotifications}
+          badge={hasUnreadNotifications}
           onPress={onNotificationsPress}
         />
         <IconButton icon="settings" label={t('common:actions.appearance')} onPress={onAppearancePress} />

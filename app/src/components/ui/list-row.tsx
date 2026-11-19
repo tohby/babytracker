@@ -1,50 +1,86 @@
+import { Children, Fragment, isValidElement, type ReactNode } from 'react';
 import { Pressable, View } from 'react-native';
 
-import { Icon, type IconName } from '@/components/ui/icon';
+import { Divider } from '@/components/ui/divider';
+import { Icon } from '@/components/ui/icon';
+import { SelectionControl } from '@/components/ui/selection-control';
 import { Text } from '@/components/ui/text';
-import { useThemeColors } from '@/hooks/use-theme-colors';
+import { useElevation } from '@/hooks/use-elevation';
 
-export type ListRowTone = 'lavender' | 'orange' | 'mint' | 'cream';
-
-/** Full class names so Tailwind can find them (Figma `List/Row` Circle variants). */
-const circleClasses: Record<ListRowTone, string> = {
-  lavender: 'bg-lavender-100',
-  orange: 'bg-orange-100',
-  mint: 'bg-mint-100',
-  cream: 'bg-cream-50',
-};
+type Trailing =
+  | { kind: 'chevron' }
+  | { kind: 'value'; value: string }
+  | { kind: 'toggle'; checked: boolean }
+  | { kind: 'none' }
+  | { kind: 'custom'; node: ReactNode };
 
 type ListRowProps = {
-  icon: IconName;
-  tone: ListRowTone;
   title: string;
   subtitle?: string;
-  /** Current value shown on the end side (Figma `Trailing=Value`). */
-  value?: string;
+  /** Figma `Leading` slot: an Icon tile or Avatar. */
+  leading?: ReactNode;
+  /** Figma `Trailing`: Chevron (navigates), Value (current setting), Toggle (instant) or None. */
+  trailing?: Trailing;
   onPress?: () => void;
+  disabled?: boolean;
+  accessibilityHint?: string;
+  /** Title colour, e.g. the destructive "Delete account" row. */
+  titleTone?: 'primary' | 'error';
 };
 
-/** Settings-style row: icon circle, title and optional subtitle, optional value (Figma `List/Row`). */
-export function ListRow({ icon, tone, title, subtitle, value, onPress }: ListRowProps) {
-  const colors = useThemeColors();
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={[title, value, subtitle].filter(Boolean).join(', ')}
-      onPress={onPress}
-      className="min-h-[56px] flex-row items-center gap-md px-lg py-md active:opacity-70">
-      <View className={`size-[40px] items-center justify-center rounded-full ${circleClasses[tone]}`}>
-        <Icon name={icon} color={colors['color/icon/primary']} />
-      </View>
-      <View className="flex-1 gap-xs">
-        <Text>{title}</Text>
-        {subtitle ? (
-          <Text variant="caption" tone="muted">
+/** Figma `List row` (Trailing). Min height 64 (one line) / 72 (two); the whole row is the tap target. */
+export function ListRow({ title, subtitle, leading, trailing = { kind: 'none' }, onPress, disabled, accessibilityHint, titleTone = 'primary' }: ListRowProps) {
+  const content = (
+    <>
+      {leading}
+      <View className="flex-1 gap-2xs">
+        <Text variant="subheading" tone={disabled ? 'disabled' : titleTone} numberOfLines={2}>
+          {title}
+        </Text>
+        {!!subtitle && (
+          <Text variant="body-small" tone="secondary" numberOfLines={2}>
             {subtitle}
           </Text>
-        ) : null}
+        )}
       </View>
-      {value ? <Text tone="muted">{value}</Text> : null}
+      {trailing.kind === 'value' && (
+        <Text variant="body" tone="secondary" numberOfLines={1} className="max-w-[45%]">
+          {trailing.value}
+        </Text>
+      )}
+      {(trailing.kind === 'chevron' || trailing.kind === 'value') && <Icon name="chevron-right" size={20} tone="color/icon/secondary" />}
+      {trailing.kind === 'toggle' && <SelectionControl type="toggle" checked={trailing.checked} disabled={disabled} />}
+      {trailing.kind === 'custom' && trailing.node}
+    </>
+  );
+  const classes = `flex-row items-center gap-md rounded-md p-md ${subtitle ? 'min-h-[72px]' : 'min-h-[64px]'}`;
+  if (!onPress) return <View className={classes}>{content}</View>;
+  return (
+    <Pressable
+      accessibilityRole={trailing.kind === 'toggle' ? 'switch' : 'button'}
+      accessibilityState={trailing.kind === 'toggle' ? { checked: trailing.checked, disabled } : { disabled }}
+      accessibilityValue={trailing.kind === 'value' ? { text: trailing.value } : undefined}
+      accessibilityHint={accessibilityHint}
+      disabled={disabled}
+      onPress={onPress}
+      className={`${classes} active:bg-state-pressed-surface`}>
+      {content}
     </Pressable>
+  );
+}
+
+/** Figma `List group`: rows on a surface card (padding 8, radius xl) with inset dividers between them. */
+export function ListGroup({ children, insetDividers = true }: { children: ReactNode; insetDividers?: boolean }) {
+  const shadow = useElevation('card');
+  const rows = Children.toArray(children).filter(isValidElement);
+  return (
+    <View style={{ boxShadow: shadow }} className="rounded-xl bg-background-surface p-sm">
+      {rows.map((row, i) => (
+        <Fragment key={row.key ?? i}>
+          {i > 0 && <Divider inset={insetDividers} />}
+          {row}
+        </Fragment>
+      ))}
+    </View>
   );
 }

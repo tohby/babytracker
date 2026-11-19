@@ -12,7 +12,12 @@
     "notifications": "Notifications",
     "settings": "Settings",
     "appearance": "Appearance",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "clear": "Clear",
+    "undo": "Undo",
+    "change": "Change",
+    "decrease": "Decrease {{what}}",
+    "increase": "Increase {{what}}"
   },
   "units": {
     "duration": {
@@ -43,5 +48,13 @@
       "lb": "{{value}} lb"
     },
     "countdown": "{{minutes}}:{{seconds}}"
+  },
+  "a11y": {
+    "stepperValue": "{{what}}: {{amount}} {{unit}}",
+    "switchChild": "Switch child. Showing {{name}}.",
+    "logNowHint": "Logs it now. Touch and hold for details.",
+    "moreDetails": "{{what}} details",
+    "labelValue": "{{label}}, {{value}}",
+    "editProfile": "Edit {{name}}’s profile"
   }
 }

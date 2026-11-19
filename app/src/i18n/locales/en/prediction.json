@@ -1,0 +1,9 @@
+{
+  "feedback": {
+    "question": "Was this right?",
+    "early": "Too early",
+    "right": "Spot on",
+    "late": "Too late",
+    "thanks": "Thanks — Nappa will keep learning."
+  }
+}

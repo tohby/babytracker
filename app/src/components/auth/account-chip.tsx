@@ -15,7 +15,7 @@ export function AccountChip({ account, onNotYou }: { account: RememberedAccount;
     <View
       style={{ boxShadow: Shadows.glass }}
       className="w-full flex-row items-center gap-md rounded-full border border-glass-stroke bg-glass-fill p-sm">
-      <Avatar name={name} photo={account.avatarUrl ? { uri: account.avatarUrl } : undefined} size={40} />
+      <Avatar initials={name.slice(0, 1)} photo={account.avatarUrl ? { uri: account.avatarUrl } : undefined} size="M" />
       <View className="flex-1 gap-xs">
         {account.name ? (
           <Text variant="label" numberOfLines={1}>

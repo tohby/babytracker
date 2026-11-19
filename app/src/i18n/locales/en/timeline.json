@@ -1,0 +1,6 @@
+{
+  "entry": {
+    "a11y": "{{time}}, {{title}}. {{detail}} {{value}}",
+    "pendingSync": "Not synced yet. Saved on this phone."
+  }
+}

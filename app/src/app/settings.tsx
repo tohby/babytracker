@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAutoWindow } from '@/components/settings/use-auto-window';
 import { GlassCard } from '@/components/ui/glass-card';
 import { IconButton } from '@/components/ui/icon-button';
+import { IconTile } from '@/components/ui/icon-tile';
 import { ListRow } from '@/components/ui/list-row';
 import { ScreenBackground } from '@/components/ui/screen-background';
 import { Text } from '@/components/ui/text';
@@ -58,11 +59,10 @@ export default function SettingsScreen() {
         showsVerticalScrollIndicator={false}>
         <GlassCard>
           <ListRow
-            icon="moon"
-            tone="lavender"
+            leading={<IconTile icon="moon" tone="sleep" />}
             title={t('settings:appearance.title')}
             subtitle={autoSubtitle}
-            value={modeLabel}
+            trailing={{ kind: 'value', value: modeLabel }}
             onPress={() => router.push('/appearance')}
           />
         </GlassCard>
@@ -73,8 +73,8 @@ export default function SettingsScreen() {
           </Text>
           <GlassCard>
             <ListRow
-              icon="arrow"
-              tone="orange"
+              leading={<IconTile icon="arrow" tone="care" />}
+              trailing={{ kind: 'chevron' }}
               title={t('settings:account.signOut')}
               subtitle={email ? t('settings:account.signedInAs', { email }) : undefined}
               onPress={confirmSignOut}

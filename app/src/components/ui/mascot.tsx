@@ -1,24 +1,28 @@
 import { Image } from 'expo-image';
 
-/** Figma `Mascot/Art` poses that ship with the app (transparent PNGs). */
+/** Figma `Mascot/Art` poses (transparent PNGs). The art is the same in light and dark. */
 const poses = {
-  awake: { source: require('@/assets/images/mascot/awake.png'), ratio: 600 / 562 },
-  feeding: { source: require('@/assets/images/mascot/feeding.png'), ratio: 1 },
-  milestone: { source: require('@/assets/images/mascot/milestone.png'), ratio: 600 / 590 },
-  sleeping: { source: require('@/assets/images/mascot/sleeping.png'), ratio: 1 },
-  thinking: { source: require('@/assets/images/mascot/thinking.png'), ratio: 600 / 569 },
-  waving: { source: require('@/assets/images/mascot/waving.png'), ratio: 1020 / 1041 },
+  awake: require('@/assets/images/mascot/awake.png'),
+  crying: require('@/assets/images/mascot/crying.png'),
+  'diaper-change': require('@/assets/images/mascot/diaper-change.png'),
+  feeding: require('@/assets/images/mascot/feeding.png'),
+  milestone: require('@/assets/images/mascot/milestone.png'),
+  sleeping: require('@/assets/images/mascot/sleeping.png'),
+  thinking: require('@/assets/images/mascot/thinking.png'),
+  waving: require('@/assets/images/mascot/waving.png'),
 } as const;
 
 export type MascotPose = keyof typeof poses;
 
-/** Decorative: hidden from screen readers. `size` is the width; height follows the art. */
+/** Every `Mascot/Art` component is a 240×270 frame with the art fitted inside. */
+const FRAME_RATIO = 270 / 240;
+
+/** Decorative: hidden from screen readers. `size` is the frame width; height follows the Figma frame. */
 export function Mascot({ pose, size = 160 }: { pose: MascotPose; size?: number }) {
-  const { source, ratio } = poses[pose];
   return (
     <Image
-      source={source}
-      style={{ width: size, height: Math.round(size * ratio) }}
+      source={poses[pose]}
+      style={{ width: size, height: Math.round(size * FRAME_RATIO) }}
       contentFit="contain"
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"

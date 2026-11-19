@@ -48,13 +48,18 @@ const toneClasses = {
   care: 'text-feature-care-strong',
   success: 'text-status-success',
   warning: 'text-status-warning',
+  'status-error': 'text-status-error',
+  info: 'text-status-info',
+  /** On ink surfaces (tooltip, toast): `background/surface` reads as the inverse. */
+  inverse: 'text-background-surface',
+  /** Undo on the ink toast (`primary/ring`). */
+  ring: 'text-primary-ring',
   'secondary-on': 'text-secondary-on',
   'static-white': 'text-static-white',
   /** LEGACY tones (V1). */
   default: 'text-text-primary',
   muted: 'text-text-secondary',
   heroMuted: 'text-text-hero-muted',
-  inverse: 'text-static-white',
   accent: 'text-accent-primary',
   onAccent: 'text-text-on-accent-ink',
   onInverse: 'text-text-on-accent',
