@@ -13,7 +13,7 @@ import { TextField, type TextFieldRef } from '@/components/ui/text-field';
 import { useSession } from '@/hooks/use-session';
 import { getDeviceLocale } from '@/i18n';
 
-/** The server enforces the real rules (12+ characters in production); this only catches the obvious. */
+/** The server enforces the full password policy; this catches the minimum length early. */
 const MIN_PASSWORD = 8;
 
 /**

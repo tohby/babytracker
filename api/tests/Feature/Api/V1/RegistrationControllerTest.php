@@ -7,6 +7,7 @@ use App\Notifications\AccountAlreadyExists;
 use App\Notifications\RegistrationCode;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Validation\Rules\Password;
 
 function sentCode(string $email): string
 {
@@ -28,6 +29,17 @@ function sentCode(string $email): string
 }
 
 beforeEach(fn () => Notification::fake());
+
+test('production password rules require at least eight characters', function () {
+    $environment = $this->app['env'];
+    $this->app['env'] = 'production';
+
+    try {
+        expect(Password::defaults()->toPasswordRulesString())->toContain('minlength: 8;');
+    } finally {
+        $this->app['env'] = $environment;
+    }
+});
 
 $valid = fn (array $overrides = []) => [
     'email' => 'Kemi@Example.com',
