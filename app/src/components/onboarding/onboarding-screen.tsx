@@ -47,7 +47,7 @@ export function OnboardingScreen({ progress, message, children, actions, centere
                 onPress={() => router.back()}
                 style={{ boxShadow: Shadows.glass }}
                 className="size-[44px] items-center justify-center rounded-full border border-glass-stroke bg-glass-fill">
-                <Icon name="back" color={colors['icon/primary']} size={22} />
+                <Icon name="back" color={colors['color/icon/primary']} size={22} />
               </Pressable>
               <View
                 accessibilityRole="progressbar"

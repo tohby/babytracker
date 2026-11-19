@@ -56,7 +56,7 @@ export function BottomNav({ activeTab, onTabPress, onLogPress, blurTarget }: Bot
                 <View
                   className={`size-[48px] items-center justify-center rounded-full ${isActive ? 'bg-surface-inverse' : ''}`}>
                   <View style={{ opacity: isActive ? 1 : 0.58 }}>
-                    <Icon name={icon} color={isActive ? colors['icon/on-accent'] : colors['icon/primary']} />
+                    <Icon name={icon} color={isActive ? colors['icon/on-accent'] : colors['color/icon/primary']} />
                   </View>
                 </View>
               </Pressable>

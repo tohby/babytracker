@@ -49,7 +49,7 @@ export const TextField = forwardRef<TextFieldRef, TextFieldProps>(function TextF
       </Text>
       <View
         className={`h-[56px] flex-row items-center gap-sm rounded-full px-lg ${disabled ? 'bg-cream-50' : 'bg-white'} ${border}`}>
-        {leadingIcon ? <Icon name={leadingIcon} color={colors['icon/primary']} /> : null}
+        {leadingIcon ? <Icon name={leadingIcon} color={colors['color/icon/primary']} /> : null}
         <TextInput
           ref={ref}
           {...input}
@@ -57,7 +57,7 @@ export const TextField = forwardRef<TextFieldRef, TextFieldProps>(function TextF
           accessibilityHint={message}
           editable={!disabled}
           secureTextEntry={secure && !revealed}
-          placeholderTextColor={colors['text/secondary']}
+          placeholderTextColor={colors['color/text/secondary']}
           selectionColor={colors['accent/primary']}
           onFocus={(e) => {
             setFocused(true);
@@ -76,7 +76,7 @@ export const TextField = forwardRef<TextFieldRef, TextFieldProps>(function TextF
             onPress={() => setRevealed((r) => !r)}
             hitSlop={12}
             className="size-[44px] items-center justify-center -me-sm">
-            <Icon name={revealed ? 'eye-off' : 'eye'} color={colors['icon/primary']} />
+            <Icon name={revealed ? 'eye-off' : 'eye'} color={colors['color/icon/primary']} />
           </Pressable>
         ) : null}
       </View>

@@ -35,7 +35,7 @@ export function IconButton({
       onPress={onPress}
       style={{ width: size, height: size }}
       className={`items-center justify-center rounded-full ${backgroundClassName}`}>
-      <Icon name={icon} color={iconColor ?? colors['icon/primary']} />
+      <Icon name={icon} color={iconColor ?? colors['color/icon/primary']} />
       {showBadge && <View className="absolute right-[11px] top-[12px] size-[9px] rounded-full bg-orange-500" />}
     </Pressable>
   );

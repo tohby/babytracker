@@ -116,7 +116,7 @@ export function WakeWindowsStep({ step, progress }: StepProps) {
       <GlassCard>
         <View className="gap-md p-xl">
           <View className="size-[40px] items-center justify-center rounded-full bg-orange-100">
-            <Icon name="clock" color={colors['icon/primary']} size={20} />
+            <Icon name="clock" color={colors['color/icon/primary']} size={20} />
           </View>
           <Text variant="heading">
             {t('wakeWindows.title', { baby: answers.babyName, range: hoursRange(t, window.min, window.max) })}

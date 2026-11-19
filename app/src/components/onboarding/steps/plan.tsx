@@ -134,7 +134,7 @@ export function GlanceStep({ step, progress }: StepProps) {
             accessibilityHint={t('glance.edit', { item: row.label })}
             onPress={() => edit(row.to)}
             className="min-h-[52px] flex-row items-center gap-md px-lg py-md active:opacity-60">
-            <Icon name={row.icon} color={row.danger ? colors['danger/500'] : colors['icon/primary']} size={20} />
+            <Icon name={row.icon} color={row.danger ? colors['danger/500'] : colors['color/icon/primary']} size={20} />
             <Text tone="muted" className="flex-1">
               {row.label}
             </Text>
@@ -360,7 +360,7 @@ export function RhythmStep({ progress }: StepProps) {
                   {formatTime(timeToday(item.at))}
                 </Text>
                 <View className="size-[36px] items-center justify-center rounded-full bg-orange-100">
-                  <Icon name={row.icon} color={colors['icon/primary']} size={18} />
+                  <Icon name={row.icon} color={colors['color/icon/primary']} size={18} />
                 </View>
                 <View className="flex-1 gap-xs">
                   <Text>{row.title}</Text>

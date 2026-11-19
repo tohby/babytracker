@@ -65,7 +65,7 @@ function ThemedNavigation() {
         primary: colors['accent/primary'],
         background: colors['bg/gradient-top'],
         card: colors['cream/50'],
-        text: colors['text/primary'],
+        text: colors['color/text/primary'],
         border: colors['glass/stroke'],
         notification: colors['accent/primary'],
       },

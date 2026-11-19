@@ -17,7 +17,7 @@ export function BigInput({ label, ...input }: TextInputProps & { label: string }
         autoCorrect={false}
         maxLength={100}
         selectionColor={colors['accent/primary']}
-        placeholderTextColor={colors['text/secondary']}
+        placeholderTextColor={colors['color/text/secondary']}
         className="min-w-[160px] text-center font-outfit-semibold text-[28px] leading-[34px] text-text-primary"
       />
     </View>

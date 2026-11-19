@@ -36,7 +36,7 @@ export function SelectRow({ icon, iconTone = 'default', title, subtitle, selecte
         className={`size-[40px] items-center justify-center rounded-[12px] ${
           selected ? 'border border-glass-stroke bg-glass-fill' : 'bg-orange-100'
         }`}>
-        <Icon name={icon} color={iconTone === 'danger' ? colors['danger/500'] : colors['icon/primary']} size={20} />
+        <Icon name={icon} color={iconTone === 'danger' ? colors['danger/500'] : colors['color/icon/primary']} size={20} />
       </View>
       <View className="flex-1 gap-xs">
         <Text>{title}</Text>

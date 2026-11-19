@@ -65,7 +65,7 @@ export function BrandSplash({ status, onRetry }: BrandSplashProps) {
         ) : null}
         {status !== 'error' ? (
           <View className="flex-row items-center gap-sm">
-            <ActivityIndicator color={colors['text/primary']} accessibilityLabel={t('loadingLabel')} />
+            <ActivityIndicator color={colors['color/text/primary']} accessibilityLabel={t('loadingLabel')} />
             {status === 'slow' ? <Text variant="label">{t('slow')}</Text> : null}
           </View>
         ) : null}

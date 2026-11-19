@@ -138,7 +138,7 @@ export function Chip({ children, icon = 'star' }: { children: string; icon?: Ico
   const colors = useThemeColors();
   return (
     <View className="flex-row items-center gap-sm self-center rounded-full bg-orange-100 px-lg py-sm">
-      <Icon name={icon} color={colors['icon/primary']} size={16} />
+      <Icon name={icon} color={colors['color/icon/primary']} size={16} />
       <Text variant="label" className="shrink">
         {children}
       </Text>

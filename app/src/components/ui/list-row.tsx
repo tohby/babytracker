@@ -34,7 +34,7 @@ export function ListRow({ icon, tone, title, subtitle, value, onPress }: ListRow
       onPress={onPress}
       className="min-h-[56px] flex-row items-center gap-md px-lg py-md active:opacity-70">
       <View className={`size-[40px] items-center justify-center rounded-full ${circleClasses[tone]}`}>
-        <Icon name={icon} color={colors['icon/primary']} />
+        <Icon name={icon} color={colors['color/icon/primary']} />
       </View>
       <View className="flex-1 gap-xs">
         <Text>{title}</Text>
