@@ -28,7 +28,7 @@ export function GetToKnowStep({ step, progress }: StepProps) {
       message={t('getToKnow.message', { baby: answers.babyName })}
       actions={<Button label={t('letsGo')} onPress={() => next(step)} />}>
       <View className="items-center pt-xl">
-        <Mascot pose="thinking" size={220} />
+        <Mascot pose="standing" size={220} />
       </View>
     </OnboardingScreen>
   );

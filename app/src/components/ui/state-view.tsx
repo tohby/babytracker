@@ -7,13 +7,13 @@ import { Text } from '@/components/ui/text';
 export type StateKind = 'empty' | 'error' | 'offline';
 
 const art: Record<StateKind, { pose: MascotPose; fill: string }> = {
-  empty: { pose: 'waving', fill: 'bg-feature-sleep' },
-  error: { pose: 'thinking', fill: 'bg-feature-care' },
+  empty: { pose: 'standing', fill: 'bg-feature-sleep' },
+  error: { pose: 'fussy', fill: 'bg-feature-care' },
   offline: { pose: 'sleeping', fill: 'bg-background-surface-muted' },
 };
 
 /**
- * Figma `State` (Kind × Size): panda + one-line title + one sentence + one action. Every list and chart has
+ * Figma `State` (Kind × Size): mascot + one-line title + one sentence + one action. Every list and chart has
  * one. Full = centred card; Compact = sits inside a card with a text action.
  */
 export function StateView({

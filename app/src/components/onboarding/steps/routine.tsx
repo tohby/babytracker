@@ -134,7 +134,7 @@ export function WakeWindowsStep({ step, progress }: StepProps) {
         </View>
       </Card>
       <View className="items-center">
-        <Mascot pose="thinking" size={140} />
+        <Mascot pose="standing" size={140} />
       </View>
     </OnboardingScreen>
   );

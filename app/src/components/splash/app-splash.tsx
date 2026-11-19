@@ -25,8 +25,8 @@ type AppSplashProps = {
 };
 
 /**
- * Hands over from the native launch screen (panda icon on `bg/gradient-top`, set in app.json) to the
- * V1 Classic brand splash, then fades out when the app is ready.
+ * Hands over from the native launch screen (the Peach close-up app icon on the canvas colour, set in app.json) to the
+ * brand splash, then fades out when the app is ready.
  */
 export function AppSplash({ ready, problem, onRetry }: AppSplashProps) {
   const [minElapsed, setMinElapsed] = useState(false);

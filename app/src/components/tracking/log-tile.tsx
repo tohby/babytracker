@@ -10,7 +10,7 @@ import { featureBg } from '@/constants/tones';
 
 /**
  * Figma `Log tile` (Size × Type) for the quick-log grid.
- * - Large (Feed / Sleep / Nappy): panda + label + a details arrow; 2-up.
+ * - Large (Feed / Sleep / Nappy): mascot + label + a details arrow; 2-up.
  * - Medium: 3-up; the whole tile logs "now", long-press opens details.
  * - Small: secondary types on a surface tile with a toned Icon tile.
  */

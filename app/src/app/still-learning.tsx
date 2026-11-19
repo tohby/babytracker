@@ -19,7 +19,7 @@ export default function StillLearningSheet() {
   return (
     <BottomSheet size="tall" title={t('learning.sheetTitle')} subtitle={t('learning.sheetSubtitle', { name })} onClose={() => router.back()} actions={<Button label={t('learning.logNap')} onPress={() => router.replace('/log/nap')} />}>
       <View className="flex-row items-center gap-md">
-        <Mascot pose="thinking" size={96} />
+        <Mascot pose="standing" size={96} />
         <Text variant="body" className="flex-1">
           {t('learning.body', { count: NAPS_NEEDED - logged, name })}
         </Text>

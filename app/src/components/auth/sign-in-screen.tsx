@@ -71,7 +71,7 @@ export function SignInScreen({ canGoBack = false }: { canGoBack?: boolean }) {
 
   return (
     <AuthScreen
-      hero={locked ? 'sleeping' : offline ? 'thinking' : 'icon'}
+      hero={locked ? 'sleeping' : offline ? 'fussy' : 'icon'}
       title={title}
       canGoBack={canGoBack}
       subtitle={locked || offline || problem ? undefined : t('signIn.subtitle')}

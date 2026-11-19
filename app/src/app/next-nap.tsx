@@ -37,7 +37,7 @@ export default function NextNapScreen() {
 
   if (p.state === 'too-young') {
     return (
-      <HeroScreen tone="care" mascot="waving" title={t('young.title')} titleVariant="title-large" subtitle={t('young.subtitle', { name, age })} footer={<Button hierarchy="secondary" label={t('young.remind')} onPress={() => baby && remind(Date.parse(baby.birth_date) + 56 * 86_400_000, 'eightWeeks')} />}>
+      <HeroScreen tone="care" mascot="swaddled" title={t('young.title')} titleVariant="title-large" subtitle={t('young.subtitle', { name, age })} footer={<Button hierarchy="secondary" label={t('young.remind')} onPress={() => baby && remind(Date.parse(baby.birth_date) + 56 * 86_400_000, 'eightWeeks')} />}>
         <Text variant="body">{t('young.body')}</Text>
         <Text variant="heading" accessibilityRole="header">
           {t('young.cues')}
@@ -54,7 +54,7 @@ export default function NextNapScreen() {
   if (p.state === 'learning') {
     const left = p.napsNeeded - p.napsLogged;
     return (
-      <HeroScreen tone="sleep" mascot="thinking" title={t('learning.title')} subtitle={sub} footer={<Button label={t('learning.logNap')} onPress={() => router.push('/log/nap')} />}>
+      <HeroScreen tone="sleep" mascot="standing" title={t('learning.title')} subtitle={sub} footer={<Button label={t('learning.logNap')} onPress={() => router.push('/log/nap')} />}>
         <Text variant="heading">{t('learning.body', { count: left, name })}</Text>
         <View className="gap-sm">
           <View className="flex-row justify-between">

@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -6,14 +5,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '@/components/ui/button';
 import { ScreenBackground } from '@/components/ui/screen-background';
 import { StatusBanner } from '@/components/ui/status-banner';
+import { Mascot } from '@/components/ui/mascot';
 import { Text } from '@/components/ui/text';
 import { useThemeColors } from '@/hooks/use-theme-colors';
 
 export type SplashStatus = 'loading' | 'slow' | 'offline' | 'error';
 
-/** Figma Mascot/Art Pose=Waving source art is 1041×1020; shown 200 wide on the splash. */
-const MASCOT_WIDTH = 200;
-const MASCOT_HEIGHT = Math.round((MASCOT_WIDTH * 1020) / 1041);
+/** The Nappa baby (Standing) on the splash; the art frame is square. */
+const MASCOT_SIZE = 200;
 
 type BrandSplashProps = {
   status: SplashStatus;
@@ -21,7 +20,7 @@ type BrandSplashProps = {
 };
 
 /**
- * The in-app splash, Figma "Splash" page, V1 Classic: waving panda, "Nappa" wordmark and tagline on the
+ * The in-app splash, Figma "Splash" page, V1 Classic: the baby mascot, "Nappa" wordmark and tagline on the
  * app gradient, with a status area at the bottom (Loading, Slow, Offline, Error).
  */
 export function BrandSplash({ status, onRetry }: BrandSplashProps) {
@@ -37,13 +36,7 @@ export function BrandSplash({ status, onRetry }: BrandSplashProps) {
         accessible
         accessibilityLabel={`${t('brandName')}. ${t('tagline')}`}
         className="flex-1 items-center justify-center gap-xl px-page">
-        <Image
-          source={require('@/assets/images/mascot/waving.png')}
-          style={{ width: MASCOT_WIDTH, height: MASCOT_HEIGHT }}
-          contentFit="contain"
-          accessibilityElementsHidden
-          importantForAccessibility="no-hide-descendants"
-        />
+        <Mascot pose="standing" size={MASCOT_SIZE} />
         <View className="w-full items-center gap-sm">
           <Text variant="display-numeric" className="text-center">
             {t('brandName')}

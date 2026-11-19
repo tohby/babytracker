@@ -39,6 +39,7 @@ import { DateStrip } from '@/components/ui/date-strip';
 import { Field } from '@/components/ui/field';
 import { Header } from '@/components/ui/header';
 import { Hero } from '@/components/ui/hero';
+import { AppIcon, Mascot } from '@/components/ui/mascot';
 import { IconButton } from '@/components/ui/icon-button';
 import { IconTile } from '@/components/ui/icon-tile';
 import { InsightCard } from '@/components/ui/insight-card';
@@ -238,6 +239,32 @@ export default function DevComponents() {
         <Skeleton type="tiles" />
         <StateView kind="empty" title="No naps logged yet" body="Tap + to log Ada’s first nap." action="Log a nap" onAction={() => {}} />
         <StateView kind="error" size="compact" title="Something went wrong" body="We couldn’t load today’s timeline." action="Try again" onAction={() => {}} />
+      </>
+    ),
+    '5': (
+      <>
+        <View className="flex-row flex-wrap gap-md">
+          {(['standing', 'happy', 'sleeping', 'feeding', 'swaddled', 'playing', 'crying', 'nappy-change', 'fussy'] as const).map((pose, i) => (
+            <View key={pose} className={`items-center rounded-xl p-sm ${(['bg-feature-sleep', 'bg-feature-feed', 'bg-feature-nappy', 'bg-feature-care'] as const)[i % 4]}`}>
+              <Mascot pose={pose} size={100} />
+              <Text variant="caption">{pose}</Text>
+            </View>
+          ))}
+        </View>
+        <View className="flex-row items-center gap-lg">
+          <AppIcon size={72} />
+          <AppIcon size={36} />
+        </View>
+        <StateView kind="empty" title="Empty" body="Standing" />
+        <StateView kind="error" title="Error" body="Fussy" />
+        <StateView kind="offline" size="compact" title="Offline" body="Sleeping" />
+        <View className="flex-row gap-md">
+          <LogTile type="feed" size="medium" label="Feed" onPress={() => {}} />
+          <LogTile type="sleep" size="medium" label="Sleep" onPress={() => {}} />
+          <LogTile type="nappy" size="medium" label="Nappy" onPress={() => {}} />
+        </View>
+        <NextNapCard state="too-young" chip="Under 8 weeks" title="Follow the sleepy cues" body="Newborns nap when tired." accessibilityLabel="x" />
+        <NextNapCard state="learning" chip="Learning" title="Learning" body="Log 2 more naps." progress={0.3} progressLabel="1 of 3" accessibilityLabel="x" />
       </>
     ),
     hero: (

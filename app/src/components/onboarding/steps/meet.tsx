@@ -77,7 +77,7 @@ export function RewardStep({ step, progress }: StepProps) {
       message={message}
       actions={<Button label={t('continue')} onPress={() => next(step)} />}>
       <View className="items-center pt-xl">
-        <Mascot pose="milestone" size={220} />
+        <Mascot pose="standing" size={220} />
       </View>
     </OnboardingScreen>
   );

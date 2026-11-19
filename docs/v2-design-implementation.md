@@ -72,7 +72,7 @@ Generic pieces live in `app/src/components/ui/`, baby-tracking ones in `componen
 | Avatar, Icon tile, Page indicator | `ui/avatar.tsx` (rewritten), `ui/icon-tile.tsx`, `ui/page-indicator.tsx` |
 | Skeleton, State (Empty/Error/Offline) | `ui/skeleton.tsx`, `ui/state-view.tsx` |
 | Icon/* (54) | `ui/icon.tsx` + `assets/icons/*.svg` exported from Figma; tinted by colour token (`tone`) |
-| Mascot/Art (8 poses) | `ui/mascot.tsx` (added Crying and Diaper change) |
+| Mascot poses (asset library, nine) and App Icon / Peach close-up | `ui/mascot.tsx` (`Mascot`, `AppIcon`); see section 5 |
 | Log tile, Since-last tile, Next nap card, Reason tile, Prediction feedback | `tracking/log-tile.tsx`, `since-last-tile.tsx`, `next-nap-card.tsx`, `reason-tile.tsx`, `prediction-feedback.tsx` |
 | Side toggle, Timer card, Timer mini bar, Time row | `tracking/side-toggle.tsx`, `timer-card.tsx`, `timer-mini-bar.tsx`, `time-row.tsx` (+ `components/log/when-row.tsx` with the native picker) |
 | Nappy picker, Amount picker, Timeline entry, Day summary | `tracking/nappy-picker.tsx`, `amount-picker.tsx`, `timeline-entry.tsx`, `day-summary.tsx` |
@@ -90,7 +90,7 @@ Generic pieces live in `app/src/components/ui/`, baby-tracking ones in `componen
 
 | Figma frame | Route / file |
 |---|---|
-| V2-A01 Launch · loading / A01b | `components/splash/*` (V1 splash on V2 tokens) |
+| V2-A01 Launch · loading / A01b | `components/splash/*` (V1 splash layout on V2 tokens, now with the new mascot) |
 | V2-A02 Welcome | `(auth)/welcome.tsx` → `components/auth/intro-screen.tsx` |
 | V2-A03 Sign in (+ b error, c signing in) | `(auth)/sign-in.tsx` |
 | V2-A05 Forgot password, A06 Check your email | `(auth)/forgot-password.tsx`, `(auth)/check-email.tsx` |
@@ -118,6 +118,30 @@ Generic pieces live in `app/src/components/ui/`, baby-tracking ones in `componen
 
 Logging is local-first (`data/log-store.tsx`, AsyncStorage) because the events API (M2) doesn't exist yet; every entry is marked "pending sync" and the UI says "saved on this phone".
 
+## 5. Mascot and app icon
+
+The V2 Figma screens and the `Mascot/Art` components still show the old panda; the new baby mascot lives in the "Asset Library" on the Mascot page (nine poses, "Source PNGs · mascots v2"). The app uses the new set.
+
+| Pose | Used for (Figma guide) | Where in the app |
+|---|---|---|
+| `standing` | Default / greeting | Welcome hero, splash, onboarding meet/name/routine/basics, Next nap "learning", Still learning, sleep-timer empty, empty states, verify/check-email |
+| `happy` | Success, celebration | Nappa Plus (I01, I02), onboarding plan reveal |
+| `sleeping` | Nap or night sleep | Next nap, sleep timer, Sleep log tile, onboarding sleep, locked sign-in, offline state |
+| `feeding` | Feeds | Feed log tile, onboarding plan |
+| `swaddled` | Bedtime, calm | Next nap "too young" (card and hero) |
+| `nappy-change` | Nappy logging | Nappy log tile |
+| `fussy` | Overtired, gentle errors | Error state, offline sign-in |
+| `playing`, `crying` | Milestones / awake time; fussy period, soothing | Imported, not placed yet (no screen asks for them) |
+
+The art is a 1024 px transparent cutout on a square frame with the feet 3% above the bottom edge; the app ships them at 640 px. The `Mascot` component is now square (`size` is width and height).
+
+**App icon: "Peach close-up"** (the chosen concept; Figma still labels all four "not approved").
+- iOS and the top-level icon: `assets/images/icon.png` (1024, opaque, from `icon-peach-closeup-ios-1024`). The Expo template `assets/expo.icon` was removed because `ios.icon` overrode it.
+- Android adaptive icon: `android-icon-foreground.png` and `android-icon-background.png` (432 px each, from the Figma android-fg/bg files); fallback colour `#FDCDC0` sampled from the background.
+- Favicon (48 px), in-app `AppIcon` (`app-icon.png`, 256 px, rounded 22.4%), and the native splash (`splash-icon.png`, a rounded tile) all come from the same master.
+- Splash background colours now match the in-app splash (V2 canvas, Light `#E7EEF0`, Dark `#0E1A20`); they were still the V1 cream/plum.
+- Not used: lavender cloud, night sleep, peach face concepts, and the `play-512` store file (kept in Figma, not needed in the repo yet).
+
 ## 4. Gaps
 
 ### Not implemented or partial
@@ -133,6 +157,12 @@ Logging is local-first (`data/log-store.tsx`, AsyncStorage) because the events A
 - **Insights Month**: no V2 frame; implemented as 4 weekly-average bars using the week layout.
 - **Pumping timer**: no V2 frame; uses the Timer card (Kind=Pumping) on the nursing-timer layout.
 - **Tall sheet actions**: inside a native form sheet the scroll view must be the root, so actions sit at the bottom when content is short and scroll with it when long (not pinned).
+- **New mascot, assets and icon:**
+  - The Figma `Mascot/Art` components, the V2 screen frames and `Mascot/Face` still show the panda, so Figma and the app now differ until the components are re-pointed at the new art.
+  - No "thinking" or "waving" pose exists: learning and greeting states use `standing`, errors use `fussy`.
+  - No separate face asset: the onboarding chat avatar uses the Peach close-up app icon.
+  - The Android foreground in the Figma export has the peach gradient baked in (opaque, not transparent), so it hides the background layer and the icon can't parallax. The Android themed (monochrome) icon was removed because it was the Expo template silhouette; a one-colour silhouette of the baby is needed to bring it back.
+  - The Android files are 432 px (the xxxhdpi size); Expo suggests 1024 for adaptive icons.
 - **Liquid Glass not verified on device**: the only simulator is iOS 18 (Expo Go), so the glass tab bar, the 5th Log tab, the bottom accessory and glass top bars were built against the API but only the solid fallback was seen running. Android wasn't run (no emulator).
 - **Delete account**: the API needs the password (`DELETE /v1/me`); H10 only asks to type DELETE, so a password field was added under it.
 
@@ -166,4 +196,4 @@ Logging is local-first (`data/log-store.tsx`, AsyncStorage) because the events A
 | `surface-muted` (Time row, Search field) vs sheet `surface-raised` | 1.0 | **fails**: both are slate-850 in Dark, so those controls lose their shape on sheets |
 | "On colour" spinner (`static/white`) on Dark primary (teal-200) | low | the spinner nearly vanishes inside primary buttons in Dark |
 
-The mascot art is unchanged in both modes and reads well on the Dark hero and tile tones.
+The mascot art is unchanged in both modes. The new baby's warm peach reads well on every Dark hero and feature tone (checked in the simulator).

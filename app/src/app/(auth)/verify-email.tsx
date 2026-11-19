@@ -60,7 +60,7 @@ export default function VerifyEmailScreen() {
   return (
     <AuthScreen
       canGoBack
-      hero="waving"
+      hero="standing"
       title={t('verify.title')}
       subtitle={t('verify.subtitle', { email })}
       actions={

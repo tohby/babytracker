@@ -21,7 +21,7 @@ export default function PlusScreen() {
   return (
     <HeroScreen
       tone="feed"
-      mascot="milestone"
+      mascot="happy"
       title={t('title')}
       subtitle={t('subtitle')}
       footer={

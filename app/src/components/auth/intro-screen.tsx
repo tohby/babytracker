@@ -7,13 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Hero } from '@/components/ui/hero';
 import { Text } from '@/components/ui/text';
 
-/** V2-A02 Welcome: sleep Hero with the panda, the promise in one line, then Get started / sign in. */
+/** V2-A02 Welcome: sleep Hero with the mascot, the promise in one line, then Get started / sign in. */
 export function IntroScreen() {
   const { t } = useTranslation('auth');
   const insets = useSafeAreaInsets();
   return (
     <View className="flex-1 bg-background-canvas" style={{ paddingBottom: Math.max(insets.bottom, 16) + 6 }}>
-      <Hero tone="sleep" mascot="sleeping" height={360 + insets.top} />
+      <Hero tone="sleep" mascot="standing" height={360 + insets.top} />
       <View className="flex-1 gap-sm px-page pt-xl">
         <Text variant="title-large" accessibilityRole="header">
           {t('welcomeV2.title')}

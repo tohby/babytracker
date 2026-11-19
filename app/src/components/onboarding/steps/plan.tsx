@@ -176,7 +176,7 @@ export function PersonalisingStep({ step }: StepProps) {
   return (
     <OnboardingScreen centered>
       <View className="items-center gap-lg">
-        <Mascot pose="thinking" size={150} />
+        <Mascot pose="standing" size={150} />
         <Text variant="display-light" accessibilityLiveRegion="polite">
           {`${percent}%`}
         </Text>
@@ -287,7 +287,7 @@ export function PlanRevealStep({ step }: StepProps) {
         </View>
       </Card>
       <View className="items-center">
-        <Mascot pose="milestone" size={150} />
+        <Mascot pose="happy" size={150} />
       </View>
     </OnboardingScreen>
   );

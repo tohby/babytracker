@@ -43,7 +43,7 @@ export function AuthScreen({ hero = 'icon', title, subtitle, canGoBack = false, 
             {canGoBack ? <IconButton icon="back" label={t('actions.back')} onPress={() => router.back()} /> : null}
           </View>
 
-          {/* V2 A03–A08: forms open on a left-aligned Title/Large + Body; state screens keep their panda. */}
+          {/* V2 A03–A08: forms open on a left-aligned Title/Large + Body; state screens keep their mascot. */}
           <View className="gap-xl pt-sm">
             {hero !== 'icon' && (
               <View className="items-center">

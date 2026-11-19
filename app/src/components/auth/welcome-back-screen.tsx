@@ -73,7 +73,7 @@ export function WelcomeBackScreen() {
 
   return (
     <AuthScreen
-      hero={locked ? 'sleeping' : offline ? 'thinking' : 'icon'}
+      hero={locked ? 'sleeping' : offline ? 'fussy' : 'icon'}
       title={title}
       actions={
         <>

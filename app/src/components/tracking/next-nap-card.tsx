@@ -14,8 +14,8 @@ type NextNapCardProps =
 
 const art: Record<NextNapCardProps['state'], { pose: MascotPose; fill: string }> = {
   predicted: { pose: 'sleeping', fill: 'bg-feature-sleep' },
-  learning: { pose: 'thinking', fill: 'bg-feature-sleep' },
-  'too-young': { pose: 'waving', fill: 'bg-feature-care' },
+  learning: { pose: 'standing', fill: 'bg-feature-sleep' },
+  'too-young': { pose: 'swaddled', fill: 'bg-feature-care' },
 };
 
 /**

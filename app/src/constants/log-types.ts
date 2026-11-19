@@ -16,11 +16,11 @@ export type LogType =
   | 'tummy'
   | 'activity';
 
-/** Tone, icon and panda per type, as mapped in the Figma `Log tile` and `Timeline entry` variants. */
+/** Tone, icon and mascot pose per type, as mapped in the Figma `Log tile` and `Timeline entry` variants. */
 export const logMeta: Record<LogType, { tone: FeatureTone; icon: IconName; pose?: MascotPose }> = {
   feed: { tone: 'feed', icon: 'bottle', pose: 'feeding' },
   sleep: { tone: 'sleep', icon: 'moon', pose: 'sleeping' },
-  nappy: { tone: 'nappy', icon: 'log-nappy', pose: 'diaper-change' },
+  nappy: { tone: 'nappy', icon: 'log-nappy', pose: 'nappy-change' },
   nursing: { tone: 'feed', icon: 'log-nursing' },
   pumping: { tone: 'feed', icon: 'log-pump' },
   solids: { tone: 'feed', icon: 'log-solids' },

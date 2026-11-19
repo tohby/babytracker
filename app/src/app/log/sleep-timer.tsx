@@ -26,7 +26,7 @@ export default function SleepTimerScreen() {
   const { timer, pauseTimer, resumeTimer, stopTimer } = useLogStore();
   if (!timer || timer.kind !== 'sleep') {
     return (
-      <HeroScreen tone="sleep" mascot="awake" heroHeight={300}>
+      <HeroScreen tone="sleep" mascot="standing" heroHeight={300}>
         <StateView kind="empty" title={t('sleepTimer.noTimer')} body={t('sleepTimer.noTimerBody')} action={t('quick.title')} onAction={() => router.replace('/log')} />
       </HeroScreen>
     );

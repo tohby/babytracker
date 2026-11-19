@@ -1,20 +1,15 @@
-import { Image } from 'expo-image';
 import { View } from 'react-native';
 
+import { AppIcon } from '@/components/ui/mascot';
 import { Text } from '@/components/ui/text';
 import { Elevation } from '@/constants/theme';
 
-/** Figma `Mascot/Face`: Nappa's face next to the chat bubble. Decorative. */
+/**
+ * Nappa's face next to the chat bubble. The new mascot set has no separate face asset, so this is the Peach close-up
+ * app icon (the chosen icon concept). Decorative.
+ */
 export function MascotFace({ size = 52 }: { size?: number }) {
-  return (
-    <Image
-      source={require('@/assets/images/mascot-face.svg')}
-      style={{ width: size, height: Math.round((size * 73.32) / 84.24) }}
-      contentFit="contain"
-      accessibilityElementsHidden
-      importantForAccessibility="no-hide-descendants"
-    />
-  );
+  return <AppIcon size={size} />;
 }
 
 /** Figma `Nappa App/Onboarding/Chat Row`: Nappa asks the question in a glass bubble. */

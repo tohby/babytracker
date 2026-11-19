@@ -39,7 +39,7 @@ export default function CheckEmailScreen() {
   return (
     <AuthScreen
       canGoBack
-      hero="awake"
+      hero="standing"
       title={t('checkEmail.title')}
       subtitle={t('checkEmail.body', { email })}
       actions={

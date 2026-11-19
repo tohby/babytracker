@@ -11,7 +11,7 @@ import { Text } from '@/components/ui/text';
 export default function PlusDoneScreen() {
   const { t } = useTranslation('plus');
   return (
-    <HeroScreen tone="nappy" mascot="milestone" heroHeight={300} onBack={null} footer={<Button label={t('back')} onPress={() => router.replace('/settings')} />}>
+    <HeroScreen tone="nappy" mascot="happy" heroHeight={300} onBack={null} footer={<Button label={t('back')} onPress={() => router.replace('/settings')} />}>
       <Text variant="title-large">{t('doneTitle')}</Text>
       <Text variant="body">{t('doneBody')}</Text>
       <View>
