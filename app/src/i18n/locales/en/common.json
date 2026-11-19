@@ -49,7 +49,13 @@
       "lb": "{{value}} lb"
     },
     "countdown": "{{minutes}}:{{seconds}}",
-    "timer": "{{hours}}:{{minutes}}:{{seconds}}"
+    "timer": "{{hours}}:{{minutes}}:{{seconds}}",
+    "length": {
+      "cm": "{{value}} cm",
+      "in": "{{value}} in"
+    },
+    "range": "{{start}} – {{end}}",
+    "list": "{{a}}, {{b}}"
   },
   "a11y": {
     "stepperValue": "{{what}}: {{amount}} {{unit}}",
@@ -58,5 +64,13 @@
     "moreDetails": "{{what}} details",
     "labelValue": "{{label}}, {{value}}",
     "editProfile": "Edit {{name}}’s profile"
+  },
+  "age": {
+    "weeks_one": "{{count}} week",
+    "weeks_other": "{{count}} weeks",
+    "months_one": "{{count}} month",
+    "months_other": "{{count}} months",
+    "years_one": "{{count}} year",
+    "years_other": "{{count}} years"
   }
 }

@@ -7,9 +7,8 @@ import { SelectRow } from '@/components/onboarding/select-row';
 import type { StepProps } from '@/components/onboarding/steps/types';
 import { WheelGroup, WheelPicker } from '@/components/onboarding/wheel-picker';
 import { type IconName } from '@/components/ui/icon';
-import { PrimaryButton } from '@/components/ui/primary-button';
+import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
-import { TextButton } from '@/components/ui/text-button';
 import { useOnboarding } from '@/hooks/use-onboarding';
 import type { Carer, WeightUnit } from '@/lib/onboarding/answers';
 import { formatNumber } from '@/lib/format';
@@ -35,14 +34,14 @@ export function WeightStep({ step, edit, progress }: StepProps) {
       message={t('weight.message', { baby: answers.babyName })}
       actions={
         <>
-          <PrimaryButton
+          <Button
             label={t('continue')}
             onPress={() => {
               update({ weightGrams: toGrams(tenths, unit), weightUnit: unit });
               next(step, { edit });
             }}
           />
-          <TextButton
+          <Button hierarchy="tertiary" size="medium"
             label={t('skip')}
             onPress={() => {
               update({ weightGrams: null, weightUnit: unit });
@@ -65,19 +64,19 @@ export function WeightStep({ step, edit, progress }: StepProps) {
         />
         <View className="flex-1" />
       </WheelGroup>
-      <View accessibilityRole="radiogroup" className="flex-row self-center rounded-full bg-lavender-100 p-xs">
+      <View accessibilityRole="radiogroup" className="flex-row self-center rounded-full bg-feature-feed p-xs">
         {(['kg', 'lb'] as const).map((u) => (
           <Pressable
             key={u}
             accessibilityRole="radio"
             accessibilityState={{ selected: unit === u, checked: unit === u }}
             onPress={() => setUnit(u)}
-            className={`min-h-[44px] min-w-[72px] items-center justify-center rounded-full px-lg ${unit === u ? 'bg-white' : ''}`}>
-            <Text variant="label">{t(`weight.${u}`)}</Text>
+            className={`min-h-[44px] min-w-[72px] items-center justify-center rounded-full px-lg ${unit === u ? 'bg-background-surface' : ''}`}>
+            <Text variant="label-large">{t(`weight.${u}`)}</Text>
           </Pressable>
         ))}
       </View>
-      <Text variant="label" tone="muted" className="text-center">
+      <Text variant="label-large" tone="secondary" className="text-center">
         {t('weight.hint')}
       </Text>
     </OnboardingScreen>
@@ -109,7 +108,7 @@ export function CarersStep({ step, edit, progress }: StepProps) {
       progress={progress}
       message={t('carers.message', { baby: answers.babyName })}
       actions={
-        <PrimaryButton
+        <Button
           label={count ? t('continueCount', { count }) : t('continue')}
           disabled={!count}
           onPress={() => next(step, { edit })}

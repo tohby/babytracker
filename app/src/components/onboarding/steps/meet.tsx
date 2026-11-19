@@ -6,7 +6,7 @@ import { BigInput } from '@/components/onboarding/big-input';
 import { OnboardingScreen } from '@/components/onboarding/onboarding-screen';
 import type { StepProps } from '@/components/onboarding/steps/types';
 import { Mascot } from '@/components/ui/mascot';
-import { PrimaryButton } from '@/components/ui/primary-button';
+import { Button } from '@/components/ui/button';
 import { useOnboarding } from '@/hooks/use-onboarding';
 
 /** Figma "Name the baby — big input". */
@@ -23,7 +23,7 @@ export function BabyNameStep({ step, edit, progress }: StepProps) {
     <OnboardingScreen
       progress={progress}
       message={t('babyName.message')}
-      actions={<PrimaryButton label={t('continue')} onPress={submit} disabled={!name.trim()} />}>
+      actions={<Button label={t('continue')} onPress={submit} disabled={!name.trim()} />}>
       <BigInput
         label={t('babyName.label')}
         placeholder={t('babyName.placeholder')}
@@ -49,7 +49,7 @@ export function ParentNameStep({ step, edit, progress }: StepProps) {
     <OnboardingScreen
       progress={progress}
       message={t('parentName.message')}
-      actions={<PrimaryButton label={t('continue')} onPress={submit} />}>
+      actions={<Button label={t('continue')} onPress={submit} />}>
       <BigInput
         label={t('parentName.label')}
         placeholder={t('parentName.placeholder')}
@@ -75,7 +75,7 @@ export function RewardStep({ step, progress }: StepProps) {
     <OnboardingScreen
       progress={progress}
       message={message}
-      actions={<PrimaryButton label={t('continue')} onPress={() => next(step)} />}>
+      actions={<Button label={t('continue')} onPress={() => next(step)} />}>
       <View className="items-center pt-xl">
         <Mascot pose="milestone" size={220} />
       </View>

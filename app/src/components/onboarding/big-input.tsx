@@ -8,7 +8,7 @@ export function BigInput({ label, ...input }: TextInputProps & { label: string }
   const colors = useThemeColors();
   return (
     <View className="items-center gap-sm">
-      <Text variant="label">{label}</Text>
+      <Text variant="label-large">{label}</Text>
       <TextInput
         {...input}
         accessibilityLabel={label}
@@ -16,7 +16,7 @@ export function BigInput({ label, ...input }: TextInputProps & { label: string }
         autoCapitalize="words"
         autoCorrect={false}
         maxLength={100}
-        selectionColor={colors['accent/primary']}
+        selectionColor={colors['color/primary/default']}
         placeholderTextColor={colors['color/text/secondary']}
         className="min-w-[160px] text-center font-outfit-semibold text-[28px] leading-[34px] text-text-primary"
       />

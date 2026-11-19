@@ -2,5 +2,133 @@
   "entry": {
     "a11y": "{{time}}, {{title}}. {{detail}} {{value}}",
     "pendingSync": "Not synced yet. Saved on this phone."
+  },
+  "titles": {
+    "nap": "Nap {{n}}",
+    "nightSleep": "Night sleep",
+    "sleep": "Sleep",
+    "bottle": "Bottle",
+    "nursing": "Nursing",
+    "pumping": "Pumping",
+    "solids": "Solids",
+    "nappy": "Nappy",
+    "diaper": "Diaper",
+    "medicine": "Medicine",
+    "growth": "Growth",
+    "bath": "Bath",
+    "tummy": "Tummy time",
+    "play": "Play",
+    "outdoors": "Outdoors",
+    "reading": "Reading"
+  },
+  "details": {
+    "milk": {
+      "formula": "Formula",
+      "breast": "Breast milk",
+      "mixed": "Mixed"
+    },
+    "nursing": "Left {{left}} · Right {{right}}",
+    "pump": {
+      "left": "Left side",
+      "right": "Right side",
+      "both": "Both sides"
+    },
+    "nappy": {
+      "wet": "Wet",
+      "dirty": "Dirty",
+      "both": "Wet and dirty"
+    },
+    "medicineDose": "{{name}} · {{dose}}",
+    "growthWeight": "Weight {{value}}",
+    "growthLength": "Length {{value}}",
+    "solidsAmount": {
+      "taste": "A taste",
+      "some": "Some",
+      "lots": "Lots"
+    },
+    "solidsReaction": {
+      "loved": "Loved it",
+      "unsure": "Not sure",
+      "disliked": "Didn’t like it"
+    },
+    "stillAsleep": "Since {{start}} · still asleep"
+  },
+  "detail": {
+    "fellAsleep": "Fell asleep",
+    "wokeUp": "Woke up",
+    "started": "Started",
+    "ended": "Ended",
+    "time": "Time",
+    "loggedBy": "Logged by",
+    "note": "Note",
+    "local": "Saved on this phone · not synced yet",
+    "edit": "Edit {{what}}",
+    "delete": "Delete entry",
+    "deleteTitle": "Delete this {{what}}?",
+    "deleteBody": "It will be removed for everyone in {{name}}’s family. You can undo for a few seconds.",
+    "deleteConfirm": "Delete {{what}}",
+    "deleted": "{{what}} deleted",
+    "missing": "This entry was deleted."
+  },
+  "edit": {
+    "title": "Edit {{what}}",
+    "date": "Date",
+    "note": "Note (optional)",
+    "save": "Save changes",
+    "saved": "Changes saved"
+  },
+  "nouns": {
+    "sleep": "nap",
+    "feed": "feed",
+    "nappy": "nappy",
+    "diaper": "diaper",
+    "nursing": "nursing session",
+    "pumping": "pumping session",
+    "solids": "solids",
+    "medicine": "medicine",
+    "growth": "measurement",
+    "bath": "bath",
+    "tummy": "tummy time",
+    "activity": "activity"
+  },
+  "screen": {
+    "title": "Timeline",
+    "subtitle": "Everything logged for {{name}}",
+    "todayHeading": "Today, {{date}}",
+    "dayStrip": "{{date}}: {{sleep}} asleep, {{feeds}} feeds, {{nappies}} nappies.",
+    "sleepLegend": "Sleep",
+    "feedLegend": "Feeds",
+    "nappyLegend": "Nappies",
+    "filter": "Filter timeline",
+    "filtered": "{{shown}} of {{total}} types shown",
+    "emptyTitle": "Nothing logged on {{day}}",
+    "emptyBody": "Add something you remember — Nappa fits it into the day and the predictions.",
+    "emptyAction": "Add a past entry",
+    "emptyFilteredTitle": "Nothing matches the filter",
+    "emptyFilteredBody": "Change the filter to see more of the day.",
+    "emptyFilteredAction": "Show everything",
+    "errorTitle": "Something went wrong",
+    "errorBody": "We couldn’t load the timeline. Your logs are safe.",
+    "retry": "Try again"
+  },
+  "filter": {
+    "title": "Filter timeline",
+    "subtitle": "{{shown}} of {{total}} types shown",
+    "show": "Show",
+    "types": {
+      "sleep": "Sleep",
+      "feeds": "Feeds",
+      "nappies": "Nappies",
+      "pumping": "Pumping",
+      "solids": "Solids",
+      "medicine": "Medicine",
+      "growth": "Growth",
+      "activities": "Activities"
+    },
+    "loggedBy": "Logged by",
+    "everyone": "Everyone",
+    "onlyMe": "Only me",
+    "apply_one": "Show {{count}} entry",
+    "apply_other": "Show {{count}} entries"
   }
 }

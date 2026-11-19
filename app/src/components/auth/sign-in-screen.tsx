@@ -5,10 +5,9 @@ import { View } from 'react-native';
 
 import { EMAIL_PATTERN, toAuthProblem, type AuthProblem } from '@/components/auth/auth-problem';
 import { AuthScreen } from '@/components/auth/auth-screen';
-import { PrimaryButton } from '@/components/ui/primary-button';
+import { Button } from '@/components/ui/button';
 import { StatusBanner } from '@/components/ui/status-banner';
 import { Text } from '@/components/ui/text';
-import { TextButton } from '@/components/ui/text-button';
 import { TextField, type TextFieldRef } from '@/components/ui/text-field';
 import { useCountdown } from '@/hooks/use-countdown';
 import { useSession } from '@/hooks/use-session';
@@ -78,18 +77,18 @@ export function SignInScreen({ canGoBack = false }: { canGoBack?: boolean }) {
       subtitle={locked || offline || problem ? undefined : t('signIn.subtitle')}
       actions={
         <>
-          <PrimaryButton
+          <Button
             label={locked ? t('errors.tryAgainIn', { time: formatCountdown(lockedSeconds) }) : offline ? t('errors.tryAgain') : t('signIn.submit')}
             onPress={submit}
             loading={loading}
             disabled={locked || (!email && !password)}
           />
           {locked ? (
-            <TextButton label={t('errors.resetInstead')} onPress={() => router.push({ pathname: '/forgot-password', params: { email } })} />
+            <Button hierarchy="tertiary" size="medium" label={t('errors.resetInstead')} onPress={() => router.push({ pathname: '/forgot-password', params: { email } })} />
           ) : account ? null : (
             <View className="flex-row flex-wrap items-center justify-center">
-              <Text variant="label">{t('signIn.newHere')}</Text>
-              <TextButton label={t('signIn.createAccount')} onPress={() => router.push('/create-account')} />
+              <Text variant="label-large">{t('signIn.newHere')}</Text>
+              <Button hierarchy="tertiary" size="medium" label={t('signIn.createAccount')} onPress={() => router.push('/create-account')} />
             </View>
           )}
         </>
@@ -131,7 +130,7 @@ export function SignInScreen({ canGoBack = false }: { canGoBack?: boolean }) {
         />
         {locked ? null : (
           <View className="items-end">
-            <TextButton label={t('signIn.forgot')} onPress={() => router.push({ pathname: '/forgot-password', params: { email } })} />
+            <Button hierarchy="tertiary" size="medium" label={t('signIn.forgot')} onPress={() => router.push({ pathname: '/forgot-password', params: { email } })} />
           </View>
         )}
       </View>

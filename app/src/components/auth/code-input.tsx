@@ -25,9 +25,9 @@ export function CodeInput({ value, onChange, length = 6, error = false, disabled
       <View className="flex-row justify-between gap-sm">
         {Array.from({ length }, (_, i) => {
           const active = focused && i === Math.min(value.length, length - 1);
-          const border = error ? 'border-2 border-danger-500' : active ? 'border-2 border-text-primary' : 'border border-plum-200';
+          const border = error ? 'border-2 border-border-error' : active ? 'border-2 border-border-focus' : 'border border-border-default';
           return (
-            <View key={i} className={`h-[64px] flex-1 items-center justify-center rounded-[16px] bg-white ${border}`}>
+            <View key={i} className={`h-[64px] flex-1 items-center justify-center rounded-[16px] bg-background-surface ${border}`}>
               <Text variant="heading">{value[i] ?? ''}</Text>
             </View>
           );

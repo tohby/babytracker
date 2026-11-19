@@ -30,7 +30,7 @@ const routes: Record<LogType, Href> = {
   bath: { pathname: '/log/activity', params: { kind: 'bath' } },
   tummy: { pathname: '/log/activity', params: { kind: 'tummy' } },
   activity: '/log/activity',
-} as unknown as Record<LogType, Href>; // CAST: remove when every log route exists (step 4)
+} satisfies Record<LogType, Href>;
 
 const CORE: LogType[] = ['feed', 'sleep', 'nappy'];
 const MORE: LogType[] = ['pumping', 'solids', 'medicine', 'growth', 'bath', 'activity'];
@@ -64,7 +64,7 @@ export default function QuickLogSheet() {
   const startNap = () => {
     if (!baby) return;
     startTimer('sleep', baby.id);
-    router.replace('/log/sleep-timer' as Href);
+    router.replace('/log/sleep-timer');
   };
 
   return (

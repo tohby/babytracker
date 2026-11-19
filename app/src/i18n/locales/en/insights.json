@@ -1,0 +1,72 @@
+{
+  "title": "Insights",
+  "subtitle": "Patterns from {{name}}’s logs",
+  "range": {
+    "day": "Day",
+    "week": "Week",
+    "month": "Month",
+    "label": "Range"
+  },
+  "stats": {
+    "longestSleep": "Longest sleep",
+    "naps": "Naps",
+    "avgWake": "Average wake window",
+    "bottleTotal": "Bottle total",
+    "sameAsYesterday": "Same as yesterday",
+    "noCompare": "First day logged",
+    "moreThanYesterday": "+{{value}} vs yesterday",
+    "lessThanYesterday": "−{{value}} vs yesterday"
+  },
+  "insight": {
+    "longerTitle": "Naps are getting longer",
+    "longerBody": "{{name}}’s naps averaged {{avg}} this week, {{diff}} more than last week.",
+    "shorterTitle": "Naps are a little shorter",
+    "shorterBody": "{{name}}’s naps averaged {{avg}} this week, {{diff}} less than last week.",
+    "steadyTitle": "Naps are steady",
+    "steadyBody": "{{name}}’s naps averaged {{avg}} this week, about the same as last week.",
+    "seeWeek": "See the week",
+    "emptyTitle": "Insights need a few days",
+    "emptyBody": "Log for a few days and patterns show up here.",
+    "emptyAction": "Log something"
+  },
+  "metric": {
+    "sleep": "Sleep",
+    "feeds": "Feeds",
+    "nappies": "Nappies",
+    "label": "Metric"
+  },
+  "week": {
+    "sleepTitle": "Sleep this week",
+    "feedsTitle": "Feeds this week",
+    "nappiesTitle": "Nappies this week",
+    "monthSleep": "Sleep, last 4 weeks",
+    "monthFeeds": "Feeds, last 4 weeks",
+    "monthNappies": "Nappies, last 4 weeks",
+    "avg": "Avg {{value}}",
+    "sleepSummary": "{{name}} slept {{value}} a day on average — the usual range for her age is {{min}}–{{max}}.",
+    "feedsSummary": "{{name}} had {{value}} feeds a day on average.",
+    "nappiesSummary": "{{name}} had {{value}} nappies a day on average.",
+    "hours": "{{value}}h",
+    "weekOf": "w/c {{date}}",
+    "wakeReport": "Wake-window report",
+    "wakeReportDetail": "How long {{name}} stays awake before naps",
+    "growth": "Growth",
+    "growthDetail": "Weight {{weight}} · {{date}}",
+    "growthNone": "No measurements yet"
+  },
+  "growth": {
+    "title": "Growth",
+    "weight": "Weight",
+    "length": "Length",
+    "head": "Head",
+    "add": "Add measurement",
+    "emptyTitle": "No measurements yet",
+    "emptyBody": "Add {{name}}’s weight or length from her last check-up.",
+    "chartSummary": "{{metric}}: {{count}} measurements, latest {{value}}.",
+    "errorTitle": "Couldn’t load growth data",
+    "errorBody": "Your measurements are safe on this phone. Check your connection and try again.",
+    "retry": "Try again",
+    "sinceMore": "+{{value}} since {{date}}",
+    "sinceLess": "−{{value}} since {{date}}"
+  }
+}

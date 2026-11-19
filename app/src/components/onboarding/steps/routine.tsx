@@ -9,11 +9,10 @@ import { Chip } from '@/components/onboarding/steps/basics';
 import type { StepProps } from '@/components/onboarding/steps/types';
 import { WheelGroup, WheelPicker } from '@/components/onboarding/wheel-picker';
 import { AppIcon, Mascot } from '@/components/ui/mascot';
-import { GlassCard } from '@/components/ui/glass-card';
+import { Card } from '@/components/ui/card';
 import { Icon, type IconName } from '@/components/ui/icon';
-import { PrimaryButton } from '@/components/ui/primary-button';
+import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
-import { TextButton } from '@/components/ui/text-button';
 import { useOnboarding } from '@/hooks/use-onboarding';
 import { useThemeColors } from '@/hooks/use-theme-colors';
 import { getDeviceLocale } from '@/i18n';
@@ -49,7 +48,7 @@ export function WakeTimeStep({ step, edit, progress }: StepProps) {
       progress={progress}
       message={t('wakeTime.message', { baby: answers.babyName })}
       actions={
-        <PrimaryButton
+        <Button
           label={t('continue')}
           onPress={() => {
             update({ wakeTime: `${pad(hour)}:${pad(minute)}` });
@@ -112,20 +111,20 @@ export function WakeWindowsStep({ step, progress }: StepProps) {
     <OnboardingScreen
       progress={progress}
       message={t('wakeWindows.message')}
-      actions={<PrimaryButton label={t('wakeWindows.submit')} onPress={() => next(step)} />}>
-      <GlassCard>
+      actions={<Button label={t('wakeWindows.submit')} onPress={() => next(step)} />}>
+      <Card>
         <View className="gap-md p-xl">
-          <View className="size-[40px] items-center justify-center rounded-full bg-orange-100">
+          <View className="size-[40px] items-center justify-center rounded-full bg-primary-subtle">
             <Icon name="clock" color={colors['color/icon/primary']} size={20} />
           </View>
           <Text variant="heading">
             {t('wakeWindows.title', { baby: answers.babyName, range: hoursRange(t, window.min, window.max) })}
           </Text>
-          <Text tone="muted">{t('wakeWindows.body', { baby: answers.babyName })}</Text>
+          <Text tone="secondary">{t('wakeWindows.body', { baby: answers.babyName })}</Text>
           <View className="h-[8px] flex-row overflow-hidden rounded-full" accessibilityElementsHidden>
-            <View className="flex-[3] bg-accent-primary" />
-            <View className="flex-[1] bg-lavender-500" />
-            <View className="flex-[1] bg-lavender-100" />
+            <View className="flex-[3] bg-primary-default" />
+            <View className="flex-[1] bg-feature-feed-strong" />
+            <View className="flex-[1] bg-feature-feed" />
           </View>
           <View className="flex-row justify-between">
             <Text variant="caption">{t('wakeWindows.awake')}</Text>
@@ -133,7 +132,7 @@ export function WakeWindowsStep({ step, progress }: StepProps) {
             <Text variant="caption">{t('wakeWindows.overtired')}</Text>
           </View>
         </View>
-      </GlassCard>
+      </Card>
       <View className="items-center">
         <Mascot pose="thinking" size={140} />
       </View>
@@ -165,8 +164,8 @@ export function RemindersStep({ step, progress }: StepProps) {
       message={t('reminders.message', { baby: answers.babyName })}
       actions={
         <>
-          <PrimaryButton label={t('reminders.allow')} onPress={allow} loading={asking} />
-          <TextButton
+          <Button label={t('reminders.allow')} onPress={allow} loading={asking} />
+          <Button hierarchy="tertiary" size="medium"
             label={t('notNow')}
             onPress={() => {
               update({ remindersAllowed: false });
@@ -176,16 +175,16 @@ export function RemindersStep({ step, progress }: StepProps) {
         </>
       }>
       {/* A picture of a lock screen: always the dark "inverse" surface. */}
-      <View accessible accessibilityLabel={`${t('reminders.previewTitle')}. ${t('reminders.previewBody', { baby: answers.babyName, awake: formatDuration(window.max * 60_000 - 15 * 60_000) })}`} className="gap-xl overflow-hidden rounded-card bg-surface-inverse px-lg pb-2xl pt-2xl">
-        <Text variant="display" tone="onInverse" className="text-center">
+      <View accessible accessibilityLabel={`${t('reminders.previewTitle')}. ${t('reminders.previewBody', { baby: answers.babyName, awake: formatDuration(window.max * 60_000 - 15 * 60_000) })}`} className="gap-xl overflow-hidden rounded-2xl bg-text-primary px-lg pb-2xl pt-2xl">
+        <Text variant="title-large" tone="inverse" className="text-center">
           {formatTime(new Date())}
         </Text>
-        <View className="flex-row items-start gap-md rounded-tile bg-white p-md">
+        <View className="flex-row items-start gap-md rounded-xl bg-background-surface p-md">
           <AppIcon size={36} />
           <View className="flex-1 gap-xs">
             <View className="flex-row justify-between">
-              <Text variant="label">{t('reminders.previewTitle')}</Text>
-              <Text variant="caption" tone="muted">
+              <Text variant="label-large">{t('reminders.previewTitle')}</Text>
+              <Text variant="caption" tone="secondary">
                 {t('reminders.previewTime')}
               </Text>
             </View>
@@ -217,7 +216,7 @@ export function ReminderTimingStep({ step, edit, progress }: StepProps) {
       progress={progress}
       message={t('reminderTiming.message')}
       actions={
-        <PrimaryButton
+        <Button
           label={t('continue')}
           onPress={() => {
             update({ reminderLead: selected });

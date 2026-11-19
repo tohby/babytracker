@@ -13,7 +13,7 @@ import { formatTimer } from '@/lib/format';
 
 /** Route of the full timer screen for the running kind. */
 export function timerRoute(kind: 'sleep' | 'nursing' | 'pumping'): Href {
-  return (kind === 'sleep' ? '/log/sleep-timer' : kind === 'nursing' ? '/log/nursing' : '/log/pumping') as Href;
+  return kind === 'sleep' ? '/log/sleep-timer' : kind === 'nursing' ? '/log/nursing' : '/log/pumping-timer';
 }
 
 /** Label + elapsed time for whatever timer is running, ticking every second. */

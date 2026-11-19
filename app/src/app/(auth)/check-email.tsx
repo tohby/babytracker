@@ -4,9 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import { toAuthProblem, type AuthProblem } from '@/components/auth/auth-problem';
 import { AuthScreen } from '@/components/auth/auth-screen';
-import { PrimaryButton } from '@/components/ui/primary-button';
+import { Button } from '@/components/ui/button';
 import { StatusBanner } from '@/components/ui/status-banner';
-import { TextButton } from '@/components/ui/text-button';
 import { useCountdown } from '@/hooks/use-countdown';
 import { useSession } from '@/hooks/use-session';
 import { authApi } from '@/lib/auth/endpoints';
@@ -45,8 +44,8 @@ export default function CheckEmailScreen() {
       subtitle={t('checkEmail.body', { email })}
       actions={
         <>
-          <PrimaryButton label={t('checkEmail.backToSignIn')} onPress={() => router.dismissTo(account ? '/welcome' : '/sign-in')} />
-          <TextButton
+          <Button label={t('checkEmail.backToSignIn')} onPress={() => router.dismissTo(account ? '/welcome' : '/sign-in')} />
+          <Button hierarchy="tertiary" size="medium"
             label={wait > 0 ? t('checkEmail.resendIn', { time: formatCountdown(wait) }) : t('checkEmail.resend')}
             disabled={wait > 0}
             onPress={resend}

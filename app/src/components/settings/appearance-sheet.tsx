@@ -30,7 +30,7 @@ export function AppearanceSheet() {
   return (
     <View className="gap-lg px-page pt-xl pb-3xl">
       <View className="flex-row items-center gap-md">
-        <Text variant="title" className="flex-1" accessibilityRole="header">
+        <Text variant="title-large" className="flex-1" accessibilityRole="header">
           {t('settings:appearance.title')}
         </Text>
         <IconButton icon="close" label={t('common:actions.close')} onPress={() => router.back()} />
@@ -50,7 +50,7 @@ export function AppearanceSheet() {
             />
           ))}
         </View>
-        <Text variant="caption" tone="muted" accessibilityLiveRegion="polite">
+        <Text variant="caption" tone="secondary" accessibilityLiveRegion="polite">
           {applied === 'dark'
             ? t('settings:appearance.sheetAutoDark', window.full)
             : t('settings:appearance.sheetAutoLight', window.full)}

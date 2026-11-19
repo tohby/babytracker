@@ -6,9 +6,8 @@ import { View } from 'react-native';
 import { AccountChip } from '@/components/auth/account-chip';
 import { toAuthProblem, type AuthProblem } from '@/components/auth/auth-problem';
 import { AuthScreen } from '@/components/auth/auth-screen';
-import { PrimaryButton } from '@/components/ui/primary-button';
+import { Button } from '@/components/ui/button';
 import { StatusBanner } from '@/components/ui/status-banner';
-import { TextButton } from '@/components/ui/text-button';
 import { TextField } from '@/components/ui/text-field';
 import { useCountdown } from '@/hooks/use-countdown';
 import { useSession } from '@/hooks/use-session';
@@ -78,13 +77,13 @@ export function WelcomeBackScreen() {
       title={title}
       actions={
         <>
-          <PrimaryButton
+          <Button
             label={locked ? t('errors.tryAgainIn', { time: formatCountdown(lockedSeconds) }) : offline ? t('errors.tryAgain') : t('signIn.submit')}
             onPress={submit}
             loading={loading}
             disabled={locked || !password}
           />
-          {locked ? <TextButton label={t('errors.resetInstead')} onPress={forgot} /> : null}
+          {locked ? <Button hierarchy="tertiary" size="medium" label={t('errors.resetInstead')} onPress={forgot} /> : null}
         </>
       }>
       {banner}
@@ -108,7 +107,7 @@ export function WelcomeBackScreen() {
         />
         {locked ? null : (
           <View className="items-end">
-            <TextButton label={t('signIn.forgot')} onPress={forgot} />
+            <Button hierarchy="tertiary" size="medium" label={t('signIn.forgot')} onPress={forgot} />
           </View>
         )}
       </View>

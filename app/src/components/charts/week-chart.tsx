@@ -80,7 +80,7 @@ export function WeekChart({
           })}
           {/* Average: 1 pt dashed ink line with an ink label pill. */}
           <View pointerEvents="none" style={{ bottom: avgBottom }} className="absolute inset-x-0 flex-row items-center">
-            <View className="h-0 flex-1 border-t border-dashed border-text-primary" />
+            <View className="h-0 flex-1 border-t border-dashed border-border-focus" />
             <View className="h-page items-center justify-center rounded-full bg-text-primary px-sm">
               <Text variant="caption" tone="inverse" numberOfLines={1}>
                 {averageLabel}

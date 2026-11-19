@@ -9,7 +9,7 @@ import type { StepProps } from '@/components/onboarding/steps/types';
 import { WheelGroup, WheelPicker } from '@/components/onboarding/wheel-picker';
 import { Icon, type IconName } from '@/components/ui/icon';
 import { Mascot } from '@/components/ui/mascot';
-import { PrimaryButton } from '@/components/ui/primary-button';
+import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { useOnboarding } from '@/hooks/use-onboarding';
 import { useThemeColors } from '@/hooks/use-theme-colors';
@@ -26,7 +26,7 @@ export function GetToKnowStep({ step, progress }: StepProps) {
     <OnboardingScreen
       progress={progress}
       message={t('getToKnow.message', { baby: answers.babyName })}
-      actions={<PrimaryButton label={t('letsGo')} onPress={() => next(step)} />}>
+      actions={<Button label={t('letsGo')} onPress={() => next(step)} />}>
       <View className="items-center pt-xl">
         <Mascot pose="thinking" size={220} />
       </View>
@@ -115,7 +115,7 @@ export function BirthdayStep({ step, edit, progress }: StepProps) {
       progress={progress}
       message={t('birthday.message', { baby: answers.babyName })}
       actions={
-        <PrimaryButton
+        <Button
           label={t('continue')}
           onPress={() => {
             update({ birthDate: iso });
@@ -137,9 +137,9 @@ export function BirthdayStep({ step, edit, progress }: StepProps) {
 export function Chip({ children, icon = 'star' }: { children: string; icon?: IconName }) {
   const colors = useThemeColors();
   return (
-    <View className="flex-row items-center gap-sm self-center rounded-full bg-orange-100 px-lg py-sm">
+    <View className="flex-row items-center gap-sm self-center rounded-full bg-primary-subtle px-lg py-sm">
       <Icon name={icon} color={colors['color/icon/primary']} size={16} />
-      <Text variant="label" className="shrink">
+      <Text variant="label-large" className="shrink">
         {children}
       </Text>
     </View>
@@ -161,7 +161,7 @@ export function FeedingStep({ step, edit, progress }: StepProps) {
     <OnboardingScreen
       progress={progress}
       message={t('feeding.message', { baby: answers.babyName })}
-      actions={<PrimaryButton label={t('continue')} disabled={!answers.feeding} onPress={() => next(step, { edit })} />}>
+      actions={<Button label={t('continue')} disabled={!answers.feeding} onPress={() => next(step, { edit })} />}>
       <View accessibilityRole="radiogroup" className="gap-sm">
         {FEEDING.map((option) => (
           <SelectRow
@@ -199,7 +199,7 @@ export function HardestStep({ step, edit, progress }: StepProps) {
       progress={progress}
       message={t('hardest.message')}
       actions={
-        <PrimaryButton label={count ? t('continueCount', { count }) : t('continue')} onPress={() => next(step, { edit })} />
+        <Button label={count ? t('continueCount', { count }) : t('continue')} onPress={() => next(step, { edit })} />
       }>
       <View className="gap-sm">
         {HARDEST.map((option) => (

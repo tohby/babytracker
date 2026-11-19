@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { PrimaryButton } from '@/components/ui/primary-button';
+import { Button } from '@/components/ui/button';
 import { ScreenBackground } from '@/components/ui/screen-background';
 import { StatusBanner } from '@/components/ui/status-banner';
 import { Text } from '@/components/ui/text';
@@ -45,7 +45,7 @@ export function BrandSplash({ status, onRetry }: BrandSplashProps) {
           importantForAccessibility="no-hide-descendants"
         />
         <View className="w-full items-center gap-sm">
-          <Text variant="wordmark" className="text-center">
+          <Text variant="display-numeric" className="text-center">
             {t('brandName')}
           </Text>
           <Text className="text-center">{t('tagline')}</Text>
@@ -60,13 +60,13 @@ export function BrandSplash({ status, onRetry }: BrandSplashProps) {
         {status === 'error' ? (
           <>
             <StatusBanner type="error" title={t('error.title')} detail={t('error.detail')} />
-            <PrimaryButton label={t('error.retry')} onPress={onRetry} />
+            <Button label={t('error.retry')} onPress={onRetry} />
           </>
         ) : null}
         {status !== 'error' ? (
           <View className="flex-row items-center gap-sm">
             <ActivityIndicator color={colors['color/text/primary']} accessibilityLabel={t('loadingLabel')} />
-            {status === 'slow' ? <Text variant="label">{t('slow')}</Text> : null}
+            {status === 'slow' ? <Text variant="label-large">{t('slow')}</Text> : null}
           </View>
         ) : null}
       </View>

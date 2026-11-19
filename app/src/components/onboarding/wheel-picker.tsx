@@ -2,7 +2,7 @@ import { useEffect, useRef, type ComponentRef, type ReactNode } from 'react';
 import { ScrollView, View, type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
 
 import { Text } from '@/components/ui/text';
-import { Shadows } from '@/constants/theme';
+import { Elevation } from '@/constants/theme';
 
 export const WHEEL_ITEM_HEIGHT = 44;
 const VISIBLE = 5;
@@ -72,8 +72,8 @@ export function WheelPicker<T>({ items, value, onChange, accessibilityLabel, fle
           return (
             <View key={String(item.value)} style={{ height: WHEEL_ITEM_HEIGHT }} className="items-center justify-center">
               <Text
-                variant={distance === 0 ? 'title' : 'heading'}
-                tone={distance === 0 ? 'default' : 'muted'}
+                variant={distance === 0 ? 'title-large' : 'heading'}
+                tone={distance === 0 ? 'primary' : 'secondary'}
                 style={{ opacity: distance === 0 ? 1 : distance === 1 ? 0.7 : 0.4 }}>
                 {item.label}
               </Text>
@@ -91,8 +91,8 @@ export function WheelGroup({ children }: { children: ReactNode }) {
     <View style={{ height: WHEEL_ITEM_HEIGHT * VISIBLE }} className="w-full justify-center">
       <View
         pointerEvents="none"
-        style={{ boxShadow: Shadows.glass, height: WHEEL_ITEM_HEIGHT + 8 }}
-        className="absolute inset-x-0 rounded-full border border-glass-stroke bg-glass-fill"
+        style={{ boxShadow: Elevation.card, height: WHEEL_ITEM_HEIGHT + 8 }}
+        className="absolute inset-x-0 rounded-full border border-border-default bg-background-surface"
       />
       <View className="flex-row px-lg">{children}</View>
     </View>

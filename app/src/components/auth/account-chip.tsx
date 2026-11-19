@@ -3,8 +3,8 @@ import { View } from 'react-native';
 
 import { Avatar } from '@/components/ui/avatar';
 import { Text } from '@/components/ui/text';
-import { TextButton } from '@/components/ui/text-button';
-import { Shadows } from '@/constants/theme';
+import { Button } from '@/components/ui/button';
+import { Elevation } from '@/constants/theme';
 import type { RememberedAccount } from '@/lib/auth/types';
 
 /** Figma `Account chip`: who this phone remembers, with "Not you?". Initials when there's no photo. */
@@ -13,12 +13,12 @@ export function AccountChip({ account, onNotYou }: { account: RememberedAccount;
   const name = account.name ?? account.email;
   return (
     <View
-      style={{ boxShadow: Shadows.glass }}
-      className="w-full flex-row items-center gap-md rounded-full border border-glass-stroke bg-glass-fill p-sm">
+      style={{ boxShadow: Elevation.card }}
+      className="w-full flex-row items-center gap-md rounded-full border border-border-default bg-background-surface p-sm">
       <Avatar initials={name.slice(0, 1)} photo={account.avatarUrl ? { uri: account.avatarUrl } : undefined} size="M" />
       <View className="flex-1 gap-xs">
         {account.name ? (
-          <Text variant="label" numberOfLines={1}>
+          <Text variant="label-large" numberOfLines={1}>
             {account.name}
           </Text>
         ) : null}
@@ -26,7 +26,7 @@ export function AccountChip({ account, onNotYou }: { account: RememberedAccount;
           {account.email}
         </Text>
       </View>
-      <TextButton label={t('welcomeBack.notYou')} onPress={onNotYou} />
+      <Button hierarchy="tertiary" size="medium" label={t('welcomeBack.notYou')} onPress={onNotYou} />
     </View>
   );
 }

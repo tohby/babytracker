@@ -1,0 +1,58 @@
+{
+  "title": "Family",
+  "subtitle": "Who’s on {{name}}’s logs",
+  "babies": "Babies",
+  "addBaby": "Add a baby",
+  "caregivers": "Caregivers",
+  "you": "{{name}} (you)",
+  "owner": "Owner",
+  "ownerActive": "Owner · active now",
+  "invite": "Invite a caregiver",
+  "sync": "Sync & devices",
+  "syncDetail_one": "{{count}} entry saved on this phone only",
+  "syncDetail_other": "{{count}} entries saved on this phone only",
+  "syncDetailNone": "Nothing waiting",
+  "activity": "Activity",
+  "activityDetail": "Who logged what, and when",
+  "units": {
+    "ml": "ml",
+    "oz": "oz",
+    "kg": "kg",
+    "lb": "lb",
+    "h24": "24h",
+    "h12": "12h"
+  },
+  "age": "{{age}} · born {{date}}",
+  "inviteSheet": {
+    "title": "Invite a caregiver",
+    "subtitle": "Share {{name}}’s logs with someone you trust",
+    "body": "Anyone with this link can join {{name}}’s logs. It works for 7 days.",
+    "role": "Their role",
+    "caregiver": "Caregiver",
+    "caregiverDetail": "Logs, edits and sees everything",
+    "viewer": "Viewer",
+    "viewerDetail": "Sees the day, can’t edit — good for grandparents",
+    "share": "Share invite link",
+    "unavailable": "Inviting caregivers needs family sync, which isn’t in this version of Nappa yet. Your role choice is ready for when it is."
+  },
+  "syncScreen": {
+    "title": "Sync & devices",
+    "devices": "Devices on {{name}}’s logs",
+    "thisPhone": "This phone",
+    "thisPhoneDetail": "Saves every entry here first",
+    "waiting_one": "{{count}} waiting",
+    "waiting_other": "{{count}} waiting",
+    "ok": "OK",
+    "banner_one": "{{count}} entry is saved on this phone and will sync once family sync is available.",
+    "banner_other": "{{count}} entries are saved on this phone and will sync once family sync is available.",
+    "safeTitle": "Nothing is ever lost",
+    "safeBody": "Every entry is saved on the phone first, then synced. If two phones log the same thing, you can keep both or pick one.",
+    "how": "How syncing works"
+  },
+  "switcher": {
+    "title": "Switch baby",
+    "subtitle": "Twins can be logged together from the Log sheet",
+    "detail": "{{age}}",
+    "addBaby": "Add a baby"
+  }
+}

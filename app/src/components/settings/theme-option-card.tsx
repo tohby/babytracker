@@ -1,16 +1,16 @@
 import { Pressable, View } from 'react-native';
 
 import { Icon, type IconName } from '@/components/ui/icon';
-import { Radio } from '@/components/ui/radio';
+import { SelectionControl } from '@/components/ui/selection-control';
 import { Text } from '@/components/ui/text';
 import { useThemeColors } from '@/hooks/use-theme-colors';
 import type { ThemeMode } from '@/lib/theme-schedule';
 
 /** Icon and circle colour per mode (Figma `Card/Theme option`). Full class names so Tailwind finds them. */
 const look: Record<ThemeMode, { icon: IconName; circle: string }> = {
-  light: { icon: 'sun', circle: 'bg-yellow-400' },
-  dark: { icon: 'moon', circle: 'bg-lavender-500' },
-  auto: { icon: 'contrast', circle: 'bg-mint-400' },
+  light: { icon: 'sun', circle: 'bg-feature-care-strong' },
+  dark: { icon: 'moon', circle: 'bg-feature-feed-strong' },
+  auto: { icon: 'contrast', circle: 'bg-feature-nappy-strong' },
 };
 
 /** Figma padding is 16 top, 12 sides and bottom, with the border drawn inside. RN borders take space, so subtract them. */
@@ -40,19 +40,19 @@ export function ThemeOptionCard({ mode, label, caption, selected, onPress }: The
         paddingHorizontal: PADDING.side - border,
         paddingBottom: PADDING.side - border,
       }}
-      className={`flex-1 items-center gap-sm rounded-[28px] ${selected ? 'border-orange-500 bg-orange-100' : 'border-plum-200 bg-white'}`}>
+      className={`flex-1 items-center gap-sm rounded-[28px] ${selected ? 'border-primary-default bg-primary-subtle' : 'border-border-default bg-background-surface'}`}>
       <View className={`size-[48px] items-center justify-center rounded-full ${look[mode].circle}`}>
-        <Icon name={look[mode].icon} color={colors.white} />
+        <Icon name={look[mode].icon} color={colors['color/background/surface']} />
       </View>
       <View className="w-full items-center gap-xs">
-        <Text variant="label" className="text-center" numberOfLines={1} adjustsFontSizeToFit>
+        <Text variant="label-large" className="text-center" numberOfLines={1} adjustsFontSizeToFit>
           {label}
         </Text>
-        <Text variant="caption" tone="muted" className="text-center">
+        <Text variant="caption" tone="secondary" className="text-center">
           {caption}
         </Text>
       </View>
-      <Radio selected={selected} />
+      <SelectionControl type="radio" checked={selected} />
     </Pressable>
   );
 }

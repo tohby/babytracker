@@ -2,7 +2,7 @@ import { Image } from 'expo-image';
 import { View } from 'react-native';
 
 import { Text } from '@/components/ui/text';
-import { Shadows } from '@/constants/theme';
+import { Elevation } from '@/constants/theme';
 
 /** Figma `Mascot/Face`: Nappa's face next to the chat bubble. Decorative. */
 export function MascotFace({ size = 52 }: { size?: number }) {
@@ -23,8 +23,8 @@ export function ChatRow({ message }: { message: string }) {
     <View className="flex-row items-start gap-md">
       <MascotFace />
       <View
-        style={{ boxShadow: Shadows.glass }}
-        className="flex-1 rounded-tile rounded-tl-[8px] border border-glass-stroke bg-glass-fill px-[20px] py-lg">
+        style={{ boxShadow: Elevation.card }}
+        className="flex-1 rounded-xl rounded-tl-[8px] border border-border-default bg-background-surface px-[20px] py-lg">
         <Text variant="heading" accessibilityRole="header">
           {message}
         </Text>

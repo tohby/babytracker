@@ -58,5 +58,73 @@
     "empty": "—"
   },
   "familyNameFallback": "Your family",
-  "openSettings": "Account and settings"
+  "openSettings": "Account and settings",
+  "v2": {
+    "nextNap": {
+      "countdown": "In about {{duration}}",
+      "now": "Any minute now",
+      "window": "Window until {{time}}",
+      "basedOnAge": "Based on her age",
+      "personalise": "Log a nap to personalise",
+      "a11y": "Next nap around {{time}}. Opens the prediction.",
+      "learningChip": "Learning",
+      "learningTitle": "Learning {{name}}’s rhythm",
+      "learningBody_one": "Log {{count}} more nap and we’ll suggest the next window.",
+      "learningBody_other": "Log {{count}} more naps and we’ll suggest the next window.",
+      "learningProgress": "{{logged}} of {{needed}} naps logged",
+      "tooYoungChip": "Under 8 weeks",
+      "tooYoungTitle": "Follow the sleepy cues",
+      "tooYoungBody": "Newborns nap when tired, not on a clock. Look for yawns, red eyebrows and staring."
+    },
+    "feedDue": {
+      "title": "Feed due around {{time}}",
+      "detail": "Usually every {{interval}} · last feed {{amount}}",
+      "detailPlain": "Usually every {{interval}}",
+      "in": "in {{duration}}",
+      "overdue": "due now"
+    },
+    "tiles": {
+      "lastFeed": "Last feed",
+      "awakeFor": "Awake for",
+      "asleepFor": "Asleep for",
+      "lastNappy": "Last nappy",
+      "lastDiaper": "Last diaper",
+      "noFeeds": "No feeds yet",
+      "logNap": "Log a nap",
+      "noneYet": "None yet",
+      "woke": "Woke {{time}}",
+      "fellAsleep": "Since {{time}}",
+      "a11y": "{{label}}: {{value}}. {{detail}}",
+      "feedDetail": "{{what}} · {{amount}}"
+    },
+    "sync": {
+      "local": "Saved on this phone",
+      "offline": "Offline · saved on phone"
+    },
+    "summary": {
+      "title": "Today so far",
+      "sleep": "Sleep",
+      "feeds": "Feeds",
+      "nappies": "Nappies",
+      "diapers": "Diapers",
+      "more": "+{{value}} vs avg",
+      "less": "−{{value}} vs avg",
+      "same": "Same as avg",
+      "noAvg": "Not enough days yet"
+    },
+    "firstDay": {
+      "title": "A fresh day for {{name}}",
+      "body": "Tap + to log her first feed, nap or nappy. Predictions get sharper with every log.",
+      "link": "How logging works",
+      "tip": "Log anything from here — one tap logs it now."
+    },
+    "loading": "Restoring your logs…",
+    "offline_one": "You’re offline. {{count}} change is saved on this phone and will sync when you’re back.",
+    "offline_other": "You’re offline. {{count}} changes are saved on this phone and will sync when you’re back.",
+    "offlineDetails": "Details",
+    "nap": {
+      "title": "{{name}} is napping",
+      "started": "Started {{time}}"
+    }
+  }
 }

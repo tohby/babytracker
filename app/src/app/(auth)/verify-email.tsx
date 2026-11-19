@@ -5,9 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { toAuthProblem, type AuthProblem } from '@/components/auth/auth-problem';
 import { AuthScreen } from '@/components/auth/auth-screen';
 import { CodeInput } from '@/components/auth/code-input';
-import { PrimaryButton } from '@/components/ui/primary-button';
+import { Button } from '@/components/ui/button';
 import { StatusBanner } from '@/components/ui/status-banner';
-import { TextButton } from '@/components/ui/text-button';
 import { useCountdown } from '@/hooks/use-countdown';
 import { useSession } from '@/hooks/use-session';
 import { authApi } from '@/lib/auth/endpoints';
@@ -66,13 +65,13 @@ export default function VerifyEmailScreen() {
       subtitle={t('verify.subtitle', { email })}
       actions={
         <>
-          <PrimaryButton label={t('verify.submit')} onPress={() => submit()} loading={loading} disabled={code.length !== 6} />
-          <TextButton
+          <Button label={t('verify.submit')} onPress={() => submit()} loading={loading} disabled={code.length !== 6} />
+          <Button hierarchy="tertiary" size="medium"
             label={wait > 0 ? t('verify.resendIn', { time: formatCountdown(wait) }) : t('verify.resend')}
             disabled={wait > 0}
             onPress={resend}
           />
-          <TextButton label={t('verify.wrongEmail')} onPress={() => router.back()} />
+          <Button hierarchy="tertiary" size="medium" label={t('verify.wrongEmail')} onPress={() => router.back()} />
         </>
       }>
       {problem?.kind === 'invalidCode' ? (

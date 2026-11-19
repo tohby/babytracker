@@ -1,15 +1,17 @@
 /**
  * Next-nap prediction. Honest by design:
  * - under 8 weeks: no prediction (newborns nap on cues, not clocks);
- * - fewer than NAPS_NEEDED naps logged: "learning", with progress;
+ * - no naps logged yet: a first window from the age-based daily rhythm (V2-C03 "Based on her age");
+ * - 1 to NAPS_NEEDED-1 naps: "learning", with progress;
  * - otherwise: the last wake time plus this baby's typical wake window (median of recent ones), falling back to
  *   the age-based window when the logs don't give enough gaps yet.
  */
 
 import type { LogEvent } from '@/data/log-events';
+import { nextNapFromRhythm } from '@/data/home';
 import { ageInDays, wakeWindow } from '@/lib/onboarding/age';
 
-export const NAPS_NEEDED = 5;
+export const NAPS_NEEDED = 3;
 const WINDOW_MS = 30 * 60_000;
 const TOO_YOUNG_DAYS = 56;
 
@@ -34,15 +36,21 @@ function median(values: number[]): number {
   return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
 }
 
-export function predictNextNap(events: LogEvent[], birthDate: string | null, now: number = Date.now()): Prediction {
+export function predictNextNap(events: LogEvent[], birthDate: string | null, now: number = Date.now(), usualWakeTime: string | null = null): Prediction {
   if (birthDate && ageInDays(birthDate, new Date(now)) < TOO_YOUNG_DAYS) return { state: 'too-young' };
   const sleeps = events
     .filter((e) => e.type === 'sleep' && e.endAt)
     .sort((a, b) => Date.parse(a.startAt) - Date.parse(b.startAt));
-  if (sleeps.length < NAPS_NEEDED) return { state: 'learning', napsLogged: sleeps.length, napsNeeded: NAPS_NEEDED };
-
   const ageWindow = birthDate ? wakeWindow(birthDate, new Date(now)) : { min: 90, max: 150 };
   const typical = { min: ageWindow.min * 60_000, max: ageWindow.max * 60_000 };
+  if (sleeps.length === 0) {
+    const rhythm = nextNapFromRhythm(birthDate, usualWakeTime, new Date(now));
+    if (!rhythm) return { state: 'learning', napsLogged: 0, napsNeeded: NAPS_NEEDED };
+    const start = Date.parse(rhythm.windowStart);
+    return { state: 'predicted', windowStart: start, windowEnd: Date.parse(rhythm.windowEnd), awakeSince: start - (typical.min + typical.max) / 2, wakeWindowMs: (typical.min + typical.max) / 2, lastNapMs: null, basis: 'age', typicalWakeWindowMs: typical };
+  }
+  if (sleeps.length < NAPS_NEEDED) return { state: 'learning', napsLogged: sleeps.length, napsNeeded: NAPS_NEEDED };
+
   // Gaps between the end of one sleep and the start of the next, in the last 7 days, ignoring overnight gaps.
   const weekAgo = now - 7 * 86_400_000;
   const gaps: number[] = [];

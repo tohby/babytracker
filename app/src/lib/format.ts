@@ -26,6 +26,8 @@ export type FormatPrefs = {
   weightUnit: WeightUnit;
   /** `null` follows the device. */
   hour12: boolean | null;
+  /** "Nappy" or "diaper" wording; separate from language (Figma H04). */
+  nappyWord: 'nappy' | 'diaper';
 };
 
 const ML_PER_FL_OZ = 29.5735;
@@ -46,6 +48,7 @@ export function getFormatPrefs(): FormatPrefs {
     volumeUnit: measurementSystem === 'us' ? 'oz' : 'ml',
     weightUnit: measurementSystem === 'us' ? 'lb' : 'kg',
     hour12: uses24hourClock === null ? null : !uses24hourClock,
+    nappyWord: measurementSystem === 'us' ? 'diaper' : 'nappy',
     ...prefsOverride,
   };
 }
@@ -132,6 +135,12 @@ export function formatCountdown(totalSeconds: number): string {
   });
 }
 
+/** A length in mm as cm or inches, following the weight unit (kg · cm / lb · in). */
+export function formatLength(mm: number, unit: WeightUnit = getFormatPrefs().weightUnit): string {
+  if (unit === 'lb') return i18n.t('units.length.in', { value: formatNumber(mm / 25.4, { maximumFractionDigits: 1 }) });
+  return i18n.t('units.length.cm', { value: formatNumber(mm / 10, { maximumFractionDigits: 1 }) });
+}
+
 /** A running timer, "00:42:10" (tabular; hours always shown). */
 export function formatTimer(ms: number): string {
   const total = Math.max(0, Math.floor(ms / 1000));
@@ -140,6 +149,15 @@ export function formatTimer(ms: number): string {
     hours: formatNumber(Math.floor(total / 3600), two),
     minutes: formatNumber(Math.floor((total % 3600) / 60), two),
     seconds: formatNumber(total % 60, two),
+  });
+}
+
+/** A short timer, "12:04" (minutes:seconds), for nursing sides. */
+export function formatTimerShort(ms: number): string {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  return i18n.t('units.countdown', {
+    minutes: formatNumber(Math.floor(total / 60), { minimumIntegerDigits: 2 }),
+    seconds: formatNumber(total % 60, { minimumIntegerDigits: 2 }),
   });
 }
 

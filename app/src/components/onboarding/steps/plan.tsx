@@ -7,13 +7,13 @@ import { ageLabel } from '@/components/onboarding/age-label';
 import { MascotFace } from '@/components/onboarding/chat-row';
 import { OnboardingScreen } from '@/components/onboarding/onboarding-screen';
 import type { StepProps } from '@/components/onboarding/steps/types';
-import { GlassCard } from '@/components/ui/glass-card';
+import { Card } from '@/components/ui/card';
 import { Icon, type IconName } from '@/components/ui/icon';
 import { Mascot } from '@/components/ui/mascot';
-import { PrimaryButton } from '@/components/ui/primary-button';
+import { Button } from '@/components/ui/button';
 import { StatusBanner } from '@/components/ui/status-banner';
 import { Text } from '@/components/ui/text';
-import { Shadows } from '@/constants/theme';
+import { Elevation } from '@/constants/theme';
 import { useOnboarding } from '@/hooks/use-onboarding';
 import { useSession } from '@/hooks/use-session';
 import { useThemeColors } from '@/hooks/use-theme-colors';
@@ -109,23 +109,23 @@ export function GlanceStep({ step, progress }: StepProps) {
     <OnboardingScreen
       progress={progress}
       message={t('glance.message', { baby: answers.babyName })}
-      actions={<PrimaryButton label={t('glance.submit')} onPress={confirm} loading={saving} />}>
+      actions={<Button label={t('glance.submit')} onPress={confirm} loading={saving} />}>
       {failed ? <StatusBanner type="error" title={t('saveError.title')} detail={t('saveError.detail')} /> : null}
-      <GlassCard>
+      <Card>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t('glance.edit', { item: answers.babyName })}
           onPress={() => edit('birthday')}
           className="flex-row items-center gap-md px-lg pb-md pt-lg">
-          <View className="size-[56px] items-center justify-center overflow-hidden rounded-full bg-orange-100">
+          <View className="size-[56px] items-center justify-center overflow-hidden rounded-full bg-primary-subtle">
             <Mascot pose="feeding" size={52} />
           </View>
           <View className="flex-1 gap-xs">
-            <Text variant="title">{answers.babyName}</Text>
-            <Text tone="muted">{answers.birthDate ? ageLabel(t, answers.birthDate) : t('glance.notSet')}</Text>
+            <Text variant="title-large">{answers.babyName}</Text>
+            <Text tone="secondary">{answers.birthDate ? ageLabel(t, answers.birthDate) : t('glance.notSet')}</Text>
           </View>
         </Pressable>
-        <View className="mx-lg h-px bg-glass-stroke" />
+        <View className="mx-lg h-px bg-border-default" />
         {rows.map((row) => (
           <Pressable
             key={row.to}
@@ -134,14 +134,14 @@ export function GlanceStep({ step, progress }: StepProps) {
             accessibilityHint={t('glance.edit', { item: row.label })}
             onPress={() => edit(row.to)}
             className="min-h-[52px] flex-row items-center gap-md px-lg py-md active:opacity-60">
-            <Icon name={row.icon} color={row.danger ? colors['danger/500'] : colors['color/icon/primary']} size={20} />
-            <Text tone="muted" className="flex-1">
+            <Icon name={row.icon} color={row.danger ? colors['color/status/error'] : colors['color/icon/primary']} size={20} />
+            <Text tone="secondary" className="flex-1">
               {row.label}
             </Text>
             <Text>{row.value}</Text>
           </Pressable>
         ))}
-      </GlassCard>
+      </Card>
       <Text variant="caption" className="text-center">
         {t('glance.hint')}
       </Text>
@@ -177,14 +177,14 @@ export function PersonalisingStep({ step }: StepProps) {
     <OnboardingScreen centered>
       <View className="items-center gap-lg">
         <Mascot pose="thinking" size={150} />
-        <Text variant="numeral" accessibilityLiveRegion="polite">
+        <Text variant="display-light" accessibilityLiveRegion="polite">
           {`${percent}%`}
         </Text>
         <Text variant="heading" className="text-center">
           {t('personalising.title', { baby: answers.babyName })}
         </Text>
       </View>
-      <GlassCard>
+      <Card>
         <View className="gap-md p-lg">
           {LOAD_STEPS.map((key, i) => {
             const start = i * 25;
@@ -194,29 +194,29 @@ export function PersonalisingStep({ step }: StepProps) {
               <View key={key} className="flex-row items-center gap-md">
                 <View
                   className={`size-[24px] items-center justify-center rounded-full ${
-                    state === 'done' ? 'bg-accent-primary' : state === 'active' ? 'border-2 border-accent-primary' : 'border-2 border-plum-200'
+                    state === 'done' ? 'bg-primary-default' : state === 'active' ? 'border-2 border-primary-default' : 'border-2 border-border-default'
                   }`}>
-                  {state === 'done' ? <Icon name="check" color={colors['text/on-accent-ink']} size={14} /> : null}
+                  {state === 'done' ? <Icon name="check" color={colors['color/text/on-primary']} size={14} /> : null}
                 </View>
-                <Text tone={state === 'pending' ? 'muted' : 'default'} className="flex-1">
+                <Text tone={state === 'pending' ? 'secondary' : 'primary'} className="flex-1">
                   {t(`personalising.${key}`, { baby: answers.babyName })}
                 </Text>
-                {state === 'active' ? <Text variant="label">{`${local}%`}</Text> : null}
+                {state === 'active' ? <Text variant="label-large">{`${local}%`}</Text> : null}
               </View>
             );
           })}
         </View>
-      </GlassCard>
+      </Card>
       {waiting ? (
         <View
-          style={{ boxShadow: Shadows.glass }}
+          style={{ boxShadow: Elevation.card }}
           accessibilityViewIsModal
-          className="items-center gap-md rounded-card border border-glass-stroke bg-white p-xl">
+          className="items-center gap-md rounded-2xl border border-border-default bg-background-surface p-xl">
           <MascotFace size={44} />
           <Text variant="heading" className="text-center" accessibilityRole="header">
             {t('personalising.dummyQuestion', { baby: answers.babyName })}
           </Text>
-          <Text variant="label" tone="muted" className="text-center">
+          <Text variant="label-large" tone="secondary" className="text-center">
             {t('personalising.dummyDetail')}
           </Text>
           <View accessibilityRole="radiogroup" className="w-full flex-row gap-sm">
@@ -226,14 +226,14 @@ export function PersonalisingStep({ step }: StepProps) {
                 accessibilityRole="radio"
                 accessibilityState={{ checked: false }}
                 onPress={() => update({ dummy: value })}
-                className="min-h-[48px] flex-1 items-center justify-center rounded-full border-[1.5px] border-accent-primary bg-orange-100 active:opacity-70">
-                <Text variant="label">{t(`personalising.${value}`)}</Text>
+                className="min-h-[48px] flex-1 items-center justify-center rounded-full border-[1.5px] border-primary-default bg-primary-subtle active:opacity-70">
+                <Text variant="label-large">{t(`personalising.${value}`)}</Text>
               </Pressable>
             ))}
           </View>
         </View>
       ) : (
-        <Text variant="label" tone="muted" className="text-center">
+        <Text variant="label-large" tone="secondary" className="text-center">
           {t('personalising.hint')}
         </Text>
       )}
@@ -253,18 +253,18 @@ export function PlanRevealStep({ step }: StepProps) {
   return (
     <OnboardingScreen
       centered
-      actions={<PrimaryButton label={t('planReveal.submit', { baby: answers.babyName })} onPress={() => next(step)} />}>
+      actions={<Button label={t('planReveal.submit', { baby: answers.babyName })} onPress={() => next(step)} />}>
       <View className="items-center gap-sm">
-        <Text variant="label">{t('planReveal.eyebrow', { baby: answers.babyName })}</Text>
-        <Text variant="title" className="text-center" accessibilityRole="header">
+        <Text variant="label-large">{t('planReveal.eyebrow', { baby: answers.babyName })}</Text>
+        <Text variant="title-large" className="text-center" accessibilityRole="header">
           {t('planReveal.title', { date })}
         </Text>
       </View>
-      <GlassCard>
+      <Card>
         <View className="gap-md p-lg" accessible accessibilityLabel={t('planReveal.caption', { baby: answers.babyName })}>
           <View className="items-end">
-            <View className="rounded-full bg-accent-primary px-md py-xs">
-              <Text variant="caption" tone="onAccent" numberOfLines={1}>
+            <View className="rounded-full bg-primary-default px-md py-xs">
+              <Text variant="caption" tone="on-primary" numberOfLines={1}>
                 {date}
               </Text>
             </View>
@@ -273,7 +273,7 @@ export function PlanRevealStep({ step }: StepProps) {
             {BAR_HEIGHTS.map((h, i) => (
               <View
                 key={i}
-                className={`flex-1 rounded-[8px] ${i === BAR_HEIGHTS.length - 1 ? 'bg-accent-primary' : 'bg-orange-100'}`}
+                className={`flex-1 rounded-[8px] ${i === BAR_HEIGHTS.length - 1 ? 'bg-primary-default' : 'bg-primary-subtle'}`}
                 style={{ height: `${Math.round(h * 100)}%` }}
               />
             ))}
@@ -285,7 +285,7 @@ export function PlanRevealStep({ step }: StepProps) {
           </View>
           <Text variant="caption">{t('planReveal.caption', { baby: answers.babyName })}</Text>
         </View>
-      </GlassCard>
+      </Card>
       <View className="items-center">
         <Mascot pose="milestone" size={150} />
       </View>
@@ -348,28 +348,28 @@ export function RhythmStep({ progress }: StepProps) {
     <OnboardingScreen
       progress={progress}
       message={t('rhythm.message')}
-      actions={<PrimaryButton label={t('rhythm.submit')} onPress={finish} loading={saving} />}>
+      actions={<Button label={t('rhythm.submit')} onPress={finish} loading={saving} />}>
       {failed ? <StatusBanner type="error" title={t('saveError.title')} detail={t('saveError.detail')} /> : null}
-      <GlassCard>
+      <Card>
         <View className="py-sm">
           {items.map((item, i) => {
             const row = rhythmRow(t, item);
             return (
               <View key={i} className="min-h-[56px] flex-row items-center gap-md px-lg py-sm">
-                <Text tone="muted" className="w-[64px]">
+                <Text tone="secondary" className="w-[64px]">
                   {formatTime(timeToday(item.at))}
                 </Text>
-                <View className="size-[36px] items-center justify-center rounded-full bg-orange-100">
+                <View className="size-[36px] items-center justify-center rounded-full bg-primary-subtle">
                   <Icon name={row.icon} color={colors['color/icon/primary']} size={18} />
                 </View>
                 <View className="flex-1 gap-xs">
                   <Text>{row.title}</Text>
-                  <Text variant="caption" tone="muted">
+                  <Text variant="caption" tone="secondary">
                     {row.subtitle}
                   </Text>
                 </View>
                 {i === nextIndex ? (
-                  <View className="rounded-full bg-orange-100 px-md py-xs">
+                  <View className="rounded-full bg-primary-subtle px-md py-xs">
                     <Text variant="caption">{t('rhythm.next')}</Text>
                   </View>
                 ) : null}
@@ -377,7 +377,7 @@ export function RhythmStep({ progress }: StepProps) {
             );
           })}
         </View>
-      </GlassCard>
+      </Card>
     </OnboardingScreen>
   );
 }

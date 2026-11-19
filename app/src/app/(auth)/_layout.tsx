@@ -30,7 +30,7 @@ export default function AuthLayout() {
             sheetAllowedDetents: 'fitToContents',
             sheetGrabberVisible: true,
             sheetCornerRadius: 36,
-            contentStyle: { backgroundColor: colors.white },
+            contentStyle: { backgroundColor: colors['color/background/surface'] },
           }}
         />
       </Stack.Protected>

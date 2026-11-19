@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { EMAIL_PATTERN, toAuthProblem, type AuthProblem } from '@/components/auth/auth-problem';
 import { AuthScreen } from '@/components/auth/auth-screen';
-import { PrimaryButton } from '@/components/ui/primary-button';
+import { Button } from '@/components/ui/button';
 import { StatusBanner } from '@/components/ui/status-banner';
 import { TextField } from '@/components/ui/text-field';
 import { authApi } from '@/lib/auth/endpoints';
@@ -46,7 +46,7 @@ export default function ForgotPasswordScreen() {
       canGoBack
       title={t('forgot.title')}
       subtitle={t('forgot.subtitle')}
-      actions={<PrimaryButton label={t('forgot.submit')} onPress={submit} loading={loading} disabled={!email} />}>
+      actions={<Button label={t('forgot.submit')} onPress={submit} loading={loading} disabled={!email} />}>
       {problem?.kind === 'offline' ? (
         <StatusBanner type="offline" title={t('errors.offline.title')} detail={t('errors.offline.detail')} />
       ) : problem?.kind === 'tooManyRequests' ? (

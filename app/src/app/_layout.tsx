@@ -19,6 +19,8 @@ import { TALL_SHEET_DETENT } from '@/components/ui/bottom-sheet';
 import { ToastProvider } from '@/components/ui/toast';
 import { Radius } from '@/constants/theme';
 import { LogStoreProvider } from '@/data/log-store';
+import { TimelineFilterProvider } from '@/data/timeline-filter';
+import { FormatPrefsProvider } from '@/hooks/use-format-prefs';
 import { SessionProvider, useSession } from '@/hooks/use-session';
 import { ThemeModeProvider } from '@/hooks/use-theme-mode';
 import { useThemeColors } from '@/hooks/use-theme-colors';
@@ -91,7 +93,9 @@ function ThemedNavigation() {
 
   return (
     <ThemeProvider value={navigationTheme}>
+      <FormatPrefsProvider>
       <LogStoreProvider loggedBy={user?.name ?? user?.email ?? ''}>
+      <TimelineFilterProvider>
       {/* Toasts sit above the tab bar (64 + 8 above the home indicator, plus 12). */}
       <ToastProvider bottomOffset={insets.bottom + 84}>
       {/* Follows the app theme (set natively by Uniwind), not the device setting. */}
@@ -105,7 +109,16 @@ function ThemedNavigation() {
           <Stack.Screen name="(tabs)" />
           {/* Logging: one entry point, sheets keep context (Figma D). Timers are full screens. */}
           <Stack.Screen name="log/index" options={tallSheetOptions} />
-          <Stack.Screen name="settings" />
+          {(['nap', 'feed', 'pumping', 'solids', 'medicine', 'growth', 'activity'] as const).map((name) => (
+            <Stack.Screen key={name} name={`log/${name}`} options={tallSheetOptions} />
+          ))}
+          <Stack.Screen name="log/nappy" options={sheetOptions} />
+          <Stack.Screen name="log/saved" options={sheetOptions} />
+          <Stack.Screen name="timeline-filter" options={sheetOptions} />
+          <Stack.Screen name="still-learning" options={tallSheetOptions} />
+          <Stack.Screen name="family/invite" options={tallSheetOptions} />
+          <Stack.Screen name="child-switcher" options={sheetOptions} />
+          <Stack.Screen name="settings/index" />
           <Stack.Screen name="explore" />
           {/* Native bottom sheet (Figma `Sheet/Bottom`): sized to its content, 36px top corners, grabber. */}
           <Stack.Screen name="appearance" options={sheetOptions} />
@@ -124,7 +137,9 @@ function ThemedNavigation() {
       {/* Fonts and the saved theme are ready by now; the splash stays until the saved session is
           checked. Offline at launch: the session is kept and the splash says so before hiding. */}
       </ToastProvider>
+      </TimelineFilterProvider>
       </LogStoreProvider>
+      </FormatPrefsProvider>
       <AppSplash ready={status !== 'loading'} problem={offline ? 'offline' : undefined} />
     </ThemeProvider>
   );

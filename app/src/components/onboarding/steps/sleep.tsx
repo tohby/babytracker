@@ -7,10 +7,10 @@ import { SelectRow } from '@/components/onboarding/select-row';
 import { Chip } from '@/components/onboarding/steps/basics';
 import type { StepProps } from '@/components/onboarding/steps/types';
 import { WheelGroup, WheelPicker } from '@/components/onboarding/wheel-picker';
-import { GlassCard } from '@/components/ui/glass-card';
+import { Card } from '@/components/ui/card';
 import { type IconName } from '@/components/ui/icon';
 import { Mascot } from '@/components/ui/mascot';
-import { PrimaryButton } from '@/components/ui/primary-button';
+import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { useOnboarding } from '@/hooks/use-onboarding';
 import { sleepNeed } from '@/lib/onboarding/age';
@@ -27,11 +27,11 @@ export function SleepOpenerStep({ step, progress }: StepProps) {
     <OnboardingScreen
       progress={progress}
       message={t('sleepOpener.message')}
-      actions={<PrimaryButton label={t('letsGo')} onPress={() => next(step)} />}>
+      actions={<Button label={t('letsGo')} onPress={() => next(step)} />}>
       <View className="items-center gap-lg pt-xl">
         <Mascot pose="sleeping" size={220} />
-        <View className="rounded-full bg-lavender-100 px-lg py-sm">
-          <Text variant="label">{t('sleepOpener.chip')}</Text>
+        <View className="rounded-full bg-feature-feed px-lg py-sm">
+          <Text variant="label-large">{t('sleepOpener.chip')}</Text>
         </View>
       </View>
     </OnboardingScreen>
@@ -47,21 +47,21 @@ export function SleepNeedStep({ step, progress }: StepProps) {
     <OnboardingScreen
       progress={progress}
       message={t('sleepNeed.message', { baby: answers.babyName })}
-      actions={<PrimaryButton label={t('continue')} onPress={() => next(step)} />}>
-      <GlassCard>
+      actions={<Button label={t('continue')} onPress={() => next(step)} />}>
+      <Card>
         <View className="items-center gap-sm p-xl">
-          <Text variant="numeral">{t('sleepNeed.hours', { min: formatNumber(need.min), max: formatNumber(need.max) })}</Text>
+          <Text variant="display-light">{t('sleepNeed.hours', { min: formatNumber(need.min), max: formatNumber(need.max) })}</Text>
           <Text className="text-center">{t('sleepNeed.body')}</Text>
           <View className="items-center gap-xs pt-md">
-            <Text variant="label" className="text-center">
+            <Text variant="label-large" className="text-center">
               {t(`sleepNeed.source.${need.source}.title`)}
             </Text>
-            <Text variant="caption" tone="muted" className="text-center">
+            <Text variant="caption" tone="secondary" className="text-center">
               {t(`sleepNeed.source.${need.source}.detail`)}
             </Text>
           </View>
         </View>
-      </GlassCard>
+      </Card>
       <View className="items-center">
         <Mascot pose="sleeping" size={150} />
       </View>
@@ -81,7 +81,7 @@ export function SleepYesterdayStep({ step, edit, progress }: StepProps) {
       progress={progress}
       message={t('sleepYesterday.message', { baby: answers.babyName })}
       actions={
-        <PrimaryButton
+        <Button
           label={t('continue')}
           onPress={() => {
             update({ sleepYesterdayHours: hours });
@@ -103,7 +103,7 @@ export function SleepYesterdayStep({ step, edit, progress }: StepProps) {
         </View>
       </WheelGroup>
       <Chip>{t(`sleepYesterday.${verdict}`)}</Chip>
-      <Text variant="label" tone="muted" className="text-center">
+      <Text variant="label-large" tone="secondary" className="text-center">
         {t('sleepYesterday.hint')}
       </Text>
     </OnboardingScreen>
@@ -125,7 +125,7 @@ export function NapPlaceStep({ step, edit, progress }: StepProps) {
     <OnboardingScreen
       progress={progress}
       message={t('napPlace.message', { baby: answers.babyName })}
-      actions={<PrimaryButton label={t('continue')} disabled={!answers.napPlace} onPress={() => next(step, { edit })} />}>
+      actions={<Button label={t('continue')} disabled={!answers.napPlace} onPress={() => next(step, { edit })} />}>
       <View accessibilityRole="radiogroup" className="gap-sm">
         {PLACES.map((option) => (
           <SelectRow

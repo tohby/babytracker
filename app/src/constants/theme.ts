@@ -7,9 +7,6 @@ import '@/global.css';
 
 import { Platform } from 'react-native';
 
-import { resolveColors } from '@/constants/color-tokens';
-
-const legacyLight = resolveColors('light');
 
 export const Colors = {
   light: {
@@ -174,19 +171,6 @@ export const Elevation = {
 } as const;
 
 export type ElevationLevel = keyof typeof Elevation;
-
-/**
- * LEGACY (V1) CSS box-shadow strings (supported by React Native's `boxShadow` style), from the
- * Figma effect styles. Shadow colours are the same in both themes.
- */
-export const Shadows = {
-  /** `Glass/Card` and `Glass/Pill`: tiles and the bottom nav. */
-  glass: `0px 8px 24px ${legacyLight['shadow/glass']}`,
-  /** Orange glow under the Log button. */
-  logButton: `0px 8px 20px ${legacyLight['shadow/accent']}`,
-  /** Selected segment in a segmented control. */
-  raised: `0px 2px 8px ${legacyLight['shadow/raised']}`,
-} as const;
 
 export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;
 export const MaxContentWidth = 800;

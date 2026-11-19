@@ -1,15 +1,14 @@
 import { router } from 'expo-router';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { EMAIL_PATTERN, toAuthProblem, type AuthProblem } from '@/components/auth/auth-problem';
 import { AuthScreen } from '@/components/auth/auth-screen';
-import { Checkbox } from '@/components/ui/checkbox';
-import { PrimaryButton } from '@/components/ui/primary-button';
+import { SelectionControl } from '@/components/ui/selection-control';
+import { Button } from '@/components/ui/button';
 import { StatusBanner } from '@/components/ui/status-banner';
 import { Text } from '@/components/ui/text';
-import { TextButton } from '@/components/ui/text-button';
 import { TextField, type TextFieldRef } from '@/components/ui/text-field';
 import { useSession } from '@/hooks/use-session';
 import { getDeviceLocale } from '@/i18n';
@@ -73,10 +72,10 @@ export default function CreateAccountScreen() {
       subtitle={t('createAccount.subtitle')}
       actions={
         <>
-          <PrimaryButton label={t('createAccount.submit')} onPress={submit} loading={loading} disabled={!email && !password} />
+          <Button label={t('createAccount.submit')} onPress={submit} loading={loading} disabled={!email && !password} />
           <View className="flex-row flex-wrap items-center justify-center">
-            <Text variant="label">{t('createAccount.haveAccount')}</Text>
-            <TextButton label={t('createAccount.signIn')} onPress={() => router.replace('/sign-in')} />
+            <Text variant="label-large">{t('createAccount.haveAccount')}</Text>
+            <Button hierarchy="tertiary" size="medium" label={t('createAccount.signIn')} onPress={() => router.replace('/sign-in')} />
           </View>
         </>
       }>
@@ -120,14 +119,15 @@ export default function CreateAccountScreen() {
           textContentType="newPassword"
           returnKeyType="done"
         />
-        <Checkbox
-          checked={consent}
-          onChange={setConsent}
-          label={t('createAccount.consent')}
-          error={checked && !consent}
-        />
+        {/* Figma B01 "Consent": checkbox + Body text; the whole row is the target. */}
+        <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: consent }} onPress={() => setConsent(!consent)} className="flex-row items-center gap-sm">
+          <SelectionControl type="checkbox" checked={consent} />
+          <Text variant="body" className="flex-1">
+            {t('createAccount.consent')}
+          </Text>
+        </Pressable>
         {checked && !consent ? (
-          <Text variant="caption" accessibilityRole="alert">
+          <Text variant="caption" tone="error" accessibilityRole="alert">
             {t('validation.consentRequired')}
           </Text>
         ) : null}

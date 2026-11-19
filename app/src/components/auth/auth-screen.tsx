@@ -46,7 +46,7 @@ export function AuthScreen({ hero = 'icon', title, subtitle, canGoBack = false, 
           <View className="items-center gap-lg pt-sm">
             {hero === 'icon' ? <AppIcon /> : <Mascot pose={hero} size={176} />}
             <View className="w-full items-center gap-sm">
-              <Text variant="title" className="text-center" accessibilityRole="header">
+              <Text variant="title-large" className="text-center" accessibilityRole="header">
                 {title}
               </Text>
               {subtitle ? <Text className="text-center">{subtitle}</Text> : null}

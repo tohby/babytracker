@@ -14,6 +14,8 @@ type FieldBase = {
   helper?: string;
   /** Error message: red border + icon + text, never colour alone. */
   error?: string;
+  /** Red border only, when a Banner above explains the problem (wrong password). */
+  invalid?: boolean;
   disabled?: boolean;
   leadingIcon?: IconName;
   /** Extra control at the end of a text field (e.g. show password). */
@@ -44,15 +46,15 @@ export const Field = forwardRef<ComponentRef<typeof TextInput>, FieldProps>(func
   const { t } = useTranslation();
   const colors = useThemeColors();
   const [focused, setFocused] = useState(false);
-  const { label, helper, error, disabled = false, leadingIcon, trailing } = props;
+  const { label, helper, error, invalid = false, disabled = false, leadingIcon, trailing } = props;
 
-  const border = error
+  const border = error || invalid
     ? 'border-2 border-border-error'
     : focused
       ? 'border-2 border-border-focus'
       : 'border border-border-default';
   // Keep the content still when the border thickens: hairline 1 + 15 = strong 2 + 14.
-  const padding = error || focused ? 'px-[15px]' : 'px-lg';
+  const padding = error || invalid || focused ? 'px-[15px]' : 'px-lg';
   const box = `h-control-lg flex-row items-center gap-md rounded-md ${padding} ${border} ${
     disabled ? 'bg-state-disabled' : 'bg-background-surface'
   }`;
@@ -77,7 +79,8 @@ export const Field = forwardRef<ComponentRef<typeof TextInput>, FieldProps>(func
       </Pressable>
     );
   } else {
-    const { type: _type, onFocus, onBlur, value, onChangeText, ...input } = props;
+    const { type: _type, onFocus, onBlur, value, onChangeText, invalid: _invalid, ...input } = props;
+    void _invalid;
     void _type;
     const body = Typography['V2/Body/Regular'];
     control = (

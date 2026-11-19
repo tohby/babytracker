@@ -6,11 +6,8 @@
  *   their Figma names (`color/background/canvas`). These are what components use.
  * - `primitives`: the "V2 · Primitives" collection. Only used to resolve aliases; never emitted as CSS or
  *   exposed to components.
- * - `legacyLight` / `legacyDark`: the V1 "Nappa Colors" tokens (Light and Dark A). Kept only while V1
- *   screens are being rebuilt; delete when nothing references them.
  *
- * A value in braces, e.g. '{slate/900}', is an alias, exactly like a Figma variable alias. V2 aliases
- * point at primitives; legacy aliases point at other legacy tokens.
+ * A value in braces, e.g. '{slate/900}', is an alias to a primitive, exactly like a Figma variable alias.
  *
  * After editing, run `npm run theme:generate`: it resolves every alias to its final value and writes the
  * `<color-tokens>` block in src/global.css (`color/background/canvas` -> `--color-background-canvas`,
@@ -211,154 +208,18 @@ const v2Dark: Record<V2ColorToken, Alias<Primitive>> = {
   'color/static/white': '{slate/0}',
 };
 
-/** V1 "Nappa Colors", Light. LEGACY: do not use in new work. */
-const legacyLight = {
-  // Palette
-  'lavender/100': '#eee7f8',
-  'lavender/300': '#c9b8e8',
-  'lavender/500': '#9b86d6',
-  'orange/100': '#fde6d3',
-  'orange/500': '#f28a3c',
-  'yellow/400': '#f6c65b',
-  'cream/50': '#fbf6f2',
-  white: '#ffffff',
-  'plum/200': '#e7dfea',
-  'plum/600': '#7a6a82',
-  'plum/900': '#3e2a47',
-  'mint/100': '#ddf2e8',
-  'mint/400': '#7fc8a9',
-  'neutral/numeral': '#dddde0',
-  'danger/500': '#d9564a',
-
-  // Roles
-  'text/hero-muted': '{plum/600}',
-  'text/on-accent': '{white}',
-  // Labels on accent/primary (orange). Dark plum in every theme: white on orange is 2.5:1 and fails WCAG AA.
-  'text/on-accent-ink': '{plum/900}',
-  'icon/on-accent': '{white}',
-  'accent/primary': '{orange/500}',
-  'accent/ring': 'rgba(255, 255, 255, 0.5)',
-  'surface/inverse': '{plum/900}',
-
-  // App background gradient
-  'bg/gradient-top': '#fbf6f2',
-  'bg/gradient-mid': '#fcede1',
-  'bg/gradient-bottom': '#eee7f8',
-
-  // Hero cards: base gradient plus blurred glow blobs
-  'hero/nap-start': '#fee8d6',
-  'hero/nap-end': '#facbba',
-  'hero/nap-blob-1': 'rgba(255, 226, 130, 0.8)',
-  'hero/nap-blob-2': 'rgba(246, 165, 180, 0.65)',
-  'hero/nap-blob-3': 'rgba(252, 170, 115, 0.55)',
-  'hero/feed-start': '#ece2f8',
-  'hero/feed-end': '#f4cee5',
-  'hero/feed-blob-1': 'rgba(190, 170, 240, 0.6)',
-  'hero/feed-blob-2': 'rgba(250, 175, 215, 0.7)',
-  'hero/feed-blob-3': 'rgba(185, 215, 245, 0.7)',
-  'hero/decor': 'rgba(255, 255, 255, 0.5)',
-
-  // Frosted glass surfaces
-  'glass/fill': 'rgba(255, 255, 255, 0.55)',
-  'glass/stroke': 'rgba(255, 255, 255, 0.7)',
-  'glass/nav-fill': 'rgba(255, 255, 255, 0.6)',
-  'glass/chip-fill': 'rgba(255, 255, 255, 0.6)',
-  'glass/chip-stroke': 'rgba(255, 255, 255, 0.7)',
-
-  'texture/grain': 'rgba(255, 255, 255, 0.02)',
-
-  // Shadow colours. Not Figma variables yet: they come from the effect styles
-  // `Glass/Card` / `Glass/Pill` and the Log FAB glow.
-  'shadow/glass': 'rgba(62, 42, 71, 0.07)',
-  'shadow/accent': 'rgba(242, 138, 51, 0.4)',
-  /** Selected segment in `Nav/Segmented`. */
-  'shadow/raised': 'rgba(61, 41, 71, 0.12)',
-
-  // Dims the screen behind a sheet or modal. Native iOS/Android sheets dim themselves;
-  // use this for custom overlays. Not plum/900, which turns near-white in dark.
-  scrim: 'rgba(62, 42, 71, 0.12)',
-
-  // Same in every theme (e.g. Sign in with Apple must stay black/white)
-  'static/black': '#000000',
-} as const;
-
-export type LegacyColorToken = keyof typeof legacyLight;
-
-/** V1 "Nappa Colors", Dark A. LEGACY. */
-const legacyDark: Record<LegacyColorToken, string> = {
-  'lavender/100': '#3a2d52',
-  'lavender/300': '#6f5aa6',
-  'lavender/500': '#b7a5ee',
-  'orange/100': '#4d3326',
-  'orange/500': '#ff9d55',
-  'yellow/400': '#f6c65b',
-  'cream/50': '#2c1f35',
-  white: '#35263f',
-  'plum/200': '#4a3856',
-  'plum/600': '#b9aac4',
-  'plum/900': '#f4eefa',
-  'mint/100': '#24423a',
-  'mint/400': '#8fd6b7',
-  'neutral/numeral': '#4a4452',
-  'danger/500': '#ff7a6e',
-
-  'text/hero-muted': '#e6dcef',
-  'text/on-accent': '{white}',
-  'text/on-accent-ink': '#3e2a47',
-  'icon/on-accent': '{white}',
-  'accent/primary': '{orange/500}',
-  'accent/ring': 'rgba(255, 255, 255, 0.5)',
-  'surface/inverse': '{plum/900}',
-
-  'bg/gradient-top': '#1b1222',
-  'bg/gradient-mid': '#261a31',
-  'bg/gradient-bottom': '#33254a',
-
-  'hero/nap-start': '#4d332e',
-  'hero/nap-end': '#664136',
-  'hero/nap-blob-1': 'rgba(217, 164, 65, 0.25)',
-  'hero/nap-blob-2': 'rgba(196, 106, 134, 0.35)',
-  'hero/nap-blob-3': 'rgba(224, 122, 58, 0.3)',
-  'hero/feed-start': '#3d3366',
-  'hero/feed-end': '#5a3b6e',
-  'hero/feed-blob-1': 'rgba(122, 99, 214, 0.4)',
-  'hero/feed-blob-2': 'rgba(196, 90, 154, 0.35)',
-  'hero/feed-blob-3': 'rgba(79, 120, 199, 0.4)',
-  'hero/decor': 'rgba(255, 255, 255, 0.08)',
-
-  'glass/fill': 'rgba(255, 255, 255, 0.07)',
-  'glass/stroke': 'rgba(255, 255, 255, 0.14)',
-  'glass/nav-fill': 'rgba(255, 255, 255, 0.07)',
-  'glass/chip-fill': 'rgba(27, 18, 34, 0.45)',
-  'glass/chip-stroke': 'rgba(255, 255, 255, 0.2)',
-
-  'texture/grain': 'rgba(255, 255, 255, 0.02)',
-
-  'shadow/glass': 'rgba(62, 42, 71, 0.07)',
-  'shadow/accent': 'rgba(242, 138, 51, 0.4)',
-  'shadow/raised': 'rgba(61, 41, 71, 0.12)',
-
-  scrim: 'rgba(8, 5, 12, 0.6)',
-
-  'static/black': '#000000',
-};
-
-export type ColorToken = V2ColorToken | LegacyColorToken;
+export type ColorToken = V2ColorToken;
 export type ThemeName = 'light' | 'dark';
 export type ResolvedColors = Record<ColorToken, string>;
 
-const sources: Record<ThemeName, { v2: Record<V2ColorToken, string>; legacy: Record<LegacyColorToken, string> }> = {
-  light: { v2: v2Light, legacy: legacyLight },
-  dark: { v2: v2Dark, legacy: legacyDark },
-};
+const sources: Record<ThemeName, Record<V2ColorToken, string>> = { light: v2Light, dark: v2Dark };
 
 const aliasOf = (value: string) => /^\{(.+)\}$/.exec(value)?.[1];
 
 /** Every token for a theme as a final colour string (aliases followed to the end). */
 export function resolveColors(theme: ThemeName): ResolvedColors {
-  const { v2, legacy } = sources[theme];
   const out = {} as ResolvedColors;
-  for (const [name, value] of Object.entries(v2) as [V2ColorToken, string][]) {
+  for (const [name, value] of Object.entries(sources[theme]) as [V2ColorToken, string][]) {
     const alias = aliasOf(value);
     if (!alias) {
       out[name] = value;
@@ -367,26 +228,17 @@ export function resolveColors(theme: ThemeName): ResolvedColors {
     if (!(alias in primitives)) throw new Error(`V2 colour "${name}" points at unknown primitive "${alias}"`);
     out[name] = primitives[alias as Primitive];
   }
-  const resolveLegacy = (name: LegacyColorToken, seen: string[]): string => {
-    const alias = aliasOf(legacy[name]) as LegacyColorToken | undefined;
-    if (!alias) return legacy[name];
-    if (!(alias in legacy)) throw new Error(`Colour token "${name}" points at unknown token "${alias}"`);
-    if (seen.includes(alias)) throw new Error(`Colour token alias loop: ${[...seen, alias].join(' -> ')}`);
-    return resolveLegacy(alias, [...seen, alias]);
-  };
-  for (const name of Object.keys(legacy) as LegacyColorToken[]) out[name] = resolveLegacy(name, [name]);
   return out;
 }
 
 /** Token names in emit order (V2 first). */
 export function tokenNames(): ColorToken[] {
-  return [...(Object.keys(v2Light) as V2ColorToken[]), ...(Object.keys(legacyLight) as LegacyColorToken[])];
+  return Object.keys(v2Light) as V2ColorToken[];
 }
 
 /**
  * Figma name to CSS variable. V2 drops the `color/` prefix because Tailwind's colour namespace adds it back:
  * 'color/background/canvas' -> '--color-background-canvas' (class `bg-background-canvas`).
- * Legacy: 'glass/fill' -> '--color-glass-fill'.
  */
 export function cssVariableName(token: ColorToken): string {
   return `--color-${token.replace(/^color\//, '').replace(/\//g, '-')}`;

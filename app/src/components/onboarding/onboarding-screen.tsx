@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChatRow } from '@/components/onboarding/chat-row';
 import { Icon } from '@/components/ui/icon';
 import { ScreenBackground } from '@/components/ui/screen-background';
-import { Shadows } from '@/constants/theme';
+import { Elevation } from '@/constants/theme';
 import { useThemeColors } from '@/hooks/use-theme-colors';
 
 type OnboardingScreenProps = {
@@ -45,15 +45,15 @@ export function OnboardingScreen({ progress, message, children, actions, centere
                 accessibilityRole="button"
                 accessibilityLabel={t('actions.back')}
                 onPress={() => router.back()}
-                style={{ boxShadow: Shadows.glass }}
-                className="size-[44px] items-center justify-center rounded-full border border-glass-stroke bg-glass-fill">
+                style={{ boxShadow: Elevation.card }}
+                className="size-[44px] items-center justify-center rounded-full border border-border-default bg-background-surface">
                 <Icon name="back" color={colors['color/icon/primary']} size={22} />
               </Pressable>
               <View
                 accessibilityRole="progressbar"
                 accessibilityValue={{ min: 0, max: 100, now: Math.round(progress * 100) }}
-                className="h-[6px] flex-1 overflow-hidden rounded-full bg-lavender-100 me-[44px]">
-                <View className="h-full rounded-full bg-accent-primary" style={{ width: `${Math.round(progress * 100)}%` }} />
+                className="h-[6px] flex-1 overflow-hidden rounded-full bg-feature-feed me-[44px]">
+                <View className="h-full rounded-full bg-primary-default" style={{ width: `${Math.round(progress * 100)}%` }} />
               </View>
             </View>
           ) : null}
