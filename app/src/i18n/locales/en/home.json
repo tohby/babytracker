@@ -99,7 +99,9 @@
     },
     "sync": {
       "local": "Saved on this phone",
-      "offline": "Offline · saved on phone"
+      "offline": "Offline · saved on phone",
+      "synced": "Synced",
+      "pending": "Waiting to sync"
     },
     "summary": {
       "title": "Today so far",

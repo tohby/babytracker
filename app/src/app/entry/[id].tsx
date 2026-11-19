@@ -23,6 +23,7 @@ import { formatDate, formatTime } from '@/lib/format';
 export default function EntryDetailScreen() {
   const { t } = useTranslation('timeline');
   const { t: tc } = useTranslation();
+  const { t: tHome } = useTranslation('home');
   const { prefs } = useFormatPrefs();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { name, events } = useLogContext();
@@ -72,7 +73,7 @@ export default function EntryDetailScreen() {
           <Text variant="body">{entry.note}</Text>
         </View>
       )}
-      <SyncStatus state="offline" label={t('detail.local')} />
+      <SyncStatus state={entry.pendingSync ? 'syncing' : 'synced'} label={entry.pendingSync ? t('detail.local') : tHome('v2.sync.synced')} />
       <View className="gap-sm">
         <Button hierarchy="secondary" label={t('detail.edit', { what })} onPress={() => router.push({ pathname: '/entry/edit', params: { id: entry.id } })} />
         <Button hierarchy="tertiary" size="medium" label={t('detail.delete')} onPress={() => setConfirming(true)} />

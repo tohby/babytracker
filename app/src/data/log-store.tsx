@@ -1,9 +1,9 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { randomUUID } from 'expo-crypto';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 
+import { loadLocal, migrateLegacy, saveLocalEventSync, saveLocalTimerSync } from '@/data/log-database';
 import { timerSideMs, type LogEvent, type RunningTimer, type Side } from '@/data/log-events';
-
-const STORAGE_KEY = 'nappa.log.v1';
+import { onSyncForeground, syncLogs } from '@/data/log-network';
 
 type Stored = { events: LogEvent[]; timer: RunningTimer | null };
 
@@ -11,6 +11,7 @@ export type NewEvent = Omit<LogEvent, 'id' | 'pendingSync' | 'createdAt' | 'upda
 
 type LogStore = {
   ready: boolean;
+  lastSyncSucceeded: boolean;
   events: LogEvent[];
   timer: RunningTimer | null;
   add: (event: NewEvent) => LogEvent;
@@ -28,116 +29,138 @@ type LogStore = {
 
 const Ctx = createContext<LogStore | null>(null);
 
-const newId = () => `local-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+const newId = randomUUID;
 
-/**
- * Local-first log: events and the running timer, saved on this phone (AsyncStorage) after every change.
- * Everything is `pendingSync` until the M2 events API exists.
- */
-export function LogStoreProvider({ children, loggedBy }: { children: ReactNode; loggedBy: string }) {
+/** Local-first log backed by account-scoped SQLite rows and an outbox. */
+export function LogStoreProvider({ children, loggedBy, account }: { children: ReactNode; loggedBy: string; account: string | null }) {
   const [state, setState] = useState<Stored>({ events: [], timer: null });
   const [ready, setReady] = useState(false);
-  const loaded = useRef(false);
+  const [lastSyncSucceeded, setLastSyncSucceeded] = useState(false);
+  const activeAccount = useRef(account);
+  const stateRef = useRef(state);
+  useEffect(() => { activeAccount.current = account; stateRef.current = state; }, [account, state]);
+  useEffect(() => () => { activeAccount.current = null; }, []);
 
   useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEY)
-      .then((raw) => {
-        if (raw) setState(JSON.parse(raw) as Stored);
-      })
-      .catch(() => {})
-      .finally(() => {
-        loaded.current = true;
-        setReady(true);
-      });
-  }, []);
+    if (!account) return;
+    let cancelled = false;
+    (async () => {
+      await migrateLegacy(account);
+      const local = await loadLocal(account);
+      if (cancelled) return;
+      stateRef.current = local;
+      setState(local);
+      setReady(true);
+    })().catch((error) => { if (!cancelled) console.error('Log storage unavailable', error); });
+    return () => { cancelled = true; };
+  }, [account]);
 
   useEffect(() => {
-    if (!loaded.current) return;
-    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(state)).catch(() => {});
-  }, [state]);
+    if (!ready || !account) return;
+    const refresh = () => { syncLogs(account, (next) => { if (activeAccount.current === account) { stateRef.current = next; setState(next); } })
+      .then((success) => { if (activeAccount.current === account) setLastSyncSucceeded(success); }).catch(() => {}); };
+    const unsubscribe = onSyncForeground(refresh);
+    const interval = setInterval(refresh, 30_000);
+    refresh();
+    return () => { unsubscribe(); clearInterval(interval); };
+  }, [ready, account]);
+
+  const persistTimer = useCallback((timer: RunningTimer | null) => {
+    if (!account || !ready) return;
+    saveLocalTimerSync(account, timer);
+    stateRef.current = { ...stateRef.current, timer };
+    setState((current) => ({ ...current, timer }));
+  }, [account, ready]);
 
   const add = useCallback(
     (input: NewEvent) => {
       const now = new Date().toISOString();
       const event: LogEvent = { ...input, loggedBy: input.loggedBy || loggedBy, id: newId(), pendingSync: true, createdAt: now, updatedAt: now };
+      if (!account || !ready) throw new Error('Log storage is not ready');
+      saveLocalEventSync(account, event);
+      stateRef.current = { ...stateRef.current, events: [...stateRef.current.events, event] };
       setState((s) => ({ ...s, events: [...s.events, event] }));
+      setLastSyncSucceeded(false);
+      syncLogs(account, (next) => { if (activeAccount.current === account) { stateRef.current = next; setState(next); } }).then((success) => { if (activeAccount.current === account) setLastSyncSucceeded(success); }).catch(() => {});
       return event;
     },
-    [loggedBy],
+    [loggedBy, account, ready],
   );
 
   const update = useCallback((id: string, patch: Partial<NewEvent>) => {
+    const original = stateRef.current.events.find((event) => event.id === id);
+    if (!original || !account || !ready) return;
+    const updated = { ...original, ...patch, pendingSync: true, updatedAt: new Date().toISOString() };
+    saveLocalEventSync(account, updated);
+    stateRef.current = { ...stateRef.current, events: stateRef.current.events.map((event) => event.id === id ? updated : event) };
     setState((s) => ({
       ...s,
-      events: s.events.map((e) => (e.id === id ? { ...e, ...patch, pendingSync: true, updatedAt: new Date().toISOString() } : e)),
+      events: s.events.map((event) => (event.id === id ? updated : event)),
     }));
-  }, []);
+    setLastSyncSucceeded(false);
+    syncLogs(account, (next) => { if (activeAccount.current === account) { stateRef.current = next; setState(next); } }).then((success) => { if (activeAccount.current === account) setLastSyncSucceeded(success); }).catch(() => {});
+  }, [account, ready]);
 
   const remove = useCallback((id: string) => {
-    let removed: LogEvent | undefined;
-    setState((s) => {
-      removed = s.events.find((e) => e.id === id);
-      return { ...s, events: s.events.filter((e) => e.id !== id) };
-    });
+    const removed = stateRef.current.events.find((event) => event.id === id);
+    if (!removed || !account || !ready) return () => {};
+    saveLocalEventSync(account, { ...removed, deletedAt: new Date().toISOString(), pendingSync: true });
+    stateRef.current = { ...stateRef.current, events: stateRef.current.events.filter((event) => event.id !== id) };
+    setState((s) => ({ ...s, events: s.events.filter((event) => event.id !== id) }));
+    setLastSyncSucceeded(false);
+    syncLogs(account, (next) => { if (activeAccount.current === account) { stateRef.current = next; setState(next); } }).then((success) => { if (activeAccount.current === account) setLastSyncSucceeded(success); }).catch(() => {});
     return () => {
-      if (removed) {
-        const back = removed;
-        setState((s) => ({ ...s, events: [...s.events, back] }));
-      }
+      const back = { ...removed, deletedAt: undefined, pendingSync: true, updatedAt: new Date().toISOString() };
+      saveLocalEventSync(account, back);
+      stateRef.current = { ...stateRef.current, events: [...stateRef.current.events.filter((event) => event.id !== id), back] };
+      setState((s) => ({ ...s, events: [...s.events.filter((event) => event.id !== id), back] }));
+      setLastSyncSucceeded(false);
+      syncLogs(account, (next) => { if (activeAccount.current === account) { stateRef.current = next; setState(next); } }).then((success) => { if (activeAccount.current === account) setLastSyncSucceeded(success); }).catch(() => {});
     };
-  }, []);
+  }, [account, ready]);
 
   const startTimer = useCallback<LogStore['startTimer']>((kind, babyId, opts) => {
     const startedAt = opts?.startedAt ?? new Date().toISOString();
-    setState((s) => ({
-      ...s,
-      timer: {
+    persistTimer({
         kind,
         babyId,
         startedAt,
         pausedMs: 0,
         ...(kind === 'nursing' ? { side: opts?.side, sideStartedAt: opts?.side ? startedAt : undefined, sideMs: { left: 0, right: 0 } } : {}),
-      },
-    }));
-  }, []);
+    });
+  }, [persistTimer]);
 
   const pauseTimer = useCallback(() => {
-    setState((s) => {
-      if (!s.timer || s.timer.pausedAt) return s;
+      const timer = stateRef.current.timer;
+      if (!timer || timer.pausedAt) return;
       const now = Date.now();
-      const sideMs = s.timer.kind === 'nursing' ? timerSideMs(s.timer, now) : s.timer.sideMs;
-      return { ...s, timer: { ...s.timer, pausedAt: new Date(now).toISOString(), sideMs, sideStartedAt: undefined } };
-    });
-  }, []);
+      const sideMs = timer.kind === 'nursing' ? timerSideMs(timer, now) : timer.sideMs;
+      persistTimer({ ...timer, pausedAt: new Date(now).toISOString(), sideMs, sideStartedAt: undefined });
+  }, [persistTimer]);
 
   const resumeTimer = useCallback(() => {
-    setState((s) => {
-      if (!s.timer?.pausedAt) return s;
+      const timer = stateRef.current.timer;
+      if (!timer?.pausedAt) return;
       const now = Date.now();
-      return {
-        ...s,
-        timer: {
-          ...s.timer,
+      persistTimer({
+          ...timer,
           pausedAt: undefined,
-          pausedMs: s.timer.pausedMs + (now - Date.parse(s.timer.pausedAt)),
-          sideStartedAt: s.timer.side ? new Date(now).toISOString() : undefined,
-        },
-      };
-    });
-  }, []);
+          pausedMs: timer.pausedMs + (now - Date.parse(timer.pausedAt)),
+          sideStartedAt: timer.side ? new Date(now).toISOString() : undefined,
+      });
+  }, [persistTimer]);
 
   const switchSide = useCallback((side: Side) => {
-    setState((s) => {
-      if (!s.timer || s.timer.kind !== 'nursing') return s;
+      const timer = stateRef.current.timer;
+      if (!timer || timer.kind !== 'nursing') return;
       const now = Date.now();
-      const sideMs = timerSideMs(s.timer, now);
-      return { ...s, timer: { ...s.timer, side, sideMs, sideStartedAt: s.timer.pausedAt ? undefined : new Date(now).toISOString() } };
-    });
-  }, []);
+      const sideMs = timerSideMs(timer, now);
+      persistTimer({ ...timer, side, sideMs, sideStartedAt: timer.pausedAt ? undefined : new Date(now).toISOString() });
+  }, [persistTimer]);
 
   const stopTimer = useCallback(
     (extra?: Partial<NewEvent>) => {
-      const timer = state.timer;
+      const timer = stateRef.current.timer;
       if (!timer) return null;
       const now = Date.now();
       const sides = timerSideMs(timer, now);
@@ -150,18 +173,24 @@ export function LogStoreProvider({ children, loggedBy }: { children: ReactNode; 
         ...(timer.kind === 'nursing' ? { nursing: { leftMs: sides.left, rightMs: sides.right, lastSide: timer.side ?? 'left' } } : {}),
         ...extra,
       };
-      const event = add(base);
-      setState((s) => ({ ...s, timer: null }));
+      if (!account || !ready) throw new Error('Log storage is not ready');
+      const createdAt = new Date().toISOString();
+      const event: LogEvent = { ...base, id: newId(), pendingSync: true, createdAt, updatedAt: createdAt };
+      saveLocalEventSync(account, event, true);
+      stateRef.current = { ...stateRef.current, events: [...stateRef.current.events, event], timer: null };
+      setState((current) => ({ ...current, events: [...current.events, event], timer: null }));
+      setLastSyncSucceeded(false);
+      syncLogs(account, (next) => { if (activeAccount.current === account) { stateRef.current = next; setState(next); } }).then((success) => { if (activeAccount.current === account) setLastSyncSucceeded(success); }).catch(() => {});
       return event;
     },
-    [state.timer, add, loggedBy],
+    [account, ready, loggedBy],
   );
 
-  const discardTimer = useCallback(() => setState((s) => ({ ...s, timer: null })), []);
+  const discardTimer = useCallback(() => persistTimer(null), [persistTimer]);
 
   const value = useMemo<LogStore>(
-    () => ({ ready, events: state.events, timer: state.timer, add, update, remove, startTimer, pauseTimer, resumeTimer, switchSide, stopTimer, discardTimer }),
-    [ready, state, add, update, remove, startTimer, pauseTimer, resumeTimer, switchSide, stopTimer, discardTimer],
+    () => ({ ready, lastSyncSucceeded, events: state.events, timer: state.timer, add, update, remove, startTimer, pauseTimer, resumeTimer, switchSide, stopTimer, discardTimer }),
+    [ready, lastSyncSucceeded, state, add, update, remove, startTimer, pauseTimer, resumeTimer, switchSide, stopTimer, discardTimer],
   );
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

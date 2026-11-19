@@ -1,7 +1,6 @@
 /**
  * Logged events. Raw values only (ISO timestamps, ms, ml, grams, mm, enums); the UI formats them at render
- * time. There is no events API yet (M2), so every event lives on this phone and carries `pendingSync: true`
- * until a server confirms it. Screens say so honestly ("saved on this phone").
+ * time. Server change numbers determine sync order; local timestamps are for display only.
  */
 
 import type { LogType } from '@/constants/log-types';
@@ -34,6 +33,8 @@ export type LogEvent = {
   /** Display name of whoever logged it. */
   loggedBy: string;
   pendingSync: boolean;
+  deletedAt?: string;
+  changeNumber?: number;
   createdAt: string;
   updatedAt: string;
 };

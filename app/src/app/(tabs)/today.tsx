@@ -40,7 +40,7 @@ export default function TodayScreen() {
   const now = useNow(timerTick());
   const { user, offline: sessionOffline } = useSession();
   const { baby, loading: babiesLoading, failed } = useCurrentBaby();
-  const { ready, timer, pauseTimer, resumeTimer, stopTimer } = useLogStore();
+  const { ready, lastSyncSucceeded, timer, pauseTimer, resumeTimer, stopTimer } = useLogStore();
   const events = useBabyEvents(baby?.id);
   const describe = useEventText(events);
   const { prefs } = useFormatPrefs();
@@ -199,7 +199,7 @@ export default function TodayScreen() {
         <Text variant="heading" accessibilityRole="header">
           {t('sinceLast.heading')}
         </Text>
-        <SyncStatus state="offline" label={offline ? t('v2.sync.offline') : t('v2.sync.local')} />
+        <SyncStatus state={offline ? 'offline' : pending ? 'syncing' : lastSyncSucceeded ? 'synced' : 'offline'} label={offline ? t('v2.sync.offline') : pending ? t('v2.sync.pending') : lastSyncSucceeded ? t('v2.sync.synced') : t('v2.sync.local')} />
       </View>
       <View className="flex-row gap-md">
         <SinceLastTile tone="feed" label={feedTile.label} value={feedTile.value} detail={feedTile.detail} accessibilityLabel={feedTile.a11y} onPress={() => router.push('/log/feed')} />

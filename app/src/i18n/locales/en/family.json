@@ -43,10 +43,10 @@
     "waiting_one": "{{count}} waiting",
     "waiting_other": "{{count}} waiting",
     "ok": "OK",
-    "banner_one": "{{count}} entry is saved on this phone and will sync once family sync is available.",
-    "banner_other": "{{count}} entries are saved on this phone and will sync once family sync is available.",
-    "safeTitle": "Nothing is ever lost",
-    "safeBody": "Every entry is saved on the phone first, then synced. If two phones log the same thing, you can keep both or pick one.",
+    "banner_one": "{{count}} entry is saved on this phone and waiting to sync.",
+    "banner_other": "{{count}} entries are saved on this phone and waiting to sync.",
+    "safeTitle": "Your entries stay on this phone",
+    "safeBody": "Entries are saved on this phone first, then synced when the connection is available.",
     "how": "How syncing works"
   },
   "switcher": {

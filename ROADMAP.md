@@ -22,7 +22,7 @@ _Last updated: 2026-11-15_
 
 Sign-up and login (API and screens), onboarding, and a baby profile with units and locale settings. Nothing else can store data until this exists. Also the **i18n foundation** (translation library, `en` resources, format helpers, Home strings extracted), done before new screens are built so none need retrofitting; see [docs/i18n.md](docs/i18n.md). Done = a new user can create an account, add a baby on a real device and see their name on Home from the API.
 
-### M2: Logging core — `todo`
+### M2: Logging core — `in progress`
 
 Events table and API; quick-log for sleep, feeds and diapers; live sleep and nursing timers with left/right side; edit, delete and backdate; offline-first queue; Home tiles driven by real data. Done = a parent can run a full day on Nappa without touching sample data.
 

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\AvatarController;
 use App\Http\Controllers\Api\V1\BabyController;
+use App\Http\Controllers\Api\V1\BabyEventController;
 use App\Http\Controllers\Api\V1\OnboardingController;
 use App\Http\Controllers\Api\V1\PasswordController;
 use App\Http\Controllers\Api\V1\PinController;
@@ -56,5 +57,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::post('onboarding/complete', [OnboardingController::class, 'complete'])->name('onboarding.complete');
 
         Route::apiResource('babies', BabyController::class);
+        Route::get('babies/{baby}/events', [BabyEventController::class, 'index'])->name('babies.events.index');
+        Route::put('babies/{baby}/events/{id}', [BabyEventController::class, 'upsert'])->whereUuid('id')->name('babies.events.upsert');
     });
 });

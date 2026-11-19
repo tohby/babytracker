@@ -18,7 +18,7 @@ import { AppSplash } from '@/components/splash/app-splash';
 import { TALL_SHEET_DETENT } from '@/components/ui/bottom-sheet';
 import { ToastProvider } from '@/components/ui/toast';
 import { Radius } from '@/constants/theme';
-import { LogStoreProvider } from '@/data/log-store';
+import { LogStoreProvider, useLogStore } from '@/data/log-store';
 import { TimelineFilterProvider } from '@/data/timeline-filter';
 import { FormatPrefsProvider } from '@/hooks/use-format-prefs';
 import { SessionProvider, useSession } from '@/hooks/use-session';
@@ -58,7 +58,7 @@ export default function RootLayout() {
 function ThemedNavigation() {
   const { theme } = useUniwind();
   const colors = useThemeColors();
-  const { status, offline, user } = useSession();
+  const { status, offline, user, account } = useSession();
   const insets = useSafeAreaInsets();
   const signedIn = status === 'signedIn';
   // Offline at launch there's no user yet: go to the app rather than restart onboarding.
@@ -94,7 +94,7 @@ function ThemedNavigation() {
   return (
     <ThemeProvider value={navigationTheme}>
       <FormatPrefsProvider>
-      <LogStoreProvider loggedBy={user?.name ?? user?.email ?? ''}>
+      <LogStoreProvider key={signedIn ? (user?.email ?? account?.email)?.trim().toLowerCase() ?? 'unknown' : 'signed-out'} loggedBy={user?.name ?? account?.name ?? user?.email ?? ''} account={signedIn ? (user?.email ?? account?.email)?.trim().toLowerCase() ?? null : null}>
       <TimelineFilterProvider>
       {/* Toasts sit above the tab bar (64 + 8 above the home indicator, plus 12). */}
       <ToastProvider bottomOffset={insets.bottom + 84}>
@@ -138,9 +138,14 @@ function ThemedNavigation() {
           checked. Offline at launch: the session is kept and the splash says so before hiding. */}
       </ToastProvider>
       </TimelineFilterProvider>
+      <LogReadySplash sessionReady={status !== 'loading'} signedIn={signedIn} offline={offline} />
       </LogStoreProvider>
       </FormatPrefsProvider>
-      <AppSplash ready={status !== 'loading'} problem={offline ? 'offline' : undefined} />
     </ThemeProvider>
   );
+}
+
+function LogReadySplash({ sessionReady, signedIn, offline }: { sessionReady: boolean; signedIn: boolean; offline: boolean }) {
+  const { ready } = useLogStore();
+  return <AppSplash ready={sessionReady && (!signedIn || ready)} problem={offline ? 'offline' : undefined} />;
 }
