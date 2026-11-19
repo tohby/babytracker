@@ -1,4 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+
+import { loadDevPreviewUser } from '@/lib/dev-preview';
 import { Platform } from 'react-native';
 
 import { ApiError, NetworkError } from '@/lib/api';
@@ -56,6 +58,11 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let cancelled = false;
     (async () => {
+      const preview = await loadDevPreviewUser();
+      if (preview) {
+        if (!cancelled) setState({ status: 'signedIn', user: preview, account: null, signedOutReason: null, offline: false });
+        return;
+      }
       const [account, refreshToken] = await Promise.all([loadAccount(), loadRefreshToken()]);
       if (!refreshToken) {
         if (!cancelled) setState((s) => ({ ...s, status: 'signedOut', account }));

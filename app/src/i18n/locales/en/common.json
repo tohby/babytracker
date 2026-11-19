@@ -4,7 +4,8 @@
     "timeline": "Timeline",
     "insights": "Insights",
     "family": "Family",
-    "logEvent": "Log an event"
+    "logEvent": "Log an event",
+    "log": "Log"
   },
   "actions": {
     "back": "Back",
@@ -47,7 +48,8 @@
       "kg": "{{value}} kg",
       "lb": "{{value}} lb"
     },
-    "countdown": "{{minutes}}:{{seconds}}"
+    "countdown": "{{minutes}}:{{seconds}}",
+    "timer": "{{hours}}:{{minutes}}:{{seconds}}"
   },
   "a11y": {
     "stepperValue": "{{what}}: {{amount}} {{unit}}",

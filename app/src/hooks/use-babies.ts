@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { useSession } from '@/hooks/use-session';
 import { authedRequest } from '@/lib/auth/tokens';
+import { isDevPreviewUser } from '@/lib/dev-preview';
 import type { Baby } from '@/lib/onboarding/endpoints';
 
 type BabiesState = {
@@ -39,6 +40,10 @@ export function useBabies(): BabiesState & { reload: () => void } {
           // Ignore a damaged cache; the API answer replaces it.
         }
       }
+      if (isDevPreviewUser(user)) {
+        if (!cancelled) setState((s) => ({ ...s, loading: false }));
+        return;
+      }
       try {
         const { data } = await authedRequest<{ data: Baby[] }>('/v1/babies');
         if (cancelled) return;
@@ -51,6 +56,7 @@ export function useBabies(): BabiesState & { reload: () => void } {
     return () => {
       cancelled = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `user` only matters for the dev preview flag.
   }, [userId, version]);
 
   const reload = useCallback(() => setVersion((v) => v + 1), []);

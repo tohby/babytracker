@@ -10,7 +10,7 @@ const STATES: SplashStatus[] = ['loading', 'slow', 'offline', 'error'];
  */
 export default function DevSplashPreview() {
   const { state } = useLocalSearchParams<{ state?: string }>();
-  if (!__DEV__) return <Redirect href="/home" />;
+  if (!__DEV__) return <Redirect href="/today" />;
   const status = STATES.find((s) => s === state) ?? 'loading';
   return <BrandSplash status={status} onRetry={() => {}} />;
 }

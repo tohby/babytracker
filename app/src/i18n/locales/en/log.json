@@ -21,6 +21,49 @@
     "resume": "Resume",
     "pause": "Pause",
     "stopAndSave": "Stop & save",
-    "openRunning": "{{label}}, {{elapsed}}. Opens the timer."
+    "openRunning": "{{label}}, {{elapsed}}. Opens the timer.",
+    "accessorySleep": "{{name}} is napping",
+    "accessoryNursingLeft": "Nursing · Left",
+    "accessoryNursingRight": "Nursing · Right",
+    "accessoryPumping": "Pumping"
+  },
+  "types": {
+    "feed": "Feed",
+    "sleep": "Sleep",
+    "nappy": "Nappy",
+    "nursing": "Nursing",
+    "pumping": "Pumping",
+    "solids": "Solids",
+    "medicine": "Medicine",
+    "growth": "Growth",
+    "bath": "Bath",
+    "tummy": "Tummy time",
+    "activity": "Activity"
+  },
+  "quick": {
+    "title": "What happened?",
+    "subtitle": "For {{name}} · now, {{time}}",
+    "search": "Type or say it…",
+    "searchLabel": "Search what to log",
+    "more": "More to log",
+    "repeat": "Quick repeat",
+    "sameBottle": "Same bottle again",
+    "sameBottleDetail": "{{amount}} {{milk}} · last at {{time}}",
+    "startNap": "Start a nap now",
+    "startNapDetail": "Awake {{awake}}",
+    "startNapDetailWindow": "Awake {{awake}} · window opens {{time}}",
+    "noMatch": "Nothing matches “{{query}}”."
+  },
+  "milk": {
+    "formula": "formula",
+    "breast": "breast milk",
+    "mixed": "mixed"
+  },
+  "saved": {
+    "feed": "Feed logged · {{time}}",
+    "nap": "Nap saved · {{time}}",
+    "napStarted": "Nap timer started · {{time}}",
+    "nappy": "Nappy logged · {{time}}",
+    "generic": "{{what}} logged · {{time}}"
   }
 }

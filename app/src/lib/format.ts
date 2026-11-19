@@ -132,6 +132,17 @@ export function formatCountdown(totalSeconds: number): string {
   });
 }
 
+/** A running timer, "00:42:10" (tabular; hours always shown). */
+export function formatTimer(ms: number): string {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const two = { minimumIntegerDigits: 2 } as const;
+  return i18n.t('units.timer', {
+    hours: formatNumber(Math.floor(total / 3600), two),
+    minutes: formatNumber(Math.floor((total % 3600) / 60), two),
+    seconds: formatNumber(total % 60, two),
+  });
+}
+
 /** Milliseconds between two moments (b defaults to now). Never negative. */
 export function elapsedMs(from: Date | string | number, to: Date | string | number = Date.now()): number {
   return Math.max(0, toDate(to).getTime() - toDate(from).getTime());

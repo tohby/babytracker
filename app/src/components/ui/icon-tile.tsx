@@ -24,6 +24,7 @@ export function IconTile({
   size = 'M',
   compact = false,
   round = false,
+  px,
 }: {
   icon: IconName;
   tone?: IconTileTone;
@@ -31,10 +32,12 @@ export function IconTile({
   compact?: boolean;
   /** The timer mini bar uses a circular tile. */
   round?: boolean;
+  /** Exact box size where an instance is resized in Figma (the 36 pt tab-bar accessory tile). */
+  px?: number;
 }) {
   const box = compact ? 'size-avatar-sm rounded-sm' : size === 'L' ? 'size-control-md rounded-md' : 'size-avatar-md rounded-sm';
   return (
-    <View className={`items-center justify-center ${box} ${round ? 'rounded-full' : ''} ${fill[tone]}`}>
+    <View style={px ? { width: px, height: px } : undefined} className={`items-center justify-center ${box} ${round ? 'rounded-full' : ''} ${fill[tone]}`}>
       <Icon name={icon} size={compact ? 16 : size === 'L' ? 24 : 20} tone={tone === 'error' ? 'color/status/error' : 'color/icon/primary'} />
     </View>
   );

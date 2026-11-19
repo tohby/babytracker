@@ -1,10 +1,13 @@
 import type { ReactNode } from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, useWindowDimensions, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { IconButton } from '@/components/ui/icon-button';
 import { Text } from '@/components/ui/text';
+
+/** Tall sheets open to 92% of the screen (use as the route's `sheetAllowedDetents`). */
+export const TALL_SHEET_DETENT = 0.92;
 
 /**
  * Figma `Bottom sheet` (Size × Content slot): the body of every sheet route. The route itself is presented as a
@@ -33,6 +36,7 @@ export function BottomSheet({
 }) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+  const { height: windowHeight } = useWindowDimensions();
   // Figma: 10 top (under the grabber), 20 sides, 34 bottom (home indicator).
   const bottom = Math.max(insets.bottom, 34);
   const header = (
@@ -52,18 +56,26 @@ export function BottomSheet({
   );
 
   if (size === 'tall') {
+    // The ScrollView is the sheet's root: react-native-screens sizes a form sheet's scroll view to the sheet
+    // itself, so wrapping it in another view offsets it (content overlapped or off-screen). The header is its
+    // sticky first child. The actions sit at the bottom when the content is short and follow it when it's long
+    // (true pinning isn't possible with the scroll view as root; see gaps list).
     return (
-      <View className="flex-1 bg-background-surface-raised">
-        <View className="px-page pt-xl">{header}</View>
-        <ScrollView contentContainerClassName="gap-page px-page pt-page pb-xl" keyboardShouldPersistTaps="handled">
-          {children}
-        </ScrollView>
+      <ScrollView
+        style={{ height: windowHeight * TALL_SHEET_DETENT }}
+        className="bg-background-surface-raised"
+        stickyHeaderIndices={[0]}
+        contentInsetAdjustmentBehavior="never"
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled">
+        <View className="bg-background-surface-raised px-page pb-page pt-xl">{header}</View>
+        <View className="flex-1 gap-page px-page pb-xl">{children}</View>
         {actions && (
-          <View className="gap-sm px-page pt-md" style={{ paddingBottom: bottom }}>
+          <View className="gap-sm bg-background-surface-raised px-page pt-md" style={{ paddingBottom: bottom }}>
             {actions}
           </View>
         )}
-      </View>
+      </ScrollView>
     );
   }
 
