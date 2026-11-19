@@ -5,7 +5,7 @@ import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { IconButton } from '@/components/ui/icon-button';
-import { AppIcon, Mascot, type MascotPose } from '@/components/ui/mascot';
+import { Mascot, type MascotPose } from '@/components/ui/mascot';
 import { ScreenBackground } from '@/components/ui/screen-background';
 import { Text } from '@/components/ui/text';
 
@@ -23,8 +23,8 @@ type AuthScreenProps = {
 };
 
 /**
- * Shared layout for the Sign in screens (Figma "Sign in" page): gradient, hero, title, content,
- * actions at the bottom. Scrolls when the keyboard or long (German) text needs the room.
+ * Shared layout for the V2 auth screens (A03–A08): back button, title block, content, full-width actions at the
+ * bottom. Scrolls when the keyboard or long (German) text needs the room.
  */
 export function AuthScreen({ hero = 'icon', title, subtitle, canGoBack = false, children, actions }: AuthScreenProps) {
   const { top, bottom } = useSafeAreaInsets();
@@ -37,27 +37,37 @@ export function AuthScreen({ hero = 'icon', title, subtitle, canGoBack = false, 
         <ScrollView
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ flexGrow: 1, paddingTop: top + 8, paddingBottom: bottom + 16 }}
+          contentContainerStyle={{ flexGrow: 1, paddingTop: top + 8, paddingBottom: bottom + 6 }}
           contentContainerClassName="px-page">
           <View className="h-[48px] flex-row items-center">
             {canGoBack ? <IconButton icon="back" label={t('actions.back')} onPress={() => router.back()} /> : null}
           </View>
 
-          <View className="items-center gap-lg pt-sm">
-            {hero === 'icon' ? <AppIcon /> : <Mascot pose={hero} size={176} />}
-            <View className="w-full items-center gap-sm">
-              <Text variant="title-large" className="text-center" accessibilityRole="header">
+          {/* V2 A03–A08: forms open on a left-aligned Title/Large + Body; state screens keep their panda. */}
+          <View className="gap-xl pt-sm">
+            {hero !== 'icon' && (
+              <View className="items-center">
+                <Mascot pose={hero} size={176} />
+              </View>
+            )}
+            <View className="gap-sm">
+              <Text variant="title-large" accessibilityRole="header">
                 {title}
               </Text>
-              {subtitle ? <Text className="text-center">{subtitle}</Text> : null}
+              {subtitle ? (
+                <Text variant="body" tone="secondary">
+                  {subtitle}
+                </Text>
+              ) : null}
             </View>
           </View>
 
-          <View className="w-full gap-xl pt-xl">{children}</View>
+          <View className="w-full gap-lg pt-xl">{children}</View>
 
           {/* Pushes the actions to the bottom when there's room; follows the content when there isn't. */}
           <View className="min-h-[24px] flex-1" />
-          {actions ? <View className="w-full items-center gap-sm">{actions}</View> : null}
+          {/* Full-width actions, primary bottom edge 40 above the home indicator (Figma "Footer actions"). */}
+          {actions ? <View className="w-full gap-sm">{actions}</View> : null}
         </ScrollView>
       </KeyboardAvoidingView>
     </View>
