@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\EmailAuthCode;
 use Carbon\CarbonImmutable;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
@@ -62,7 +63,11 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function configureRateLimits(): void
     {
-        $email = fn (Request $request): string => 'email:'.mb_strtolower(trim((string) $request->input('email')));
+        $email = function (Request $request): string {
+            $input = $request->input('email');
+
+            return 'email:'.(is_string($input) ? mb_strtolower(trim($input)) : '');
+        };
 
         RateLimiter::for('api-auth', fn (Request $request): array => [
             Limit::perMinute(10)->by($email($request).'|'.$request->ip()),
@@ -81,7 +86,18 @@ class AppServiceProvider extends ServiceProvider
             Limit::perHour(20)->by($request->route()?->getName().'|ip:'.$request->ip()),
         ]);
 
+        RateLimiter::for('auth-email-code', fn (Request $request): array => [
+            Limit::perMinute(1)->by('code|'.$email($request).'|'.($request->input('intent') === EmailAuthCode::SIGN_IN ? 'sign-in' : 'create')),
+            Limit::perHour(5)->by('code|hour|'.$email($request)),
+            Limit::perHour(20)->by('code|ip:'.$request->ip()),
+        ]);
+
         RateLimiter::for('auth-refresh', fn (Request $request): Limit => Limit::perMinute(60)->by('refresh|ip:'.$request->ip()));
+
+        RateLimiter::for('auth-delete-code', fn (Request $request): array => [
+            Limit::perMinute(1)->by('delete-code|user:'.$request->user()?->id),
+            Limit::perHour(5)->by('delete-code|hour|user:'.$request->user()?->id),
+        ]);
 
         // Delete account, sign out everywhere, set PIN, upload avatar.
         RateLimiter::for('auth-sensitive', fn (Request $request): Limit => Limit::perMinute(5)->by('sensitive|user:'.$request->user()?->id));

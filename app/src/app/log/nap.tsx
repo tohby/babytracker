@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { LogForm } from '@/components/log/log-form';
@@ -11,7 +11,7 @@ import { SegmentedControl } from '@/components/ui/segmented-control';
 import { Text } from '@/components/ui/text';
 import { useLogStore } from '@/data/log-store';
 import { elapsedMs, formatDuration, formatTime } from '@/lib/format';
-import { predictNextNap } from '@/lib/prediction';
+import { useNapPrediction } from '@/hooks/use-nap-prediction';
 
 /** V2-D02 Log a nap (`Sheet content/Log a nap`): start a timer now, or add a past nap. */
 export default function LogNapSheet() {
@@ -23,7 +23,7 @@ export default function LogNapSheet() {
   const [end, setEnd] = useState<number | null>(null);
   const [note, setNote] = useState('');
   const lastWake = events.find((e) => e.type === 'sleep' && e.endAt)?.endAt;
-  const prediction = useMemo(() => predictNextNap(events, baby?.birth_date ?? null, now, baby?.usual_wake_time ?? null), [events, baby, now]);
+  const prediction = useNapPrediction(events, baby, now);
   const startAt = start ?? now;
   const endBeforeStart = mode === 'past' && end !== null && end <= startAt;
 

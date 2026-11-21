@@ -1,8 +1,7 @@
 import { Pressable, View } from 'react-native';
 
 import { Icon, type IconName } from '@/components/ui/icon';
-import { Text, type TextTone } from '@/components/ui/text';
-import type { V2ColorToken } from '@/constants/color-tokens';
+import { Text } from '@/components/ui/text';
 
 export type ChipStyle = 'outline' | 'selected' | 'neutral' | 'sleep' | 'feed' | 'nappy' | 'care';
 
@@ -33,13 +32,11 @@ const fill: Record<ChipStyle, string> = {
 /** Figma `Chip` (Style × Size). Wraps to a new line in groups; never truncates. */
 export function Chip({ label, variant = 'outline', size = 'medium', leadingIcon, onPress, selected, className = '' }: ChipProps) {
   const isSelected = variant === 'selected';
-  const textTone: TextTone = isSelected ? 'on-primary' : 'primary';
-  const iconTone: V2ColorToken = isSelected ? 'color/icon/on-primary' : 'color/icon/primary';
   const box = `flex-row items-center self-start gap-xs rounded-full ${size === 'medium' ? 'h-control-sm px-lg' : 'h-[28px] px-md'} ${fill[variant]} ${className}`;
   const content = (
     <>
-      {leadingIcon && <Icon name={leadingIcon} tone={iconTone} size={size === 'medium' ? 16 : 14} />}
-      <Text variant={size === 'medium' ? 'label-large' : 'label-small'} tone={textTone}>
+      {leadingIcon && <Icon name={leadingIcon} tone="color/icon/primary" size={size === 'medium' ? 16 : 14} />}
+      <Text variant={size === 'medium' ? 'label-large' : 'label-small'}>
         {label}
       </Text>
     </>

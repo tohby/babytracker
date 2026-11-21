@@ -10,6 +10,8 @@ export type AuthProblem =
   | { kind: 'offline' }
   | { kind: 'deviceForgotten' }
   | { kind: 'invalidCode' }
+  | { kind: 'expiredCode' }
+  | { kind: 'emailInUse' }
   | { kind: 'tooManyRequests'; until: number }
   | { kind: 'validation'; fields: Record<string, string[]> }
   | { kind: 'generic' };
@@ -30,6 +32,10 @@ export function toAuthProblem(error: unknown): AuthProblem {
       return { kind: 'deviceForgotten' };
     case 'invalid_code':
       return { kind: 'invalidCode' };
+    case 'code_expired':
+      return { kind: 'expiredCode' };
+    case 'email_in_use':
+      return { kind: 'emailInUse' };
     case 'validation_failed':
       return { kind: 'validation', fields: error.fields };
     default:

@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -17,7 +17,7 @@ import { Text } from '@/components/ui/text';
 import { useToast } from '@/components/ui/toast';
 import { ageLabel } from '@/lib/age-label';
 import { elapsedMs, formatDuration, formatTime } from '@/lib/format';
-import { predictNextNap } from '@/lib/prediction';
+import { useNapPrediction } from '@/hooks/use-nap-prediction';
 import { scheduleReminder } from '@/lib/reminders';
 
 /** V2-F04 Next nap, F07 still learning, F08 under 2 months: one route, three honest states. */
@@ -31,7 +31,7 @@ export default function NextNapScreen() {
     if (result === 'scheduled') toast.show({ message: t('nextNap.reminderSet', { time: formatTime(at) }) });
     if (result === 'denied') toast.show({ message: t('reminderDenied') });
   };
-  const p = useMemo(() => predictNextNap(events, baby?.birth_date ?? null, now, baby?.usual_wake_time ?? null), [events, baby, now]);
+  const p = useNapPrediction(events, baby, now);
   const age = baby ? ageLabel(baby.birth_date) : '';
   const sub = t('learning.subtitle', { name, age });
 

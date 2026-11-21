@@ -2,9 +2,9 @@
 
 **Goal:** A global baby tracker (naps, feeds, diapers, sleep predictions) that matches Huckleberry's free logging, beats it on trust, reliability and calm design, and gives nap prediction away honestly. Research: [docs/competitor/](docs/competitor/huckleberry.md) ([landscape](docs/competitor/landscape.md)).
 
-**Status:** M0 done · M1 next (nothing in progress) · Home UI is built on sample data, backend has only `/api/ping`.
+**Status:** M0 done · M1 in progress · M2 logging and sync implementation in progress.
 
-_Last updated: 2026-11-15_
+_Last updated: 2026-11-21_
 
 ---
 
@@ -18,9 +18,11 @@ _Last updated: 2026-11-15_
 
 ## Milestones
 
-### M1: Accounts and baby profile — `todo`
+### M1: Accounts, baby setup and quick unlock — `in progress`
 
-Sign-up and login (API and screens), onboarding, and a baby profile with units and locale settings. Nothing else can store data until this exists. Also the **i18n foundation** (translation library, `en` resources, format helpers, Home strings extracted), done before new screens are built so none need retrofitting; see [docs/i18n.md](docs/i18n.md). Done = a new user can create an account, add a baby on a real device and see their name on Home from the API.
+The [Nov 21 onboarding designs](https://www.figma.com/design/uRRG0z2UlrjjeuCzmTUE4G?node-id=429-2) define the intro, email-code sign-in and account creation, optional device-only quick unlock, and five baby setup steps through the first prediction and Today. Quick unlock includes PIN creation and confirmation, biometric enrolment, the root lock gate, persistent retry pauses and email-code recovery. Quick unlock settings need design.
+
+Device verification covers new and returning accounts, OTP paste and autofill, PIN retry and recovery, and Face ID or fingerprint in native builds. Social sign-in setup and the remaining glossary and unit settings stay on [the board](TASKS.md).
 
 ### M2: Logging core — `in progress`
 
@@ -58,4 +60,3 @@ Pricing model and paywall, opt-in notifications, widgets, data export and accoun
 - **Privacy:** baby data is sensitive. Decide hosting region and retention policy before launch. Current host is Hostinger shared hosting; check it is adequate for a global launch.
 - **Competitor pricing data is unreliable.** Verify in the stores before committing to price points.
 - **Localisation:** every new screen from M1 on must be translatable (no hard-coded text). Outfit has no Chinese glyphs, and a Chinese UI is not the same as launching in mainland China; see risks in [docs/i18n.md](docs/i18n.md).
-- **Uncommitted work:** Home UI, theme and Uniwind changes sit uncommitted on `main`. Commit before starting M1.

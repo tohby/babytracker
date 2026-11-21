@@ -7,6 +7,9 @@
     "icon": "./assets/images/icon.png",
     "scheme": "nappa",
     "userInterfaceStyle": "automatic",
+    "ios": {
+      "bundleIdentifier": "com.madebyidia.nappa"
+    },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#FDCDC0",

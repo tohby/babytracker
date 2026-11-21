@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -30,7 +30,7 @@ import { useSession } from '@/hooks/use-session';
 import { elapsedMs, formatDate, formatDuration, formatNumber, formatTime, formatTimer } from '@/lib/format';
 import { getGreetingPeriod } from '@/lib/greeting';
 import { dayTotals, feedDue, lastOf, sevenDayAverage, startOfDay } from '@/lib/log-summary';
-import { predictNextNap } from '@/lib/prediction';
+import { useNapPrediction } from '@/hooks/use-nap-prediction';
 
 const TIP_KEY = 'nappa.tip.logButton';
 
@@ -47,10 +47,7 @@ export default function TodayScreen() {
   const [showTip, setShowTip] = useState(false);
   const name = baby?.name ?? '';
 
-  const prediction = useMemo(
-    () => predictNextNap(events, baby?.birth_date ?? null, now, baby?.usual_wake_time ?? null),
-    [events, baby, now],
-  );
+  const prediction = useNapPrediction(events, baby, now);
   const firstDay = ready && events.length === 0;
   useEffect(() => {
     if (!firstDay) return;

@@ -10,6 +10,7 @@ import enPrediction from './locales/en/prediction.json';
 import enSettings from './locales/en/settings.json';
 import enSplash from './locales/en/splash.json';
 import enTimeline from './locales/en/timeline.json';
+import enUnlock from './locales/en/unlock.json';
 
 /**
  * All translation resources. `en` is the source of truth and the fallback.
@@ -29,6 +30,7 @@ export const resources = {
     settings: enSettings,
     splash: enSplash,
     timeline: enTimeline,
+    unlock: enUnlock,
   },
 } as const;
 

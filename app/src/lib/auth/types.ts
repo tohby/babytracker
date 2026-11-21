@@ -4,6 +4,7 @@ export type User = {
   name: string | null;
   email: string;
   email_verified: boolean;
+  has_password?: boolean;
   locale: string | null;
   avatar_url: string | null;
   onboarding: { last_step: string | null; completed: boolean };
@@ -33,6 +34,8 @@ export type RememberedAccount = {
   name: string | null;
   avatarUrl: string | null;
   pinEnabled: boolean;
+  /** Last authenticated profile, used to resume setup offline. */
+  profile?: User;
 };
 
 export type Platform = 'ios' | 'android';

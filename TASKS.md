@@ -53,22 +53,12 @@ do it by editing the file. Both edit the same file, so they stay in sync.
     Blocked on the IDs above, not on code. Apple sends name/email only on first sign-in: send them to the API then. Account deletion must revoke the Apple token (needs the .p8). Can slip to M2 without blocking M1.
     ```
 
-### Build login and create-account screens
+### Quick unlock settings need design
 
-  - tags: [M1, @tobi]
-  - priority: high
-  - workload: Normal
-    ```md
-    Figma: 06 Login (19:241) and Onboarding 00-2 / 00-2b.
-    ```
-
-### Build onboarding flow (about baby, last wake, first prediction)
-
-  - tags: [M1, @tobi]
+  - tags: [M1, @tobi, needs-design]
   - priority: medium
-  - workload: Hard
     ```md
-    Figma: Onboarding section 24:261, frames 00-1 to 00-5b.
+    Design change PIN, biometrics toggle, and turn quick unlock off.
     ```
 
 ### Settings: units (ml/oz, kg/lb), date format, diaper/nappy wording
@@ -283,9 +273,85 @@ do it by editing the file. Both edit the same file, so they stay in sync.
     ```
 
 
+### Verify onboarding and quick unlock on devices
+
+  - tags: [M1, @tobi]
+  - priority: high
+  - workload: Hard
+  - steps:
+    - [x] iOS simulator intro, wrong and valid email codes, PIN mismatch, cold lock, setup and Today
+    - [x] iOS simulator 60-second background lock, five-try lockout across restart, and email recovery
+    - [ ] iOS and Android native builds including physical Face ID and fingerprint
+    - [ ] Email OTP autofill and expired-code UI on a physical device
+    - [ ] Biometric denial and enrolment changes on a physical device
+    - [ ] Compare A01–D10 and long German layouts with the Nov 21 Figma page
+
 ## Blocked
 
 ## Done
+
+### Intro screens
+
+  - tags: [M1, @tobi]
+    ```md
+    Sleeping, Feeding and Happy with Continue, Skip and Log in. [Figma A01–A03](https://www.figma.com/design/uRRG0z2UlrjjeuCzmTUE4G?node-id=429-4)
+    ```
+
+### Email-code sign-in and create account
+
+  - tags: [M1, @tobi]
+    ```md
+    Six-digit code input, paste and autofill. API error codes drive wrong-code, expiry and email-in-use states. [Figma C01–C06](https://www.figma.com/design/uRRG0z2UlrjjeuCzmTUE4G?node-id=429-137)
+    ```
+
+### Baby setup and first prediction
+
+  - tags: [M1, @tobi]
+    ```md
+    Five steps. B03–B05 can be skipped. B06 leads to Today. [Figma B01–B06](https://www.figma.com/design/uRRG0z2UlrjjeuCzmTUE4G?node-id=429-32)
+    ```
+
+### Create and confirm a device PIN
+
+  - tags: [M1, @tobi]
+    ```md
+    Four digits, salted hash in SecureStore, and a confirmation mismatch state. [Figma D02–D04](https://www.figma.com/design/uRRG0z2UlrjjeuCzmTUE4G?node-id=429-254)
+    ```
+
+### Choose quick unlock and enable biometrics
+
+  - tags: [M1, @tobi]
+    ```md
+    Offer enrolled biometrics with a backup PIN and platform-specific labels. [Figma D01, D05–D06](https://www.figma.com/design/uRRG0z2UlrjjeuCzmTUE4G?node-id=429-238)
+    ```
+
+### Root unlock gate and repeated lockout
+
+  - tags: [M1, @tobi]
+    ```md
+    Cold start and 60-second background lock. A persisted failure counter controls escalating pauses. [Figma D07–D09](https://www.figma.com/design/uRRG0z2UlrjjeuCzmTUE4G?node-id=429-334)
+    ```
+
+### Recover a forgotten PIN with an email code
+
+  - tags: [M1, @tobi]
+    ```md
+    Verify the same email account and require a new PIN before unlocking. [Figma D07–D09, C01–C04](https://www.figma.com/design/uRRG0z2UlrjjeuCzmTUE4G?node-id=429-334)
+    ```
+
+### Biometrics unavailable state
+
+  - tags: [M1, @tobi]
+    ```md
+    System Settings or PIN fallback when biometrics are denied or no longer enrolled. [Figma D10](https://www.figma.com/design/uRRG0z2UlrjjeuCzmTUE4G?node-id=429-382)
+    ```
+
+### Import onboarding tokens and 3D mascot assets
+
+  - tags: [M1, @tobi]
+    ```md
+    Four brand tokens and selected state aligned. Nine Figma poses exported at 1×, 2× and 3×. [Figma Nov 21 exploration and Mascot asset library](https://www.figma.com/design/uRRG0z2UlrjjeuCzmTUE4G?node-id=429-2)
+    ```
 
 ### Add a 12 step to Spacing in theme.ts and drop the 2px step
 

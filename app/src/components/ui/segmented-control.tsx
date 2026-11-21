@@ -31,7 +31,7 @@ export function SegmentedControl<T extends string>({
             accessibilityState={{ selected }}
             onPress={() => onChange(option.value)}
             className={`flex-1 items-center justify-center rounded-full px-sm ${selected ? 'bg-state-selected' : 'active:bg-state-pressed-surface'}`}>
-            <Text variant="label-large" tone={selected ? 'on-primary' : 'secondary'} numberOfLines={1}>
+            <Text variant="label-large" tone={selected ? 'primary' : 'secondary'} numberOfLines={1}>
               {option.label}
             </Text>
           </Pressable>

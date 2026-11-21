@@ -22,6 +22,7 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'email_verified' => $this->email_verified_at !== null,
+            'has_password' => $this->password !== null,
             'locale' => $this->locale,
             // Short-lived signed link to the private file; null means the app shows the initials chip.
             'avatar_url' => $this->avatar_path

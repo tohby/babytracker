@@ -1,9 +1,13 @@
 <?php
 
+use App\Auth\DeviceSessions;
 use App\Models\Baby;
 use App\Models\Device;
 use App\Models\User;
+use App\Notifications\AccountDeletionCode;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Notifications\AnonymousNotifiable;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\Sanctum;
 
@@ -39,6 +43,60 @@ describe('delete account', function () {
         $this->deleteJson(route('api.v1.me.destroy'), ['password' => 'wrong'], bearer($tokens['access_token']))
             ->assertUnauthorized()
             ->assertExactJson(['code' => 'invalid_credentials']);
+    });
+
+    test('a passwordless account can delete itself with an email code scoped to its device', function () {
+        Notification::fake();
+        $user = User::factory()->create(['password' => null]);
+        $sessions = app(DeviceSessions::class);
+        [$firstDevice, $secret] = $sessions->createDevice($user, 'ios');
+        [$secondDevice, $otherSecret] = $sessions->createDevice($user, 'ios');
+        $first = $sessions->signIn($firstDevice, $secret)['access_token'];
+        $second = $sessions->signIn($secondDevice, $otherSecret)['access_token'];
+
+        $this->getJson(route('api.v1.me'), bearer($first))->assertOk()->assertJsonPath('data.has_password', false);
+        $this->postJson('/api/v1/me/delete-code', [], bearer($first))->assertAccepted()
+            ->assertExactJson(['status' => 'verification_sent']);
+        $code = Notification::sent(new AnonymousNotifiable, AccountDeletionCode::class)->sole()->code;
+
+        $this->deleteJson(route('api.v1.me.destroy'), ['code' => $code], bearer($second))
+            ->assertUnprocessable()->assertExactJson(['code' => 'invalid_code']);
+        $this->deleteJson(route('api.v1.me.destroy'), ['code' => $code === '000000' ? '111111' : '000000'], bearer($first))
+            ->assertUnprocessable()->assertExactJson(['code' => 'invalid_code']);
+        expect(User::find($user->id))->not->toBeNull();
+        $this->deleteJson(route('api.v1.me.destroy'), ['code' => $code], bearer($first))->assertNoContent();
+        expect(User::find($user->id))->toBeNull()->and(Device::count())->toBe(0);
+        $this->deleteJson(route('api.v1.me.destroy'), ['code' => $code], bearer($first))->assertUnauthorized();
+    });
+
+    test('a passwordless account receives an expiry code and resend limits', function () {
+        Notification::fake();
+        $user = User::factory()->create(['password' => null]);
+        $sessions = app(DeviceSessions::class);
+        [$device, $secret] = $sessions->createDevice($user, 'ios');
+        $token = $sessions->signIn($device, $secret)['access_token'];
+        $this->freezeTime();
+
+        $this->postJson('/api/v1/me/delete-code', [], bearer($token))->assertAccepted();
+        $this->postJson('/api/v1/me/delete-code', [], bearer($token))->assertTooManyRequests();
+        $code = Notification::sent(new AnonymousNotifiable, AccountDeletionCode::class)->sole()->code;
+
+        $this->travel(10)->minutes();
+        $this->deleteJson(route('api.v1.me.destroy'), ['code' => $code], bearer($token))
+            ->assertUnprocessable()->assertExactJson(['code' => 'code_expired']);
+        expect(User::find($user->id))->not->toBeNull();
+    });
+
+    test('password accounts continue to require the password for deletion', function () {
+        Notification::fake();
+        $tokens = apiSignIn(User::factory()->create());
+        expect($tokens['user']['has_password'])->toBeTrue();
+
+        $this->postJson('/api/v1/me/delete-code', [], bearer($tokens['access_token']))
+            ->assertConflict()->assertExactJson(['code' => 'password_required']);
+        $this->deleteJson(route('api.v1.me.destroy'), ['code' => '123456'], bearer($tokens['access_token']))
+            ->assertUnprocessable()->assertJsonPath('errors.password', ['required']);
+        Notification::assertNothingSent();
     });
 });
 

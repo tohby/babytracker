@@ -1,5 +1,4 @@
 import { authedRequest } from '@/lib/auth/tokens';
-import type { User } from '@/lib/auth/types';
 import type { FeedingMethod } from '@/lib/onboarding/answers';
 
 export type Baby = {
@@ -17,13 +16,12 @@ type BabyInput = {
   birth_date: string;
   timezone: string;
   feeding_method: FeedingMethod | null;
-  usual_wake_time: string | null;
+  usual_wake_time?: string | null;
 };
 
 /** Profile, baby and onboarding progress (api/routes/api.php). */
 export const onboardingApi = {
-  updateProfile: (body: { name?: string | null; locale?: string }) =>
-    authedRequest<{ data: User }>('/v1/me', { method: 'PATCH', body }),
+  listBabies: () => authedRequest<{ data: Baby[] }>('/v1/babies'),
 
   createBaby: (body: BabyInput) => authedRequest<{ data: Baby }>('/v1/babies', { method: 'POST', body }),
 

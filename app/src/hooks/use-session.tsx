@@ -4,10 +4,11 @@ import { loadDevPreviewUser } from '@/lib/dev-preview';
 import { Platform } from 'react-native';
 
 import { ApiError, NetworkError } from '@/lib/api';
-import { authApi } from '@/lib/auth/endpoints';
+import { authApi, type EmailIntent } from '@/lib/auth/endpoints';
 import { clearAll, loadAccount, loadRefreshToken, saveAccount } from '@/lib/auth/storage';
 import { clearTokens, onSessionExpired, refresh, storeTokens } from '@/lib/auth/tokens';
 import type { RememberedAccount, TokenResponse, User } from '@/lib/auth/types';
+import { forgetUnlockRecord } from '@/lib/unlock/storage';
 
 export type SessionStatus = 'loading' | 'signedOut' | 'signedIn';
 
@@ -23,15 +24,8 @@ type SessionState = {
 };
 
 type SessionActions = {
-  /** Email + password. Reuses this phone's device when the email matches the remembered account. */
-  signIn: (email: string, password: string) => Promise<void>;
-  /** Remembered phone, password only. */
-  signInWithPassword: (password: string) => Promise<void>;
-  /** Start sign-up; an email code follows. */
-  register: (email: string, password: string, locale: string) => Promise<void>;
-  /** Finish sign-up with the 6-digit code; signs in. */
-  verifyEmail: (email: string, code: string) => Promise<void>;
-  /** Sign out on this phone. It stays remembered, so the next sign-in is password only. */
+  verifyEmailCode: (email: string, intent: EmailIntent, code: string, beforeSignIn?: () => Promise<void>) => Promise<void>;
+  /** Sign out on this phone. The email stays remembered for the next sign-in. */
   signOut: () => Promise<void>;
   /** "Not you?": forget the account on this phone. */
   forgetAccount: () => Promise<void>;
@@ -71,12 +65,15 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       try {
         await refresh();
         const me = await authApi.me();
-        if (!cancelled) setState({ status: 'signedIn', user: me.data, account, signedOutReason: null, offline: false });
+        if (cancelled) return;
+        const remembered = account?.email === me.data.email ? { ...account, profile: me.data } : account;
+        if (remembered) void saveAccount(remembered).catch(() => {});
+        setState({ status: 'signedIn', user: me.data, account: remembered, signedOutReason: null, offline: false });
       } catch (error) {
         if (cancelled) return;
         if (error instanceof NetworkError) {
           // Offline: keep the session; requests renew it when the connection is back.
-          setState({ status: 'signedIn', user: null, account, signedOutReason: null, offline: true });
+          setState({ status: 'signedIn', user: account?.profile ?? null, account, signedOutReason: null, offline: true });
         } else {
           const expired = error instanceof ApiError && error.code === 'refresh_invalid';
           setState({ status: 'signedOut', user: null, account, signedOutReason: expired ? 'expired' : null, offline: false });
@@ -111,6 +108,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         name: user.name,
         avatarUrl: user.avatar_url,
         pinEnabled: tokens.device.pin_enabled,
+        profile: user,
       };
       await saveAccount(account);
     }
@@ -121,48 +119,19 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     setState({ status: 'signedIn', user, account, signedOutReason: null, offline: false });
   }, []);
 
-  const signIn = useCallback(
-    async (email: string, password: string) => {
+  const verifyEmailCode = useCallback(
+    async (email: string, intent: EmailIntent, code: string, beforeSignIn?: () => Promise<void>) => {
       const previous = state.account;
-      const reuse = previous && previous.email.toLowerCase() === email.trim().toLowerCase();
-      const tokens = await authApi.login({
+      const reuse = !beforeSignIn && previous && previous.email.toLowerCase() === email.trim().toLowerCase();
+      const tokens = await authApi.verifyEmailCode({
         email: email.trim(),
-        password,
+        intent,
+        code,
         platform,
         ...(reuse ? { device_id: previous.deviceId, device_secret: previous.deviceSecret } : {}),
       });
+      await beforeSignIn?.();
       await completeSignIn(tokens, previous);
-    },
-    [state.account, completeSignIn],
-  );
-
-  const signInWithPassword = useCallback(
-    async (password: string) => {
-      const account = state.account;
-      if (!account) throw new ApiError(401, 'device_revoked');
-      try {
-        const tokens = await authApi.deviceLogin({ device_id: account.deviceId, device_secret: account.deviceSecret, password });
-        await completeSignIn(tokens, account);
-      } catch (error) {
-        // The server forgot this phone (signed out everywhere, password reset): fall back to the email form.
-        if (error instanceof ApiError && error.code === 'device_revoked') {
-          await clearAll();
-          setState((s) => ({ ...s, account: null, signedOutReason: null }));
-        }
-        throw error;
-      }
-    },
-    [state.account, completeSignIn],
-  );
-
-  const register = useCallback(async (email: string, password: string, locale: string) => {
-    await authApi.register({ email: email.trim(), password, locale, consent: true });
-  }, []);
-
-  const verifyEmail = useCallback(
-    async (email: string, code: string) => {
-      const tokens = await authApi.verify({ email: email.trim(), code, platform });
-      await completeSignIn(tokens, state.account);
     },
     [state.account, completeSignIn],
   );
@@ -179,21 +148,22 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       await authApi.forgetDevice({ device_id: account.deviceId, device_secret: account.deviceSecret }).catch(() => {});
     }
     await clearTokens();
+    if (account?.email) await forgetUnlockRecord(account.email).catch(() => {});
     await clearAll();
     setState((s) => ({ ...s, status: 'signedOut', user: null, account: null, signedOutReason: null }));
   }, [state.account]);
 
   const updateUser = useCallback((user: User) => {
     setState((s) => {
-      const account = s.account && s.account.email === user.email ? { ...s.account, name: user.name, avatarUrl: user.avatar_url } : s.account;
+      const account = s.account && s.account.email === user.email ? { ...s.account, name: user.name, avatarUrl: user.avatar_url, profile: user } : s.account;
       if (account && account !== s.account) saveAccount(account).catch(() => {});
       return { ...s, user, account };
     });
   }, []);
 
   const value = useMemo<Session>(
-    () => ({ ...state, signIn, signInWithPassword, register, verifyEmail, signOut, forgetAccount, updateUser }),
-    [state, signIn, signInWithPassword, register, verifyEmail, signOut, forgetAccount, updateUser],
+    () => ({ ...state, verifyEmailCode, signOut, forgetAccount, updateUser }),
+    [state, verifyEmailCode, signOut, forgetAccount, updateUser],
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;

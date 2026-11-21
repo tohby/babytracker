@@ -2,28 +2,23 @@ import { request } from '@/lib/api';
 import { authedRequest } from '@/lib/auth/tokens';
 import type { Platform, TokenResponse, User } from '@/lib/auth/types';
 
-/** The sign-up, sign-in and account endpoints (api/routes/api.php). */
+export type EmailIntent = 'sign_in' | 'create_account';
+
+/** Account endpoints (api/routes/api.php). */
 export const authApi = {
-  register: (body: { email: string; password: string; locale?: string; consent: boolean }) =>
-    request<{ status: 'verification_sent' }>('/v1/auth/register', { method: 'POST', body }),
+  sendEmailCode: (body: { email: string; intent: EmailIntent; locale: string; consent?: boolean }) =>
+    request<{ status: 'verification_sent' }>('/v1/auth/email-code', { method: 'POST', body }),
 
-  resendCode: (email: string) =>
-    request<{ status: 'verification_sent' }>('/v1/auth/register/resend', { method: 'POST', body: { email } }),
-
-  verify: (body: { email: string; code: string; platform: Platform }) =>
-    request<TokenResponse>('/v1/auth/register/verify', { method: 'POST', body }),
-
-  login: (body: { email: string; password: string; platform: Platform; device_id?: string; device_secret?: string }) =>
-    request<TokenResponse>('/v1/auth/login', { method: 'POST', body }),
-
-  deviceLogin: (body: { device_id: string; device_secret: string; password: string }) =>
-    request<TokenResponse>('/v1/auth/device-login', { method: 'POST', body }),
+  verifyEmailCode: (body: { email: string; intent: EmailIntent; code: string; platform: Platform; device_id?: string; device_secret?: string }) =>
+    request<TokenResponse>('/v1/auth/email-code/verify', { method: 'POST', body }),
 
   forgetDevice: (body: { device_id: string; device_secret: string }) =>
     request<void>('/v1/auth/forget-device', { method: 'POST', body }),
 
-  forgotPassword: (email: string) =>
-    request<{ status: 'reset_link_sent' }>('/v1/auth/password/forgot', { method: 'POST', body: { email } }),
+  sendDeleteCode: () => authedRequest<{ status: 'verification_sent' }>('/v1/me/delete-code', { method: 'POST' }),
+
+  deleteAccount: (proof: { password: string } | { code: string }) =>
+    authedRequest<void>('/v1/me', { method: 'DELETE', body: proof }),
 
   logout: (forgetDevice = false) => authedRequest<void>('/v1/auth/logout', { method: 'POST', body: { forget_device: forgetDevice } }),
 

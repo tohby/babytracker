@@ -1,263 +1,105 @@
 {
-  "intro": {
-    "title": "Hi, I’m Nappa",
-    "body": "I’ll learn your baby’s rhythm and tell you when the next nap is coming.",
-    "start": "Let’s go",
-    "haveAccount": "I already have an account",
-    "promise": "Calmer days start with knowing what’s next",
-    "continue": "Continue"
-  },
   "continue": "Continue",
-  "continueCount_one": "Continue · {{count}} selected",
-  "continueCount_other": "Continue · {{count}} selected",
-  "letsGo": "Let’s go",
+  "optional": "OPTIONAL",
+  "skip": "Skip for now",
   "notNow": "Not now",
-  "skip": "Skip",
-  "babyName": {
-    "message": "What’s your little one called?",
-    "label": "Baby’s name",
-    "placeholder": "Name"
+  "stepCount": "{{step}} / {{total}}",
+  "stepSeparator": "·",
+  "saveError": "Couldn’t save. Please try again.",
+  "intro": {
+    "skip": "Skip",
+    "start": "Get started",
+    "haveAccount": "Already have an account?",
+    "login": "Log in",
+    "nap": {
+      "title": "The next nap, already worked out.",
+      "subtitle": "Nappa learns your baby’s rhythm and predicts the next nap and feed. No maths at 3am.",
+      "card": "Next nap",
+      "detail": "1:40 – 2:10 pm",
+      "badge": "in 25 min"
+    },
+    "feed": {
+      "title": "Log it in one tap. Even half asleep.",
+      "subtitle": "Naps, feeds and nappies in a single tap. Fix the time later if you need to.",
+      "card": "Bottle feed logged",
+      "detail": "{{amount}} · just now",
+      "badge": "Undo"
+    },
+    "family": {
+      "title": "Everyone who helps, on the same page.",
+      "subtitle": "Invite a partner, grandparent or nanny. Every log syncs to everyone straight away.",
+      "card": "Grandma logged a nappy",
+      "detail": "Synced · 2 min ago",
+      "initialsOne": "KM",
+      "initialsTwo": "GM"
+    }
   },
-  "parentName": {
-    "message": "Lovely name! And what should I call you?",
-    "label": "Your name",
-    "placeholder": "Your name"
-  },
-  "reward": {
-    "message": "{{baby}} and {{parent}} — my favourite new team!",
-    "messageNoParent": "{{baby}} and you — my favourite new team!"
-  },
-  "getToKnow": {
-    "message": "First, let’s get to know {{baby}} a little."
-  },
-  "birthday": {
-    "message": "When was {{baby}} born?",
-    "day": "Day",
-    "month": "Month",
-    "year": "Year",
-    "age": "{{baby}} is {{age}} old",
-    "notBornYet": "{{baby}} isn’t born yet. That’s fine, Nappa will be ready."
-  },
-  "age": {
-    "months_one": "{{count}} month",
-    "months_other": "{{count}} months",
-    "weeks_one": "{{count}} week",
-    "weeks_other": "{{count}} weeks",
-    "days_one": "{{count}} day",
-    "days_other": "{{count}} days",
-    "pair": "{{first}}, {{second}}"
+  "about": {
+    "title": "Who are we looking after?",
+    "subtitle": "A first name is plenty. You can add a photo later.",
+    "name": "Baby’s first name",
+    "nameExample": "Ada",
+    "birthday": "Birthday",
+    "done": "Done",
+    "birthdayHint": "Predictions are matched to her age.",
+    "guardian": "I’m {{name}}’s parent or legal guardian",
+    "guardianGeneric": "I’m the parent or legal guardian",
+    "twins": "Twins? Add another baby",
+    "twinsUnavailable": "You can set up one baby in this version."
   },
   "feeding": {
-    "message": "How is {{baby}} fed right now?",
-    "breast_milk": {
-      "title": "Breast milk",
-      "subtitle": "Nursing or expressed"
-    },
-    "formula": {
-      "title": "Formula",
-      "subtitle": "Bottle feeds"
-    },
-    "combination": {
-      "title": "A bit of both",
-      "subtitle": "Combination feeding"
-    },
-    "solids": {
-      "title": "Starting solids",
-      "subtitle": "Purées or baby-led"
-    }
+    "title": "How is {{name}} fed right now?",
+    "subtitle": "Pick the closest. You can change it any time.",
+    "breast_milk": { "title": "Breast milk", "detail": "Nursing or expressed" },
+    "formula": { "title": "Formula", "detail": "Bottle feeds" },
+    "combination": { "title": "A bit of both", "detail": "Combination feeding" },
+    "solids": { "title": "Starting solids", "detail": "Purées or baby-led" },
+    "units": "Units · from your phone ({{region}})",
+    "uk": "UK",
+    "unitsNoRegion": "Units · from your phone",
+    "ml": "ml", "oz": "oz", "kg": "kg", "lb": "lb"
   },
-  "hardest": {
-    "message": "What feels hardest right now? Pick all that fit.",
-    "shortNaps": "Short naps",
-    "nightWakings": "Night wakings",
-    "whenToFeed": "Knowing when to feed",
-    "nappies": "Keeping track of nappies",
-    "sharing": "Sharing with my partner"
-  },
-  "wakeTime": {
-    "message": "What time does {{baby}} usually wake up?",
-    "hour": "Hour",
-    "minute": "Minutes",
-    "period": "AM or PM",
-    "hint": "Mornings anchor the whole day"
-  },
-  "wakeWindows": {
-    "message": "Here’s why that matters.",
-    "title": "Babies {{baby}}’s age stay happily awake for about {{range}}",
-    "body": "Past that window they get overtired and fight sleep. Nappa counts it for you from the moment {{baby}} wakes.",
-    "awake": "Awake",
-    "sweetSpot": "Sweet spot",
-    "overtired": "Overtired",
-    "submit": "Makes sense"
-  },
-  "hoursRange": "{{min}}–{{max}} hours",
-  "reminders": {
-    "message": "Want me to nudge you before {{baby}} gets sleepy?",
-    "previewTitle": "Nap window in 15 min",
-    "previewTime": "now",
-    "previewBody": "{{baby}}’s been awake {{awake}}. Start winding down 🌙",
-    "promise": "One gentle nudge per nap. No spam, ever.",
-    "allow": "Allow reminders"
-  },
-  "reminderTiming": {
-    "message": "When should I give you the heads-up?",
-    "5": {
-      "title": "5 min before",
-      "subtitle": "Just enough to finish up"
-    },
-    "15": {
-      "title": "15 min before",
-      "subtitle": "Recommended for wind-down"
-    },
-    "30": {
-      "title": "30 min before",
-      "subtitle": "Great for bath + story"
-    },
-    "onlyWhenAsked": {
-      "title": "Only when I ask",
-      "subtitle": "I’ll check the app myself"
-    }
-  },
-  "sleepOpener": {
-    "message": "Now the big one — let’s talk sleep.",
-    "chip": "Part 2 · Sleep"
-  },
-  "sleepNeed": {
-    "message": "Quick fact for babies {{baby}}’s age:",
-    "hours": "{{min}}–{{max}}h",
-    "body": "of sleep every 24 hours, naps included",
-    "source": {
-      "nsf": {
-        "title": "National Sleep Foundation",
-        "detail": "Recommended hours for newborns 0–3 months (2015)"
-      },
-      "aasmInfant": {
-        "title": "American Academy of Sleep Medicine",
-        "detail": "Recommended hours for infants 4–12 months (2016)"
-      },
-      "aasmToddler": {
-        "title": "American Academy of Sleep Medicine",
-        "detail": "Recommended hours for toddlers 1–2 years (2016)"
-      },
-      "aasmPreschool": {
-        "title": "American Academy of Sleep Medicine",
-        "detail": "Recommended hours for children 3–5 years (2016)"
-      }
-    }
-  },
-  "sleepYesterday": {
-    "message": "Roughly how long did {{baby}} sleep yesterday?",
-    "unit": "h",
-    "label": "Hours of sleep",
-    "inRange": "Right in the healthy range",
-    "under": "A little under the usual range",
-    "over": "A little over the usual range",
-    "hint": "A rough guess is fine — Nappa learns the real number as you log."
-  },
-  "napPlace": {
-    "message": "Where does {{baby}} usually nap?",
-    "cot": {
-      "title": "In the cot",
-      "subtitle": "Same spot as night sleep"
-    },
-    "contact": {
-      "title": "Contact naps",
-      "subtitle": "On me or my partner"
-    },
-    "onTheMove": {
-      "title": "Pram or car",
-      "subtitle": "On the move"
-    },
-    "changes": {
-      "title": "It changes every day",
-      "subtitle": "No two days alike"
-    }
-  },
-  "weight": {
-    "message": "Last weigh-in — how much was {{baby}}?",
-    "label": "Weight",
-    "kg": "kg",
-    "lb": "lb",
-    "hint": "Not sure? Skip it — you can add it after the next check-up."
+  "wake": {
+    "title": "When did {{name}} last wake up?",
+    "subtitle": "This sets her first prediction. A rough guess is fine.",
+    "now": "Just now",
+    "halfHour": "30 min ago",
+    "hour": "1 hour ago",
+    "earlier": "Earlier",
+    "choose": "Pick the exact time",
+    "around": "Around {{time}}",
+    "hint": "Not sure? Nappa corrects itself as you log naps."
   },
   "carers": {
-    "message": "Who else looks after {{baby}}? I can keep everyone in sync.",
-    "partner": {
-      "title": "My partner",
-      "subtitle": "Shares logs in real time"
-    },
-    "grandparents": {
-      "title": "Grandparents",
-      "subtitle": "See naps, skip the details"
-    },
-    "nanny": {
-      "title": "Nanny or childminder",
-      "subtitle": "Logs while you’re away"
-    },
-    "justMe": {
-      "title": "Just me for now",
-      "subtitle": "Invite people later"
-    },
-    "summaryJustMe": "Just you",
-    "summaryOthers_one": "{{name}} + {{count}}",
-    "summaryOthers_other": "{{name}} + {{count}}"
+    "title": "Who else looks after {{name}}?",
+    "subtitle": "We’ll set up invites once you’re in. Nothing is sent yet.",
+    "partner": { "title": "Partner", "detail": "Sees and logs everything" },
+    "grandparents": { "title": "Grandparent", "detail": "Great for weekends and sleepovers" },
+    "nanny": { "title": "Nanny or childminder", "detail": "Logs while they’re with {{name}}" },
+    "justMe": { "title": "Just me for now", "detail": "You can invite people later" }
   },
-  "glance": {
-    "message": "Here’s what I know about {{baby}} so far.",
-    "feeding": "Feeding",
-    "wakes": "Usually wakes",
-    "naps": "Naps",
-    "weight": "Weight",
-    "carers": "Carers",
-    "notSet": "Not set",
-    "hint": "Tap any line to change it.",
-    "submit": "Looks right",
-    "edit": "Change {{item}}"
+  "reminders": {
+    "title": "Want a nudge before naps?",
+    "subtitle": "Nothing is on until you choose. We never send marketing.",
+    "nap": { "title": "Nap reminders", "detail": "5 minutes before the nap window opens" },
+    "feed": { "title": "Feed reminders", "detail": "When it’s been a while since a feed" },
+    "sync": { "title": "Sync problems", "detail": "Only if a log can’t be saved" },
+    "hint": "Your phone will ask for permission next. You can change this in Settings.",
+    "allow": "Allow reminders"
   },
-  "saveError": {
-    "title": "Couldn’t save just now",
-    "detail": "Check your connection and try again. Your answers are safe on this phone."
-  },
-  "personalising": {
-    "title": "Personalising {{baby}}’s plan…",
-    "step1": "Reading {{baby}}’s age and feeds",
-    "step2": "Mapping wake windows",
-    "step3": "Timing nap reminders",
-    "step4": "Writing the daily rhythm",
-    "hint": "This only takes a few seconds.",
-    "dummyQuestion": "Quick one while I work — does {{baby}} use a dummy?",
-    "dummyDetail": "It changes how I time wind-down.",
-    "yes": "Yes",
-    "no": "No",
-    "sometimes": "Sometimes"
-  },
-  "planReveal": {
-    "eyebrow": "{{baby}}’s plan is ready",
-    "title": "Steady naps by {{date}}",
-    "today": "Today",
-    "week2": "Week 2",
-    "week3": "Week 3",
-    "caption": "Nap predictability as Nappa learns {{baby}}’s rhythm",
-    "submit": "See {{baby}}’s day"
-  },
-  "rhythm": {
-    "message": "Here’s a gentle rhythm to start with. I’ll adjust it as you log.",
-    "wake": {
-      "title": "Wake up",
-      "subtitle": "Start of the day"
-    },
-    "nap": "Nap {{count}}",
-    "catnap": "Catnap",
-    "about": "~{{duration}}",
-    "bathFeed": {
-      "title": "Bath & feed",
-      "subtitle": "Wind-down"
-    },
-    "bedtime": {
-      "title": "Bedtime",
-      "subtitle": "Lights out"
-    },
-    "next": "Next",
-    "submit": "Start my plan"
+  "prediction": {
+    "badge": "{{name}}’S FIRST PREDICTION",
+    "title": "You’re all set. Here’s what’s next.",
+    "subtitle": "Based on {{name}}’s age and when she last woke. It gets more personal with every nap you log.",
+    "subtitleAge": "Based on {{name}}’s age. It gets more personal with every nap you log.",
+    "next": "Next nap · in {{remaining}}",
+    "range": "{{start}} – {{end}}",
+    "awake": "Awake since",
+    "age": "Age",
+    "learning": "Log a nap to start seeing predictions.",
+    "tooYoung": "Predictions start at 8 weeks.",
+    "today": "Go to Today",
+    "how": "How predictions work",
+    "howDetail": "Nappa starts with an age-based wake window, then adjusts it as you log more naps."
   }
 }

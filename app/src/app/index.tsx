@@ -9,8 +9,8 @@ import { useSession } from '@/hooks/use-session';
  * current screen, the router lands here and is sent on, never back and forth.
  */
 export default function Entry() {
-  const { status, user } = useSession();
+  const { status, user, account } = useSession();
   if (status === 'loading') return null; // The splash covers this.
-  if (status !== 'signedIn') return <Redirect href="/welcome" />;
+  if (status !== 'signedIn') return <Redirect href={account ? '/sign-in' : '/welcome'} />;
   return <Redirect href={user && !user.onboarding.completed ? '/onboarding' : '/today'} />;
 }

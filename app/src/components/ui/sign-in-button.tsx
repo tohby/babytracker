@@ -26,11 +26,11 @@ export function SignInButton({
       accessibilityState={{ disabled }}
       disabled={disabled}
       onPress={onPress}
-      className={`h-control-lg flex-row items-center justify-center gap-md rounded-full px-xl active:opacity-80 ${
+      className={`min-h-control-lg flex-row items-center justify-center gap-md rounded-full px-xl py-sm active:opacity-80 ${
         apple ? 'bg-text-primary' : 'border border-border-strong bg-background-surface'
       }`}>
       <Icon name={provider} size={20} tone={apple ? 'color/background/surface' : 'color/icon/primary'} />
-      <Text variant="button-large" tone={apple ? 'inverse' : 'primary'}>
+      <Text className="shrink text-center" variant="button-large" tone={apple ? 'inverse' : 'primary'}>
         {label}
       </Text>
     </Pressable>

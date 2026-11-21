@@ -16,7 +16,7 @@ class Passwords
     public static function check(?User $user, string $password): bool
     {
         if (! $user || $user->password === null) {
-            Hash::check($password, self::$dummyHash ??= Hash::make(random_bytes(16)));
+            Hash::check($password, self::$dummyHash ??= Hash::make(bin2hex(random_bytes(16))));
 
             return false;
         }

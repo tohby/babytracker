@@ -26,6 +26,22 @@ return [
         'ignore' => 'Didn’t try to sign up? You can ignore this email. No account is made without the code.',
     ],
 
+    'sign_in_code' => [
+        'subject' => 'Your Nappa sign-in code',
+        'preview' => 'Enter :code to sign in to Nappa.',
+        'title' => 'Here’s your sign-in code',
+        'intro' => 'Enter it in Nappa to sign in to your account.',
+        'ignore' => 'Didn’t try to sign in? You can ignore this email.',
+    ],
+
+    'account_deletion_code' => [
+        'subject' => 'Your Nappa account deletion code',
+        'preview' => 'Enter :code to confirm account deletion.',
+        'title' => 'Confirm account deletion',
+        'intro' => 'Enter this code in Nappa to confirm that you want to permanently delete your account.',
+        'ignore' => 'Didn’t ask to delete your account? You can ignore this email.',
+    ],
+
     'account_exists' => [
         'subject' => 'You already have a Nappa account',
         'preview' => 'Someone tried to sign up with this email. You can sign in instead.',

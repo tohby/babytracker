@@ -1,5 +1,4 @@
 import { router } from 'expo-router';
-import { useMemo } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -12,13 +11,13 @@ import { ListGroup, ListRow } from '@/components/ui/list-row';
 import { Text } from '@/components/ui/text';
 import { ageLabel } from '@/lib/age-label';
 import { elapsedMs, formatDuration, formatTime } from '@/lib/format';
-import { predictNextNap } from '@/lib/prediction';
+import { useNapPrediction } from '@/hooks/use-nap-prediction';
 
 /** V2-F05 Why this time: the wake-window ring and each input in plain words. */
 export default function WhyThisTimeScreen() {
   const { t } = useTranslation('prediction');
   const { baby, name, events, now } = useLogContext();
-  const p = useMemo(() => predictNextNap(events, baby?.birth_date ?? null, now, baby?.usual_wake_time ?? null), [events, baby, now]);
+  const p = useNapPrediction(events, baby, now);
   if (p.state !== 'predicted') return null;
   const awake = elapsedMs(p.awakeSince, now);
   const age = baby ? ageLabel(baby.birth_date) : '';

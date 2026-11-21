@@ -1,5 +1,5 @@
 import { router, type Href } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -15,7 +15,7 @@ import { useBabyEvents, useLogStore } from '@/data/log-store';
 import { useCurrentBaby } from '@/hooks/use-current-baby';
 import { useNow } from '@/hooks/use-now';
 import { elapsedMs, formatDuration, formatTime, formatVolume } from '@/lib/format';
-import { predictNextNap } from '@/lib/prediction';
+import { useNapPrediction } from '@/hooks/use-nap-prediction';
 
 /** Where each tile goes: its own sheet (Bath opens Activity with Bath picked). */
 const routes: Record<LogType, Href> = {
@@ -52,7 +52,7 @@ export default function QuickLogSheet() {
 
   const lastBottle = events.find((e) => e.type === 'feed' && e.bottle);
   const lastSleep = events.find((e) => e.type === 'sleep' && e.endAt);
-  const prediction = useMemo(() => predictNextNap(events, baby?.birth_date ?? null, now), [events, baby, now]);
+  const prediction = useNapPrediction(events, baby, now);
   const open = (type: LogType) => router.push(routes[type]);
 
   const repeatBottle = () => {

@@ -137,3 +137,26 @@ describe('tokens', () => {
     stop();
   });
 });
+
+it('keeps an email-code session when an earlier refresh fails after replacement', async () => {
+  await storeTokens(tokens(1));
+  let respond!: (response: Response) => void;
+  let started!: () => void;
+  const requested = new Promise<void>((resolve) => { started = resolve; });
+  global.fetch = jest.fn(() => new Promise<Response>((resolve) => {
+    respond = resolve;
+    started();
+  }));
+  const expired = jest.fn();
+  const stop = onSessionExpired(expired);
+
+  const staleRefresh = refresh();
+  const dismissed = expect(staleRefresh).rejects.toMatchObject({ code: 'session_changed' });
+  await requested;
+  await storeTokens(tokens(2));
+  respond(new Response(JSON.stringify({ code: 'refresh_invalid' }), { status: 401 }));
+  await dismissed;
+  expect(expired).not.toHaveBeenCalled();
+  expect(mockStore.get('nappa.refreshToken')).toBe('refresh-2');
+  stop();
+});

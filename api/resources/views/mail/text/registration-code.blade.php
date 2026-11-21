@@ -1,11 +1,11 @@
-{!! __('notifications.registration_code.title') !!}
+{!! __("{$copy}.title") !!}
 
-{!! __('notifications.registration_code.intro') !!}
+{!! __("{$copy}.intro") !!}
 
 {!! $code !!}
 {!! trans_choice('notifications.registration_code.expiry', $minutes, ['minutes' => $minutes]) !!}
 
-{!! __('notifications.registration_code.ignore') !!}
+{!! __("{$copy}.ignore") !!}
 
 --
-{!! __('notifications.footer.reason_signup', ['email' => $email]) !!}
+{!! __("notifications.footer.reason_{$reason}", ['email' => $email]) !!}

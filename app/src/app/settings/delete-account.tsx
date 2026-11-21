@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
+import { CodeInput, CODE_LENGTH } from '@/components/auth/code-input';
+import { toAuthProblem } from '@/components/auth/auth-problem';
 import { useLogContext } from '@/components/log/use-log-context';
 import { StackScreen } from '@/components/screen';
 import { Banner } from '@/components/ui/banner';
@@ -12,31 +14,54 @@ import { Field } from '@/components/ui/field';
 import { ListGroup, ListRow } from '@/components/ui/list-row';
 import { Text } from '@/components/ui/text';
 import { useSession } from '@/hooks/use-session';
-import { authedRequest } from '@/lib/auth/tokens';
+import { authApi } from '@/lib/auth/endpoints';
 
 /**
- * V2-H10 Delete account and H10b confirm. The API also needs the password (`DELETE /v1/me`), which the Figma frame
- * doesn't show, so a password field sits under "Type DELETE" (see gaps list).
+ * V2-H10 Delete account and H10b confirm. Verify the account immediately before deleting it.
  */
 export default function DeleteAccountScreen() {
   const { t } = useTranslation('settings');
   const tc = useTranslation().t;
+  const ta = useTranslation('auth').t;
   const { name } = useLogContext();
-  const { forgetAccount } = useSession();
+  const { forgetAccount, user } = useSession();
   const [word, setWord] = useState('');
   const [password, setPassword] = useState('');
+  const [code, setCode] = useState('');
+  const [codeSent, setCodeSent] = useState(false);
+  const [codeProblem, setCodeProblem] = useState<'invalidCode' | 'expiredCode' | null>(null);
   const [confirm, setConfirm] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(false);
-  const ready = word.trim() === t('v2.delete.deleteWord') && password.length > 0;
+  const passwordless = user?.has_password === false;
+  const ready = word.trim() === t('v2.delete.deleteWord') && (passwordless ? code.length === CODE_LENGTH && codeSent : password.length > 0);
+  const sendCode = async () => {
+    if (busy) return;
+    setBusy(true);
+    setError(false);
+    try {
+      await authApi.sendDeleteCode();
+      setCodeSent(true);
+      setCode('');
+      setCodeProblem(null);
+    } catch {
+      setError(true);
+    } finally {
+      setBusy(false);
+    }
+  };
   const destroy = async () => {
     setBusy(true);
     setError(false);
     try {
-      await authedRequest('/v1/me', { method: 'DELETE', body: { password } });
+      await authApi.deleteAccount(passwordless ? { code } : { password });
       await forgetAccount();
-    } catch {
-      setError(true);
+    } catch (failure) {
+      const problem = toAuthProblem(failure);
+      if (passwordless && (problem.kind === 'invalidCode' || problem.kind === 'expiredCode')) {
+        setCodeProblem(problem.kind);
+        if (problem.kind === 'expiredCode') setCode('');
+      } else setError(true);
       setConfirm(false);
     } finally {
       setBusy(false);
@@ -47,7 +72,7 @@ export default function DeleteAccountScreen() {
       title={t('v2.delete.title')}
       footer={
         <>
-          <Button hierarchy="destructive" label={t('v2.delete.button')} disabled={!ready} onPress={() => setConfirm(true)} />
+          <Button hierarchy="destructive" label={t('v2.delete.button')} disabled={!ready || busy} onPress={() => setConfirm(true)} />
           <Button hierarchy="tertiary" size="medium" label={tc('actions.cancel')} onPress={() => router.back()} />
         </>
       }>
@@ -61,7 +86,14 @@ export default function DeleteAccountScreen() {
       <Button hierarchy="secondary" label={t('v2.delete.exportFirst')} onPress={() => router.push('/settings/export')} />
       <View className="gap-lg">
         <Field label={t('v2.delete.typeDelete')} value={word} onChangeText={setWord} autoCapitalize="characters" autoCorrect={false} />
-        <Field label={t('v2.delete.password')} helper={t('v2.delete.passwordHelp')} value={password} onChangeText={setPassword} secureTextEntry autoComplete="current-password" />
+        {passwordless ? <>
+          {codeSent && <>
+            <Text tone="secondary">{ta('codeSubtitle', { email: user?.email ?? '' })}</Text>
+            <CodeInput value={code} onChange={(value) => { setCode(value); setCodeProblem(null); }} error={codeProblem === 'invalidCode'} disabled={busy || codeProblem === 'expiredCode'} accessibilityLabel={ta('codeLabel')} />
+            {codeProblem && <Text tone="error">{ta(codeProblem === 'expiredCode' ? 'codeExpired' : 'codeWrong')}</Text>}
+          </>}
+          <Button hierarchy="secondary" label={ta(codeSent ? 'resend' : 'send')} disabled={busy} onPress={() => void sendCode()} />
+        </> : <Field label={t('v2.delete.password')} helper={t('v2.delete.passwordHelp')} value={password} onChangeText={setPassword} secureTextEntry autoComplete="current-password" />}
       </View>
       <Dialog
         visible={confirm}

@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use App\Notifications\AccountAlreadyExists;
+use App\Notifications\AccountDeletionCode;
 use App\Notifications\RegistrationCode;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
@@ -35,6 +36,25 @@ test('the account-exists email links to sign in', function () {
 
     expect($mail->subject)->toBe('You already have a Nappa account')
         ->and($html)->toContain('href="https://nappa.example/sign-in"')->toContain('Sign in to Nappa');
+});
+
+test('the sign-in email has a copyable code and the correct expiry', function () {
+    $mail = (new RegistrationCode('482913', signingIn: true, minutes: 10))
+        ->toMail((new AnonymousNotifiable)->route('mail', 'kemi@example.com'));
+    ['html' => $html, 'text' => $text] = renderMail($mail);
+
+    expect($mail->subject)->toBe('Your Nappa sign-in code')
+        ->and($html)->toContain('Expires in 10 minutes')->toContain('sign in to your account')
+        ->and($text)->toContain('482913')->toContain('Expires in 10 minutes');
+});
+
+test('an account deletion email identifies the destructive action in both versions', function () {
+    $mail = (new AccountDeletionCode('482913'))->toMail((new AnonymousNotifiable)->route('mail', 'kemi@example.com'));
+    ['html' => $html, 'text' => $text] = renderMail($mail);
+
+    expect($mail->subject)->toBe('Your Nappa account deletion code')
+        ->and($html)->toContain('permanently delete your account')->toContain('Expires in 10 minutes')
+        ->and($text)->toContain('permanently delete your account')->toContain('482913');
 });
 
 test('the reset email uses the Nappa design and a working reset link', function () {

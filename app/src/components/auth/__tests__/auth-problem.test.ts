@@ -26,3 +26,8 @@ describe('EMAIL_PATTERN', () => {
   it.each(['kemi@example.com', 'a.b+c@sub.example.co.uk'])('accepts %s', (email) => expect(EMAIL_PATTERN.test(email)).toBe(true));
   it.each(['kemi@example', 'kemi', 'kemi @example.com', '@example.com'])('rejects %s', (email) => expect(EMAIL_PATTERN.test(email)).toBe(false));
 });
+
+it('distinguishes expired codes and existing email addresses from generic errors', () => {
+  expect(toAuthProblem(new ApiError(422, 'code_expired'))).toEqual({ kind: 'expiredCode' });
+  expect(toAuthProblem(new ApiError(409, 'email_in_use'))).toEqual({ kind: 'emailInUse' });
+});

@@ -2,7 +2,7 @@
  * Nappa colour tokens: the single source of truth for every colour in the app.
  *
  * Mirrors the Figma file uRRG0z2UlrjjeuCzmTUE4G:
- * - `v2Light` / `v2Dark`: the "V2 · Color" collection (modes Light and Dark), 51 semantic tokens keyed by
+ * - `v2Light` / `v2Dark`: the "V2 · Color" collection (modes Light and Dark), with tokens keyed by
  *   their Figma names (`color/background/canvas`). These are what components use.
  * - `primitives`: the "V2 · Primitives" collection. Only used to resolve aliases; never emitted as CSS or
  *   exposed to components.
@@ -126,9 +126,13 @@ const v2Light = {
   'color/secondary/default': '{pink/200}',
   'color/secondary/pressed': '{pink/300}',
   'color/secondary/on': '{slate/900}',
+  'color/brand/surface': '{pink/200}',
+  'color/brand/surface-strong': '{pink/300}',
+  'color/brand/on-surface': '{slate/900}',
+  'color/brand/accent': '{pink/400}',
   'color/state/disabled': '{slate/100}',
   'color/state/pressed-surface': '{slate/100}',
-  'color/state/selected': '{teal/600}',
+  'color/state/selected': '{teal/200}',
   'color/status/success': '{mint/600}',
   'color/status/success-subtle': '{mint/100}',
   'color/status/warning': '{amber/700}',
@@ -183,9 +187,13 @@ const v2Dark: Record<V2ColorToken, Alias<Primitive>> = {
   'color/secondary/default': '{pink/900}',
   'color/secondary/pressed': '{pink/700}',
   'color/secondary/on': '{pink/100}',
+  'color/brand/surface': '{pink/900}',
+  'color/brand/surface-strong': '{pink/700}',
+  'color/brand/on-surface': '{pink/100}',
+  'color/brand/accent': '{pink/500}',
   'color/state/disabled': '{slate/800}',
   'color/state/pressed-surface': '{slate/800}',
-  'color/state/selected': '{teal/200}',
+  'color/state/selected': '{teal/800}',
   'color/status/success': '{mint/300}',
   'color/status/success-subtle': '{mint/900}',
   'color/status/warning': '{amber/200}',

@@ -24,7 +24,7 @@ Schedule::command('queue:work --stop-when-empty --max-time=50 --tries=3')
     ->appendOutputTo($log);
 
 // Housekeeping, spread out in the quiet hours.
-// Expired sign-up codes, old refresh tokens, revoked and stale devices (Prunable models).
+// Expired email codes, old refresh tokens, revoked and stale devices (Prunable models).
 Schedule::command('model:prune')->dailyAt('03:00')->withoutOverlapping()->appendOutputTo($log);
 // Expired 30-minute access tokens.
 Schedule::command('sanctum:prune-expired --hours=24')->dailyAt('03:05')->withoutOverlapping()->appendOutputTo($log);

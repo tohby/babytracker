@@ -1,6 +1,7 @@
-import { SignInScreen } from '@/components/auth/sign-in-screen';
+import { router } from 'expo-router';
 
-/** Email + password, reached from the hook ("I already have an account") or "Not you?". */
-export default function SignInRoute() {
-  return <SignInScreen canGoBack />;
+import { EmailAuth } from '@/components/auth/email-auth';
+
+export default function SignIn() {
+  return <EmailAuth initialIntent="sign_in" onBack={() => router.canGoBack() ? router.back() : router.replace('/welcome')} />;
 }

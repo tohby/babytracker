@@ -10,9 +10,9 @@ import { Banner } from '@/components/ui/banner';
 import { ListGroup, ListRow } from '@/components/ui/list-row';
 import { Text } from '@/components/ui/text';
 
-const KEY = 'nappa.reminders';
-type Prefs = { nap: boolean; feed: boolean; medicine: boolean; sync: boolean; minutes: number };
-const DEFAULTS: Prefs = { nap: false, feed: false, medicine: false, sync: false, minutes: 5 };
+import { DEFAULT_REMINDER_PREFS as DEFAULTS, REMINDER_PREFS_KEY as KEY } from '@/lib/reminders';
+
+type Prefs = typeof DEFAULTS;
 const STEPS = [5, 10, 15];
 
 /** V2-H06 Notifications and H06b (permission denied: warning banner + Open Settings). All off by default. */

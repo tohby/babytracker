@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\AvatarController;
 use App\Http\Controllers\Api\V1\BabyController;
 use App\Http\Controllers\Api\V1\BabyEventController;
+use App\Http\Controllers\Api\V1\EmailAuthCodeController;
 use App\Http\Controllers\Api\V1\OnboardingController;
 use App\Http\Controllers\Api\V1\PasswordController;
 use App\Http\Controllers\Api\V1\PinController;
@@ -25,9 +26,11 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::post('register', [RegistrationController::class, 'register'])->middleware('throttle:auth-register')->name('register');
         Route::post('register/resend', [RegistrationController::class, 'resend'])->middleware('throttle:auth-email')->name('register.resend');
         Route::post('password/forgot', [PasswordController::class, 'forgot'])->middleware('throttle:auth-email')->name('password.forgot');
+        Route::post('email-code', [EmailAuthCodeController::class, 'send'])->middleware('throttle:auth-email-code')->name('email-code');
 
         Route::middleware('throttle:api-auth')->group(function () {
             Route::post('register/verify', [RegistrationController::class, 'verify'])->name('register.verify');
+            Route::post('email-code/verify', [EmailAuthCodeController::class, 'verify'])->name('email-code.verify');
             Route::post('login', [AuthController::class, 'login'])->name('login');
             Route::post('device-login', [AuthController::class, 'deviceLogin'])->name('device-login');
             Route::post('pin-login', [AuthController::class, 'pinLogin'])->name('pin-login');
@@ -44,6 +47,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
 
         Route::get('me', [ProfileController::class, 'show'])->name('me');
         Route::patch('me', [ProfileController::class, 'update'])->name('me.update');
+        Route::post('me/delete-code', [ProfileController::class, 'sendDeleteCode'])->middleware('throttle:auth-delete-code')->name('me.delete-code');
         Route::delete('me', [ProfileController::class, 'destroy'])->middleware('throttle:auth-sensitive')->name('me.destroy');
 
         Route::post('me/avatar', [AvatarController::class, 'store'])->middleware('throttle:auth-sensitive')->name('me.avatar.store');

@@ -23,12 +23,20 @@ type ButtonProps = {
   /** Layout only (e.g. `self-stretch`, `flex-1`). */
   className?: string;
   accessibilityHint?: string;
+  /** Let longer labels and larger accessibility text grow the control vertically. */
+  wrap?: boolean;
 };
 
 const sizeClass: Record<ButtonSize, string> = {
   large: 'h-control-lg px-xl',
   medium: 'h-control-md px-page',
   small: 'h-control-sm px-lg',
+};
+
+const wrappingSizeClass: Record<ButtonSize, string> = {
+  large: 'min-h-control-lg px-xl py-sm',
+  medium: 'min-h-control-md px-page py-sm',
+  small: 'min-h-control-sm px-lg py-xs',
 };
 
 const fillClass: Record<ButtonHierarchy, string> = {
@@ -64,6 +72,7 @@ export function Button({
   trailingIcon,
   className = '',
   accessibilityHint,
+  wrap = false,
 }: ButtonProps) {
   const fill = disabled ? (hierarchy === 'tertiary' ? '' : 'bg-state-disabled') : fillClass[hierarchy];
   const tone: TextTone = disabled ? 'disabled' : labelTone[hierarchy];
@@ -81,10 +90,10 @@ export function Button({
       onPress={onPress}
       // Small is 36 high: grow the touch target to the 44 pt minimum.
       hitSlop={size === 'small' ? 4 : undefined}
-      className={`flex-row items-center justify-center gap-sm rounded-full ${sizeClass[size]} ${fill} ${className}`}>
-      <View className={`flex-row items-center gap-sm ${loading ? 'opacity-0' : ''}`}>
+      className={`flex-row items-center justify-center gap-sm rounded-full ${wrap ? wrappingSizeClass[size] : sizeClass[size]} ${fill} ${className}`}>
+      <View className={`flex-row items-center gap-sm ${wrap ? 'shrink' : ''} ${loading ? 'opacity-0' : ''}`}>
         {leadingIcon && <Icon name={leadingIcon} tone={icon} size={iconSize} />}
-        <Text variant={size === 'small' ? 'button-small' : 'button-large'} tone={tone} numberOfLines={1}>
+        <Text variant={size === 'small' ? 'button-small' : 'button-large'} tone={tone} numberOfLines={wrap ? undefined : 1} className={wrap ? 'shrink text-center' : undefined}>
           {label}
         </Text>
         {trailingIcon && <Icon name={trailingIcon} tone={icon} size={iconSize} />}
