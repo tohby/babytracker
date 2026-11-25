@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AccountPasswordController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\AvatarController;
 use App\Http\Controllers\Api\V1\BabyController;
@@ -52,6 +53,9 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
 
         Route::post('me/avatar', [AvatarController::class, 'store'])->middleware('throttle:auth-sensitive')->name('me.avatar.store');
         Route::delete('me/avatar', [AvatarController::class, 'destroy'])->name('me.avatar.destroy');
+
+        Route::post('me/password-code', [AccountPasswordController::class, 'sendCode'])->middleware('throttle:auth-password-code')->name('me.password-code');
+        Route::put('me/password', [AccountPasswordController::class, 'update'])->middleware('throttle:auth-sensitive')->name('me.password.update');
 
         Route::put('me/pin', [PinController::class, 'store'])->middleware('throttle:auth-sensitive')->name('me.pin.store');
         Route::delete('me/pin', [PinController::class, 'destroy'])->name('me.pin.destroy');

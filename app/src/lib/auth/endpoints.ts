@@ -12,6 +12,17 @@ export const authApi = {
   verifyEmailCode: (body: { email: string; intent: EmailIntent; code: string; platform: Platform; device_id?: string; device_secret?: string }) =>
     request<TokenResponse>('/v1/auth/email-code/verify', { method: 'POST', body }),
 
+  /** Email + password. A remembered phone sends its device so the same device is reused. */
+  login: (body: { email: string; password: string; platform: Platform; device_id?: string; device_secret?: string }) =>
+    request<TokenResponse>('/v1/auth/login', { method: 'POST', body }),
+
+  /** Settings › Change password: an email code for a forgotten (or never set) current password. */
+  sendPasswordCode: () => authedRequest<{ status: 'verification_sent' }>('/v1/me/password-code', { method: 'POST' }),
+
+  /** Set or change the password. Other phones are signed out; this one stays signed in. */
+  updatePassword: (body: { password: string; password_confirmation: string } & ({ current_password: string } | { code: string })) =>
+    authedRequest<{ data: User }>('/v1/me/password', { method: 'PUT', body }),
+
   forgetDevice: (body: { device_id: string; device_secret: string }) =>
     request<void>('/v1/auth/forget-device', { method: 'POST', body }),
 

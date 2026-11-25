@@ -4,13 +4,13 @@ import { useSession } from '@/hooks/use-session';
 
 /**
  * "/" is a signpost, never protected: Home when signed in, onboarding when that isn't finished,
- * Welcome (sign-in) when signed out.
+ * Welcome (sign-in) when signed out, or a blank Sign in straight after Switch account.
  * Home and Welcome have their own paths, so when the session changes and a guard closes the
  * current screen, the router lands here and is sent on, never back and forth.
  */
 export default function Entry() {
-  const { status, user, account } = useSession();
+  const { status, user, account, signedOutReason } = useSession();
   if (status === 'loading') return null; // The splash covers this.
-  if (status !== 'signedIn') return <Redirect href={account ? '/sign-in' : '/welcome'} />;
+  if (status !== 'signedIn') return <Redirect href={account || signedOutReason === 'switched' ? '/sign-in' : '/welcome'} />;
   return <Redirect href={user && !user.onboarding.completed ? '/onboarding' : '/today'} />;
 }

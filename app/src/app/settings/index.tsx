@@ -45,6 +45,7 @@ export default function SettingsScreen() {
         <ListRow leading={<IconTile icon="sparkle" tone="care" />} title={t('v2.plus')} subtitle={t('v2.plusDetail')} trailing={{ kind: 'chevron' }} onPress={() => router.push('/plus')} />
       </ListGroup>
       <ListGroup>
+        <ListRow leading={<IconTile icon="lock" tone="neutral" />} title={t('security.title')} trailing={{ kind: 'chevron' }} onPress={() => router.push('/settings/security')} />
         <ListRow leading={<IconTile icon="download" tone="neutral" />} title={t('v2.export')} subtitle={t('v2.exportDetail')} trailing={{ kind: 'chevron' }} onPress={() => router.push('/settings/export')} />
         <ListRow leading={<IconTile icon="info" tone="neutral" />} title={t('v2.about')} subtitle={t('v2.version', { version: Constants.expoConfig?.version ?? '' })} trailing={{ kind: 'none' }} />
       </ListGroup>

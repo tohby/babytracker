@@ -122,5 +122,75 @@
       "confirm": "Delete account",
       "failed": "We couldn’t delete your account. Check your password and connection, then try again."
     }
+  },
+  "security": {
+    "title": "Security & Sign-In",
+    "intro": "Choose how you sign in and how Nappa locks on this phone.",
+    "deviceOnly": "App lock is available in the Nappa mobile app.",
+    "pin": "PIN Lock",
+    "pinDetail": "Use a 4-digit PIN to unlock Nappa.",
+    "pinBackup": "Your PIN is also your backup for biometric unlock.",
+    "biometrics": "Biometrics",
+    "biometricDetail": "Unlock with your face or fingerprint.",
+    "biometricUnavailable": "This device needs supported biometrics set up in its system settings.",
+    "biometricTemporarilyUnavailable": "Unavailable right now. You can still use your PIN.",
+    "reconnect": "Turn this on again to reconnect your device’s biometrics.",
+    "changePin": "Change PIN",
+    "autoLock": "Auto-Lock",
+    "autoLockDetail": "Choose how long Nappa stays unlocked after you leave.",
+    "exitOverrides": "Lock on App Exit is on.",
+    "requiresPin": "Turn on PIN Lock to set a delay.",
+    "lockOnExit": "Lock on App Exit",
+    "lockOnExitDetail": "Lock immediately whenever you leave Nappa.",
+    "immediately": "Immediately",
+    "afterMinutes_one": "After {{count}} minute",
+    "afterMinutes_other": "After {{count}} minutes",
+    "verifyTitle": "Enter your current PIN",
+    "verify": {
+      "changePin": "Confirm your PIN before choosing a new one.",
+      "disablePin": "This turns off PIN Lock and biometric unlock on this device.",
+      "disableBiometrics": "Turn off {{method}}. You’ll still unlock with your PIN.",
+      "enableBiometrics": "Confirm your PIN before turning on {{method}}.",
+      "relaxLock": "Confirm your PIN before giving Nappa more time to lock."
+    },
+    "error": {
+      "failed": "We couldn’t save that change. Please try again.",
+      "biometricFailed": "Biometric setup didn’t finish. Try again or use your PIN.",
+      "mismatch": "Those PINs didn’t match. Try again.",
+      "pinUnavailable": "We couldn’t check your PIN. Try again or use an email code."
+    },
+    "appLock": "App lock",
+    "signIn": "Sign-in",
+    "changePassword": "Change password",
+    "setPassword": "Set a password",
+    "passwordDetail": "Sign in on any phone with your email and password.",
+    "passwordDetailSet": "Optional. You can always sign in with an email code."
+  },
+  "password": {
+    "changeTitle": "Change password",
+    "setTitle": "Set a password",
+    "intro": "Enter your current password, then choose a new one.",
+    "introSet": "Your account uses email codes. Add a password to sign in without waiting for an email.",
+    "current": "Current password",
+    "currentWrong": "That isn’t your current password.",
+    "forgotCurrent": "Forgot your current password?",
+    "useCurrent": "Use my current password instead",
+    "codeExplain": "We’ll email a 6-digit code to {{email}} to confirm it’s you.",
+    "new": "New password",
+    "confirm": "Confirm new password",
+    "rules": "At least 8 characters, with upper and lower case letters, a number and a symbol.",
+    "rule": {
+      "length": "Use at least 8 characters.",
+      "case": "Use both upper and lower case letters.",
+      "number": "Add at least one number.",
+      "symbol": "Add at least one symbol, like ! or #."
+    },
+    "weakServer": "This password isn’t safe to use. It may have appeared in a data breach. Choose another.",
+    "mismatch": "Those passwords don’t match.",
+    "otherPhones": "Saving signs you out on your other phones. This phone stays signed in.",
+    "save": "Save password",
+    "changed": "Password changed",
+    "set": "Password set",
+    "failed": "We couldn’t save your password. Please try again."
   }
 }

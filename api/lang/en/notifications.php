@@ -42,6 +42,14 @@ return [
         'ignore' => 'Didn’t ask to delete your account? You can ignore this email.',
     ],
 
+    'password_change_code' => [
+        'subject' => 'Your Nappa password code',
+        'preview' => 'Enter :code to set a new password.',
+        'title' => 'Set a new password',
+        'intro' => 'Enter this code in Nappa to confirm it’s you and choose a new password.',
+        'ignore' => 'Didn’t ask to change your password? You can ignore this email. Your password stays the same.',
+    ],
+
     'account_exists' => [
         'subject' => 'You already have a Nappa account',
         'preview' => 'Someone tried to sign up with this email. You can sign in instead.',

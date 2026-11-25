@@ -17,18 +17,26 @@ type SessionState = {
   user: User | null;
   /** The account this phone remembers, for "Welcome back" (password only). Null after "Not you?". */
   account: RememberedAccount | null;
-  /** Why the user is signed out: `expired` shows "You've been signed out" on Welcome back. */
-  signedOutReason: 'expired' | null;
+  /**
+   * Why the user is signed out: `expired` shows "You've been signed out" on Welcome back;
+   * `switched` (Switch account) opens a blank Sign in instead of the intro.
+   */
+  signedOutReason: 'expired' | 'switched' | null;
   /** Signed in, but the server couldn't be reached at launch. */
   offline: boolean;
 };
 
 type SessionActions = {
   verifyEmailCode: (email: string, intent: EmailIntent, code: string, beforeSignIn?: () => Promise<void>) => Promise<void>;
+  /** Email + password. `beforeSignIn` runs once the server accepts it (lock-screen unlock or PIN reset). */
+  signInWithPassword: (email: string, password: string, beforeSignIn?: () => Promise<void>) => Promise<void>;
   /** Sign out on this phone. The email stays remembered for the next sign-in. */
   signOut: () => Promise<void>;
-  /** "Not you?": forget the account on this phone. */
-  forgetAccount: () => Promise<void>;
+  /**
+   * "Not you?" / Switch account: forget the account on this phone (tokens, remembered device,
+   * PIN and biometric key). Pass `switching` to go straight to a blank Sign in.
+   */
+  forgetAccount: (options?: { switching?: boolean }) => Promise<void>;
   /** Replace the signed-in user after a profile or onboarding change (keeps the remembered name in step). */
   updateUser: (user: User) => void;
 };
@@ -136,13 +144,30 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     [state.account, completeSignIn],
   );
 
+  const signInWithPassword = useCallback(
+    async (email: string, password: string, beforeSignIn?: () => Promise<void>) => {
+      const previous = state.account;
+      // Same account on this phone: reuse its device, as verifyEmailCode does (not during lock-screen recovery).
+      const reuse = !beforeSignIn && previous && previous.email.toLowerCase() === email.trim().toLowerCase();
+      const tokens = await authApi.login({
+        email: email.trim(),
+        password,
+        platform,
+        ...(reuse ? { device_id: previous.deviceId, device_secret: previous.deviceSecret } : {}),
+      });
+      await beforeSignIn?.();
+      await completeSignIn(tokens, previous);
+    },
+    [state.account, completeSignIn],
+  );
+
   const signOut = useCallback(async () => {
     await authApi.logout().catch(() => {}); // Offline sign-out still works on the phone.
     await clearTokens();
     setState((s) => ({ ...s, status: 'signedOut', user: null, signedOutReason: null, offline: false }));
   }, []);
 
-  const forgetAccount = useCallback(async () => {
+  const forgetAccount = useCallback(async ({ switching = false }: { switching?: boolean } = {}) => {
     const account = state.account;
     if (account) {
       await authApi.forgetDevice({ device_id: account.deviceId, device_secret: account.deviceSecret }).catch(() => {});
@@ -150,7 +175,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     await clearTokens();
     if (account?.email) await forgetUnlockRecord(account.email).catch(() => {});
     await clearAll();
-    setState((s) => ({ ...s, status: 'signedOut', user: null, account: null, signedOutReason: null }));
+    setState((s) => ({ ...s, status: 'signedOut', user: null, account: null, signedOutReason: switching ? 'switched' : null, offline: false }));
   }, [state.account]);
 
   const updateUser = useCallback((user: User) => {
@@ -162,8 +187,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo<Session>(
-    () => ({ ...state, verifyEmailCode, signOut, forgetAccount, updateUser }),
-    [state, verifyEmailCode, signOut, forgetAccount, updateUser],
+    () => ({ ...state, verifyEmailCode, signInWithPassword, signOut, forgetAccount, updateUser }),
+    [state, verifyEmailCode, signInWithPassword, signOut, forgetAccount, updateUser],
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;

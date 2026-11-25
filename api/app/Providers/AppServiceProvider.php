@@ -94,6 +94,11 @@ class AppServiceProvider extends ServiceProvider
 
         RateLimiter::for('auth-refresh', fn (Request $request): Limit => Limit::perMinute(60)->by('refresh|ip:'.$request->ip()));
 
+        RateLimiter::for('auth-password-code', fn (Request $request): array => [
+            Limit::perMinute(1)->by('password-code|user:'.$request->user()?->id),
+            Limit::perHour(5)->by('password-code|hour|user:'.$request->user()?->id),
+        ]);
+
         RateLimiter::for('auth-delete-code', fn (Request $request): array => [
             Limit::perMinute(1)->by('delete-code|user:'.$request->user()?->id),
             Limit::perHour(5)->by('delete-code|hour|user:'.$request->user()?->id),

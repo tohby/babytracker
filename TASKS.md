@@ -35,30 +35,7 @@ do it by editing the file. Both edit the same file, so they stay in sync.
     - [x] API errors return codes, not sentences
     - [ ] Accept-Language middleware, api/lang, localised mail and push
     ```md
-    Errors return codes, not display sentences. Push text uses the recipient's locale.
-    ```
-
-### Sign in with Apple and Google (app + API)
-
-  - tags: [M1, @tobi]
-  - priority: medium
-  - workload: Hard
-  - steps:
-    - [ ] Pick bundle ID / Android package; set in app.json; add eas.json
-    - [ ] Apple: confirm Developer Program, enable Sign in with Apple, create .p8 key (Team ID, Key ID)
-    - [ ] Google Cloud: consent screen + iOS, Android (SHA-1), Web client IDs
-    - [ ] API: POST /api/v1/auth/{apple|google}, verify ID token, social_accounts table, link by verified email only
-    - [ ] App: expo-apple-authentication (iOS only) and @react-native-google-signin/google-signin
-    ```md
-    Blocked on the IDs above, not on code. Apple sends name/email only on first sign-in: send them to the API then. Account deletion must revoke the Apple token (needs the .p8). Can slip to M2 without blocking M1.
-    ```
-
-### Quick unlock settings need design
-
-  - tags: [M1, @tobi, needs-design]
-  - priority: medium
-    ```md
-    Design change PIN, biometrics toggle, and turn quick unlock off.
+    Not started: no Accept-Language middleware yet. Errors return codes, not display sentences. Push text uses the recipient's locale.
     ```
 
 ### Settings: units (ml/oz, kg/lb), date format, diaper/nappy wording
@@ -66,72 +43,9 @@ do it by editing the file. Both edit the same file, so they stay in sync.
   - tags: [M1, @tobi]
   - priority: medium
   - workload: Normal
-
-### Wire Home header and greeting to the API
-
-  - tags: [M1, @tobi]
-  - priority: medium
-  - workload: Easy
-
-### Events table and API (type, start, end, payload, client id)
-
-  - tags: [M2, @tobi]
-  - priority: high
-  - workload: Hard
     ```md
-    Idempotent writes keyed by a client-generated id, so offline retries never duplicate. Soft deletes and updated_at for sync. Decide this before building the app side.
+    Not started. format.ts already has VolumeUnit and WeightUnit types; no setting or storage yet.
     ```
-
-### Quick-log buttons for sleep, feed and diaper
-
-  - tags: [M2, @tobi]
-  - priority: high
-  - workload: Normal
-    ```md
-    Figma component: Log button.
-    ```
-
-### Live sleep timer and nursing timer (left/right side)
-
-  - tags: [M2, @tobi]
-  - priority: high
-  - workload: Hard
-
-### Edit, delete and backdate entries
-
-  - tags: [M2, @tobi]
-  - priority: high
-  - workload: Normal
-
-### Offline-first local store and sync queue in the app
-
-  - tags: [M2, @tobi]
-  - priority: high
-  - workload: Extreme
-
-### Drive Home tiles from real events (last feed, awake for, last nappy, sleep today)
-
-  - tags: [M2, @tobi]
-  - priority: medium
-  - workload: Normal
-
-### Timeline day view
-
-  - tags: [M3, @tobi]
-  - priority: high
-  - workload: Hard
-
-### Daily summaries and charts
-
-  - tags: [M3, @tobi]
-  - priority: medium
-  - workload: Hard
-
-### More log types: pumping, solids, medication, growth, activities
-
-  - tags: [M3, @tobi]
-  - priority: medium
-  - workload: Hard
 
 ### Caregiver invites and shared baby access
 
@@ -157,26 +71,8 @@ do it by editing the file. Both edit the same file, so they stay in sync.
   - priority: high
   - workload: Normal
     ```md
-    Cite pediatric sources in the repo. Start at 2 months. Below 6 months, show sleepy-cue guidance alongside.
+    Ranges are cited only in a comment in lib/onboarding/age.ts; move to a doc in the repo. Start at 2 months. Below 6 months, show sleepy-cue guidance alongside.
     ```
-
-### Wake-window prediction engine (age-based, personalised from logs)
-
-  - tags: [M5, @tobi]
-  - priority: high
-  - workload: Extreme
-
-### "Why this time" explanation and custom wake windows
-
-  - tags: [M5, @tobi]
-  - priority: medium
-  - workload: Hard
-
-### Replace sample next-nap data on Home with the engine
-
-  - tags: [M5, @tobi]
-  - priority: medium
-  - workload: Normal
 
 ### Decide pricing model (free plus one-time vs subscription)
 
@@ -213,6 +109,9 @@ do it by editing the file. Both edit the same file, so they stay in sync.
   - tags: [M6, @tobi]
   - priority: high
   - workload: Normal
+    ```md
+    Partly built: account deletion (email code, API and screen) and CSV/JSON export via the share sheet. Left: PDF export, deletion must revoke the Apple token once social sign-in exists, and confirm deletion removes events and avatars.
+    ```
 
 ### Privacy policy, GDPR and children's-data review, hosting region decision
 
@@ -286,9 +185,138 @@ do it by editing the file. Both edit the same file, so they stay in sync.
     - [ ] Biometric denial and enrolment changes on a physical device
     - [ ] Compare A01–D10 and long German layouts with the Nov 21 Figma page
 
+### Verify M2 logging and sync on devices
+
+  - tags: [M2, @tobi]
+  - priority: high
+  - workload: Hard
+  - steps:
+    - [ ] Development build run: create, edit, delete, backdate, timer completion, reopen
+    - [ ] Offline retry: log in airplane mode, reconnect, no duplicates
+    - [ ] Two-device catch-up: delete and edit reach the other phone and stay deleted
+    - [ ] Write native SQLite tests: migration, persistence, account isolation
+    - [ ] Run the API suite against MySQL (production database)
+    - [ ] Confirm logs from a second account on the same phone stay separate
+    ```md
+    Acceptance for M2: a parent runs a full day with no sample data. Plan: docs/superpowers/plans/2026-11-19-m2-logging-sync.md task 3.
+    ```
+
+### M3 screens: Timeline, Insights, Growth and extra log types
+
+  - tags: [M3, @tobi]
+  - priority: high
+  - workload: Hard
+  - steps:
+    - [x] Timeline tab and day view
+    - [x] Insights tab: day totals, trends, stat cards
+    - [x] Pumping, solids, medicine, growth, activity log screens
+    - [ ] Check summaries and charts against a week of real logs on a device
+    - [ ] Confirm every new type round-trips through the events API payload rule
+    - [ ] Long-German layout check of Timeline and Insights
+    ```md
+    UI exists on local events (timeline, insights, growth, pumping, solids, medicine, growth, activity logs). Replaces the three M3 Todo cards.
+    ```
+
+### Nap prediction engine v1 (client) and explanation screens
+
+  - tags: [M5, @tobi]
+  - priority: high
+  - workload: Extreme
+  - steps:
+    - [x] Age-based window and median personalisation; none under 8 weeks
+    - [x] Why this time and sources screens
+    - [x] Local nap reminder via scheduleReminder
+    - [ ] Unit tests for prediction.ts (none exist)
+    - [ ] Custom wake windows
+    - [ ] Wake-window report
+    - [ ] Wire notification toggles to scheduling and cancel stale reminders
+    ```md
+    lib/prediction.ts, next-nap, next-nap-why and next-nap-sources exist. Replaces the Wake-window engine and "Why this time" Todo cards for v1.
+    ```
+
 ## Blocked
 
+### Sign in with Apple and Google (app + API)
+
+  - tags: [M2, @tobi]
+  - priority: medium
+  - workload: Hard
+  - steps:
+    - [x] iOS bundle ID com.madebyidia.nappa set
+    - [ ] Pick Android package; set in app.json; add eas.json
+    - [ ] Apple: confirm Developer Program, enable Sign in with Apple, create .p8 key (Team ID, Key ID)
+    - [ ] Google Cloud: consent screen + iOS, Android (SHA-1), Web client IDs
+    - [ ] API: POST /api/v1/auth/{apple|google}, verify ID token, social_accounts table, link by verified email only
+    - [ ] App: expo-apple-authentication (iOS only) and @react-native-google-signin/google-signin
+    ```md
+    **Blocked** on Apple .p8 / Team ID, Google client IDs, Android package and eas.json, not on code. Apple sends name/email only on first sign-in: send them to the API then. Account deletion must revoke the Apple token (needs the .p8). Moved from M1 to M2 on 2026-11-21 so it no longer gates M1.
+    ```
+
+### Quick unlock settings need design
+
+  - tags: [M2, @tobi, needs-design, blocked]
+  - priority: medium
+    ```md
+    Design change PIN, biometrics toggle, and turn quick unlock off.
+    ```
+
 ## Done
+
+### Replace sample next-nap data on Home with the engine
+
+  - tags: [M5, @tobi]
+    ```md
+    Home uses useNapPrediction (lib/prediction.ts). The sample rhythm in data/home.ts is only the age-based fallback.
+    ```
+
+### Drive Home tiles from real events (last feed, awake for, last nappy, sleep today)
+
+  - tags: [M2, @tobi]
+    ```md
+    Today reads useBabyEvents; first-day empty state, feed-due card and 7-day average.
+    ```
+
+### Offline-first local store and sync queue in the app
+
+  - tags: [M2, @tobi]
+    ```md
+    expo-sqlite with account-scoped tables, outbox, 30s polling and foreground catch-up, AsyncStorage migration. Native SQLite tests still to write (see verify card).
+    ```
+
+### Edit, delete and backdate entries
+
+  - tags: [M2, @tobi]
+    ```md
+    entry/[id] and entry/edit; deletes are tombstones that sync.
+    ```
+
+### Live sleep timer and nursing timer (left/right side)
+
+  - tags: [M2, @tobi]
+    ```md
+    Pause, resume, switch side and stop in the log store; pumping timer too. Running timers are device-local until stopped.
+    ```
+
+### Quick-log buttons for sleep, feed and diaper
+
+  - tags: [M2, @tobi]
+    ```md
+    Log index plus feed, nappy, nap, nursing, pumping, solids, medicine, growth and activity screens. Not device-verified.
+    ```
+
+### Events table and API (type, start, end, payload, client id)
+
+  - tags: [M2, @tobi]
+    ```md
+    Idempotent PUT keyed by client UUID with mutation receipts, soft deletes, per-baby change numbers and a paginated catch-up feed. 175 API tests pass on SQLite (MySQL not run).
+    ```
+
+### Wire Home header and greeting to the API
+
+  - tags: [M1, @tobi]
+    ```md
+    Today uses the current baby and account name from the API with a time-of-day greeting.
+    ```
 
 ### Intro screens
 
@@ -423,5 +451,6 @@ do it by editing the file. Both edit the same file, so they stay in sync.
   - tags: [M0, @tobi]
   - due: 2026-11-14
     ```md
-    Built but uncommitted. See "Commit the Home UI" in Todo.
+    Committed in 023c469.
     ```
+

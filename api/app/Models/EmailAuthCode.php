@@ -28,6 +28,8 @@ class EmailAuthCode extends Model
 
     public const DELETE_ACCOUNT = 'delete_account';
 
+    public const CHANGE_PASSWORD = 'change_password';
+
     public const CODE_TTL_MINUTES = 10;
 
     public const MAX_ATTEMPTS = 5;

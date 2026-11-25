@@ -1,6 +1,8 @@
+import * as Haptics from 'expo-haptics';
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { Alert, AppState, Linking, Platform, Pressable, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import Animated, { FadeIn, ReduceMotion } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ChoiceTile } from '@/components/onboarding/choice-tile';
@@ -12,10 +14,8 @@ import { Spinner } from '@/components/ui/spinner';
 import { Text } from '@/components/ui/text';
 import { Keypad, PinDot } from '@/components/unlock/keypad';
 import type { QuickUnlockController } from '@/hooks/use-quick-unlock';
-import { useSession } from '@/hooks/use-session';
 import { formatCountdown } from '@/lib/format';
-import { loadAnswers } from '@/lib/onboarding/answers';
-import { authenticateBiometric, readBiometricCapability } from '@/lib/unlock/biometrics';
+import { readBiometricCapability } from '@/lib/unlock/biometrics';
 import { PIN_ATTEMPT_LIMIT, PIN_LENGTH, type Biometric } from '@/lib/unlock/pin';
 
 function UnlockLayout({ onBack, children }: { onBack?: () => void; children: ReactNode }) {
@@ -41,15 +41,11 @@ function Heading({ title, detail, large = false }: { title: string; detail: stri
   );
 }
 
-function LinkAction({ label, prefix, onPress, disabled }: { label: string; prefix?: string; onPress: () => void; disabled?: boolean }) {
+export function LinkAction({ label, onPress, disabled }: { label: string; onPress: () => void; disabled?: boolean }) {
   return (
-    <Pressable accessibilityRole="button" disabled={disabled} onPress={onPress} className="min-h-[44px] w-full items-center justify-center py-sm">
-      {prefix ? (
-        <View className="flex-row flex-wrap justify-center gap-xs">
-          <Text variant="label-small" tone="secondary" className="shrink text-center">{prefix}</Text>
-          <Text variant="label-small" tone="link" className="shrink text-center">{label}</Text>
-        </View>
-      ) : <Text variant="label-small" tone="link" className="text-center">{label}</Text>}
+    <Pressable accessibilityRole="button" accessibilityState={{ disabled }} disabled={disabled} onPress={onPress}
+      className="min-h-[44px] w-full items-center justify-center rounded-full py-sm active:bg-state-pressed-surface">
+      <Text variant="label-small" tone="link" className="text-center">{label}</Text>
     </Pressable>
   );
 }
@@ -63,7 +59,7 @@ function ErrorMessage({ message }: { message: string }) {
   );
 }
 
-function PinScreen({ title, detail, error, pause, onBack, onPin, onBiometric, biometric, footer }: {
+export function PinScreen({ title, detail, error, pause, onBack, onPin, onBiometric, biometric, footer }: {
   title: string;
   detail: string;
   error?: string;
@@ -72,18 +68,28 @@ function PinScreen({ title, detail, error, pause, onBack, onPin, onBiometric, bi
   onPin: (pin: string) => void | Promise<void>;
   onBiometric?: () => void;
   biometric?: Biometric | null;
-  footer: ReactNode;
+  footer?: ReactNode;
 }) {
   const { t } = useTranslation('unlock');
   const digitsRef = useRef('');
   const completing = useRef(false);
   const [digits, setDigits] = useState('');
   const [busy, setBusy] = useState(false);
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state === 'background' && !completing.current) {
+        digitsRef.current = '';
+        setDigits('');
+      }
+    });
+    return () => subscription.remove();
+  }, []);
   const onDigit = (digit: string) => {
     if (completing.current || pause) return;
     const next = digitsRef.current + digit;
     digitsRef.current = next;
     setDigits(next);
+    void Haptics.selectionAsync().catch(() => {});
     if (next.length !== PIN_LENGTH) return;
     completing.current = true;
     setBusy(true);
@@ -98,13 +104,14 @@ function PinScreen({ title, detail, error, pause, onBack, onPin, onBiometric, bi
     })();
   };
   const onDelete = () => {
-    if (completing.current) return;
+    if (completing.current || pause || !digitsRef.current) return;
     digitsRef.current = digitsRef.current.slice(0, -1);
     setDigits(digitsRef.current);
+    void Haptics.selectionAsync().catch(() => {});
   };
 
   return (
-    <UnlockLayout onBack={onBack}>
+    <UnlockLayout onBack={busy ? undefined : onBack}>
       <View className="grow items-center justify-center gap-lg px-page py-md">
         <IconTile icon="lock" tone="brand" size="L" />
         <Heading title={title} detail={detail} />
@@ -128,7 +135,7 @@ function PinScreen({ title, detail, error, pause, onBack, onPin, onBiometric, bi
   );
 }
 
-function BiometricHero({ title, detail, icon, action, secondary, onBack, onAction, onSecondary, busy, warning, error }: {
+function BiometricHero({ title, detail, icon, action, secondary, onBack, onAction, onSecondary, busy, warning, error, secondaryButton, extra }: {
   title: string;
   detail: string;
   icon: IconName;
@@ -140,19 +147,25 @@ function BiometricHero({ title, detail, icon, action, secondary, onBack, onActio
   busy?: boolean;
   warning?: boolean;
   error?: string;
+  /** Show `secondary` as a secondary button (an equal choice) rather than a link. */
+  secondaryButton?: boolean;
+  extra?: ReactNode;
 }) {
   return (
     <UnlockLayout onBack={onBack}>
-      <View className="grow items-center justify-center gap-xl px-page py-md">
+      <Animated.View entering={FadeIn.duration(160).reduceMotion(ReduceMotion.System)} className="grow items-center justify-center gap-xl px-page py-md">
         <View className={`size-[140px] items-center justify-center rounded-[40px] ${warning ? 'bg-status-warning-subtle' : 'bg-background-surface-muted'}`}>
           <Icon name={icon} size={64} tone={warning ? 'color/status/warning' : 'color/icon/primary'} />
         </View>
         <Heading title={title} detail={detail} large />
         {error && <ErrorMessage message={error} />}
-      </View>
+      </Animated.View>
       <View className="gap-xs px-page pb-xs pt-md">
         <Button label={action} onPress={onAction} loading={busy} wrap />
-        <LinkAction label={secondary} onPress={onSecondary} disabled={busy} />
+        {secondaryButton
+          ? <Button label={secondary} hierarchy="secondary" onPress={onSecondary} disabled={busy} wrap className="mt-sm" />
+          : <LinkAction label={secondary} onPress={onSecondary} disabled={busy} />}
+        {extra}
       </View>
     </UnlockLayout>
   );
@@ -216,9 +229,13 @@ export function QuickUnlockSetup({ controller, onBack }: { controller: QuickUnlo
     if (savingPin.current) return;
     savingPin.current = true;
     setSaving(true);
+    setFailed(false);
     try {
-      await controller.setPin(firstPin.current, biometric);
-      firstPin.current = '';
+      const saved = await controller.setPin(firstPin.current, biometric
+        ? { method: biometric, prompt: t(`biometric.${biometric}.prompt`) }
+        : undefined);
+      if (saved) firstPin.current = '';
+      else setFailed(true);
     } catch {
       setFailed(true);
       if (stage === 'off') setStage('confirm');
@@ -233,21 +250,26 @@ export function QuickUnlockSetup({ controller, onBack }: { controller: QuickUnlo
     setFailed(false);
     setStage('create');
   };
-  const enable = async () => {
-    if (!method || saving) return;
+  const skipSetup = async () => {
+    if (savingPin.current) return;
+    savingPin.current = true;
     setSaving(true);
-    setFailed(false);
-    const next = await readBiometricCapability();
-    const result = next.available && next.method === method
-      ? await authenticateBiometric(t(`biometric.${method}.prompt`), t('cancelPrompt'))
-      : 'unavailable';
-    if (result === 'success') await save(method);
-    else {
+    try {
+      await controller.skip();
+    } catch {
+      setFailed(true);
+    } finally {
+      savingPin.current = false;
       setSaving(false);
-      if (result === 'unavailable') {
-        setDeniedMethod(next.method);
-        setStage('off');
-      }
+    }
+  };
+  const enable = async () => {
+    if (!method || savingPin.current) return;
+    const next = await readBiometricCapability();
+    if (next.available && next.method === method) await save(method);
+    else {
+      setDeniedMethod(next.method);
+      setStage('off');
     }
   };
 
@@ -274,10 +296,7 @@ export function QuickUnlockSetup({ controller, onBack }: { controller: QuickUnlo
         </View>
         <View className="gap-xs px-page pb-xs pt-md">
           <Button label={withBiometrics ? t(`biometric.${capability}.select`) : t('setUpPin')} disabled={saving} onPress={() => { setFailed(false); setStage('create'); }} wrap />
-          <LinkAction label={t('notNow')} disabled={saving} onPress={() => {
-            setSaving(true);
-            void controller.skip().catch(() => { setFailed(true); setSaving(false); });
-          }} />
+          <LinkAction label={t('notNow')} disabled={saving} onPress={() => { void skipSetup(); }} />
         </View>
       </UnlockLayout>
     );
@@ -292,7 +311,7 @@ export function QuickUnlockSetup({ controller, onBack }: { controller: QuickUnlo
         action={t(`biometric.${method}.action`)}
         secondary={t('usePinOnly')}
         busy={saving}
-        error={failed ? t('saveFailure') : undefined}
+        error={failed ? t('biometricSetupFailure') : undefined}
         onBack={saving ? undefined : () => setStage('confirm')}
         onAction={() => { void enable(); }}
         onSecondary={() => { void save(null); }}
@@ -315,94 +334,134 @@ export function QuickUnlockSetup({ controller, onBack }: { controller: QuickUnlo
         if (method) setStage('enable');
         else await save(null);
       }}
-      footer={<LinkAction label={t(confirming ? 'startOver' : 'whyPin')} onPress={confirming ? startOver : () => Alert.alert(t('whyPin'), t('whyPinBody'), [{ text: t('closeExplanation') }])} disabled={saving} />}
+      footer={
+        <>
+          <LinkAction label={t(confirming ? 'startOver' : 'whyPin')}
+            onPress={confirming ? startOver : () => Alert.alert(t('whyPin'), t('whyPinBody'), [{ text: t('closeExplanation') }])}
+            disabled={saving} />
+          {!confirming && !setupRequired && !capability &&
+            <LinkAction label={t('notNow')} disabled={saving} onPress={() => { void skipSetup(); }} />}
+        </>
+      }
     />
   );
 }
 
-export function QuickUnlockGate({ controller, onRecover, displayName, babyName }: {
+/**
+ * The lock screen. Nothing is prompted automatically: with Face ID / fingerprint set up the user
+ * first picks Face ID, PIN or an email code; otherwise the PIN pad opens. Every state offers
+ * Switch account, which forgets this account on the phone (see `forgetAccount`).
+ */
+export function QuickUnlockGate({ controller, onRecover, onEmailUnlock, onPasswordUnlock, onSwitchAccount }: {
   controller: QuickUnlockController;
+  /** Forgot PIN: verify the email, then set a new PIN. */
   onRecover: () => void;
-  displayName?: string | null;
-  babyName?: string | null;
+  /** Unlock with an email code and keep the PIN. */
+  onEmailUnlock: () => void;
+  /** Unlock with the account password and keep the PIN. Only for accounts that have a password. */
+  onPasswordUnlock?: () => void;
+  onSwitchAccount: () => Promise<void>;
 }) {
   const { t } = useTranslation('unlock');
-  const { user } = useSession();
-  const userId = user?.id;
-  const [cachedBaby, setCachedBaby] = useState<{ userId: number; name: string } | null>(null);
-  const { attemptBiometrics, attemptPin, biometric, attempts, phase, retryStorage } = controller;
+  const { attemptBiometrics, attemptPin, biometric, biometricReady, attempts, phase, retryStorage } = controller;
+  const [pinSelected, setPinSelected] = useState(false);
+  const [biometricIssue, setBiometricIssue] = useState<'unavailable' | 'fallback' | null>(null);
+  const [pinError, setPinError] = useState(false);
+  const [switching, setSwitching] = useState(false);
   const [now, setNow] = useState(() => Date.now());
-  const [denied, setDenied] = useState<{ method: Biometric | null } | null>(null);
   const paused = attempts.until > now;
-  const name = babyName ?? (cachedBaby?.userId === userId ? cachedBaby?.name : null);
-
-  useEffect(() => {
-    if (!userId || babyName) return;
-    let active = true;
-    void loadAnswers(userId).then((answers) => {
-      if (active && answers?.babyName) setCachedBaby({ userId, name: answers.babyName });
-    });
-    return () => { active = false; };
-  }, [babyName, userId]);
-
+  const showChooser = !!biometric && biometricReady && !pinSelected && phase === 'locked';
   useEffect(() => {
     if (!paused) return;
-    const interval = setInterval(() => setNow(Date.now()), 250);
+    const interval = setInterval(() => setNow(Date.now()), 500);
     return () => clearInterval(interval);
   }, [paused]);
 
-  const promptBiometrics = useCallback(async (automatic: boolean) => {
+  const usePin = () => {
+    controller.stopAutomaticPrompt();
+    setPinSelected(true);
+  };
+
+  const promptBiometrics = useCallback(async () => {
     if (!biometric) return;
-    const result = await attemptBiometrics(t(`biometric.${biometric}.prompt`), t('cancelPrompt'), automatic);
-    if (result === 'unavailable') {
-      const { method } = await readBiometricCapability();
-      setDenied({ method });
-    }
+    setBiometricIssue(null);
+    const result = await attemptBiometrics(t(`biometric.${biometric}.prompt`));
+    // Cancelled or failed: stay on the chosen screen and say what's still possible.
+    if (result === 'unavailable' || result === 'fallback') setBiometricIssue(result);
+    if (result === 'unavailable') setPinSelected(true);
   }, [attemptBiometrics, biometric, t]);
 
-  useEffect(() => {
-    if (phase !== 'locked' || !biometric || paused || denied) return;
-    const initialPrompt = requestAnimationFrame(() => {
-      if (AppState.currentState === 'active' || AppState.currentState === null) void promptBiometrics(true);
-    });
-    const subscription = AppState.addEventListener('change', (state) => {
-      if (state === 'active') void promptBiometrics(true);
-    });
-    return () => {
-      cancelAnimationFrame(initialPrompt);
-      subscription.remove();
-    };
-  }, [biometric, denied, paused, phase, promptBiometrics]);
+  const switchAccount = () => {
+    Alert.alert(t('switchTitle'), t('switchBody'), [
+      { text: t('cancel'), style: 'cancel' },
+      { text: t('switchConfirm'), style: 'destructive', onPress: () => {
+        setSwitching(true);
+        void onSwitchAccount().finally(() => setSwitching(false));
+      } },
+    ]);
+  };
+  const passwordLink = onPasswordUnlock && <LinkAction label={t('usePassword')} onPress={onPasswordUnlock} disabled={switching} />;
+  const switchLink = <LinkAction label={t('switchAccount')} onPress={switchAccount} disabled={switching} />;
 
   if (phase === 'unavailable' || phase === 'loading') {
     return (
+      <BiometricHero icon="lock" title={t('lockedTitle')} detail={t('storageFailure')}
+        action={t('retry')} secondary={t('useEmail')} onAction={retryStorage} onSecondary={onRecover} extra={switchLink} />
+    );
+  }
+
+  if (showChooser && biometric) {
+    return (
       <BiometricHero
-        icon="lock"
-        title={t('enterTitleWithoutName')}
-        detail={t('storageFailure')}
-        action={t('retry')}
-        secondary={t('useEmail')}
-        onAction={retryStorage}
-        onSecondary={onRecover}
+        title={t('lockedTitle')}
+        detail={t('chooseMethodBody')}
+        icon={biometric === 'faceId' || biometric === 'face' ? 'face-id' : 'fingerprint'}
+        action={t(`biometric.${biometric}.prompt`)}
+        secondary={t('usePin')}
+        secondaryButton
+        busy={switching}
+        error={biometricIssue === 'fallback' ? t('biometricFallback') : undefined}
+        onAction={() => { void promptBiometrics(); }}
+        onSecondary={usePin}
+        extra={<>
+          {passwordLink}
+          <LinkAction label={t('useEmailCode')} onPress={onEmailUnlock} disabled={switching} />
+          {switchLink}
+        </>}
       />
     );
   }
-  if (denied && !paused) return <BiometricOff method={denied.method} onUsePin={() => setDenied(null)} />;
+
+  const canUseBiometrics = biometricReady && biometricIssue !== 'unavailable' && !!biometric;
   return (
     <PinScreen
-      title={paused ? t('pauseTitle') : displayName ? t('enterTitle', { name: displayName }) : t('enterTitleWithoutName')}
-      detail={paused ? t('pauseBody') : name ? t('enterBody', { name }) : t('enterBodyWithoutName')}
+      title={paused ? t('pauseTitle') : t('enterTitle')}
+      detail={paused ? t('pauseBody') : t('enterBody')}
       pause={paused ? t('pauseMessage', { time: formatCountdown(Math.ceil((attempts.until - now) / 1000)) }) : undefined}
-      error={!paused && attempts.failures > 0 ? t('wrong', { count: PIN_ATTEMPT_LIMIT - attempts.failures }) : undefined}
-      onPin={async (pin) => { await attemptPin(pin); setNow(Date.now()); }}
-      biometric={biometric}
-      onBiometric={() => { void promptBiometrics(false); }}
-      footer={paused ? (
+      error={pinError ? t('pinUnavailable') : !paused && attempts.failures > 0
+        ? t('wrong', { count: PIN_ATTEMPT_LIMIT - attempts.failures }) : undefined}
+      // Back to the method choice when there is one.
+      onBack={canUseBiometrics && pinSelected ? () => { setBiometricIssue(null); setPinSelected(false); } : undefined}
+      onPin={async (pin) => {
+        const result = await attemptPin(pin);
+        setPinError(result === 'unavailable');
+        setNow(Date.now());
+      }}
+      biometric={canUseBiometrics ? biometric : null}
+      onBiometric={() => { void promptBiometrics(); }}
+      footer={
         <>
-          <Button label={t('useEmail')} hierarchy="secondary" onPress={onRecover} wrap />
+          {biometric && !biometricReady && <Text variant="caption" tone="secondary" className="text-center">{t('reconnectAfterUnlock')}</Text>}
+          {biometricReady && biometricIssue && <Text variant="caption" tone="secondary" className="text-center">
+            {t(biometricIssue === 'unavailable' ? 'biometricUnavailable' : 'biometricFallback')}
+          </Text>}
+          {paused && canUseBiometrics &&
+            <LinkAction label={t(`biometric.${biometric}.prompt`)} onPress={() => { void promptBiometrics(); }} />}
           <LinkAction label={t('forgotPin')} onPress={onRecover} />
+          {passwordLink}
+          {switchLink}
         </>
-      ) : <LinkAction prefix={t('forgotPin')} label={t('useEmail')} onPress={onRecover} />}
+      }
     />
   );
 }

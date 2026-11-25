@@ -11,6 +11,7 @@ type Trailing =
   | { kind: 'chevron' }
   | { kind: 'value'; value: string }
   | { kind: 'toggle'; checked: boolean }
+  | { kind: 'radio'; checked: boolean }
   | { kind: 'none' }
   | { kind: 'custom'; node: ReactNode };
 
@@ -19,7 +20,7 @@ type ListRowProps = {
   subtitle?: string;
   /** Figma `Leading` slot: an Icon tile or Avatar. */
   leading?: ReactNode;
-  /** Figma `Trailing`: Chevron (navigates), Value (current setting), Toggle (instant) or None. */
+  /** Figma `Trailing`: Chevron, Value, Selection control or None. */
   trailing?: Trailing;
   onPress?: () => void;
   disabled?: boolean;
@@ -49,7 +50,8 @@ export function ListRow({ title, subtitle, leading, trailing = { kind: 'none' },
         </Text>
       )}
       {(trailing.kind === 'chevron' || trailing.kind === 'value') && <Icon name="chevron-right" size={20} tone="color/icon/secondary" />}
-      {trailing.kind === 'toggle' && <SelectionControl type="toggle" checked={trailing.checked} disabled={disabled} />}
+      {(trailing.kind === 'toggle' || trailing.kind === 'radio') &&
+        <SelectionControl type={trailing.kind} checked={trailing.checked} disabled={disabled} />}
       {trailing.kind === 'custom' && trailing.node}
     </>
   );
@@ -57,8 +59,8 @@ export function ListRow({ title, subtitle, leading, trailing = { kind: 'none' },
   if (!onPress) return <View className={classes}>{content}</View>;
   return (
     <Pressable
-      accessibilityRole={trailing.kind === 'toggle' ? 'switch' : 'button'}
-      accessibilityState={trailing.kind === 'toggle' ? { checked: trailing.checked, disabled } : { disabled }}
+      accessibilityRole={trailing.kind === 'toggle' ? 'switch' : trailing.kind === 'radio' ? 'radio' : 'button'}
+      accessibilityState={trailing.kind === 'toggle' || trailing.kind === 'radio' ? { checked: trailing.checked, disabled } : { disabled }}
       accessibilityValue={trailing.kind === 'value' ? { text: trailing.value } : undefined}
       accessibilityHint={accessibilityHint}
       disabled={disabled}

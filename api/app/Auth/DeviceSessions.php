@@ -136,6 +136,17 @@ class DeviceSessions
     }
 
     /**
+     * Sign out every other phone (password change): only `$keep` stays signed in.
+     */
+    public function revokeOthers(User $user, Device $keep): void
+    {
+        DB::transaction(function () use ($user, $keep) {
+            $user->devices()->whereNull('revoked_at')->whereKeyNot($keep->id)->get()->each(fn (Device $d) => $this->revokeDevice($d));
+            $user->tokens()->where(fn ($query) => $query->whereNull('device_id')->orWhere('device_id', '!=', $keep->id))->delete();
+        });
+    }
+
+    /**
      * Sign out every phone and forget every device (password reset, "sign out everywhere", lost phone).
      */
     public function revokeAll(User $user): void

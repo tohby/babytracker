@@ -1,5 +1,7 @@
 import Constants, { ExecutionEnvironment } from 'expo-constants';
+import { randomUUID } from 'expo-crypto';
 import * as LocalAuthentication from 'expo-local-authentication';
+import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 
 import type { Biometric } from './pin';
@@ -11,28 +13,53 @@ export async function readBiometricCapability(): Promise<{ method: Biometric | n
       LocalAuthentication.isEnrolledAsync(),
       LocalAuthentication.supportedAuthenticationTypesAsync(),
     ]);
-    const method = Platform.OS === 'ios' && types.includes(LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION)
-      ? 'faceId'
-      : types.includes(LocalAuthentication.AuthenticationType.FINGERPRINT)
-        ? Platform.OS === 'ios' ? 'touchId' : 'fingerprint'
-        : null;
+    const facial = types.includes(LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION);
+    const fingerprint = types.includes(LocalAuthentication.AuthenticationType.FINGERPRINT);
+    const method = Platform.OS === 'ios'
+      ? facial ? 'faceId' : fingerprint ? 'touchId' : null
+      : facial && !fingerprint ? 'face' : fingerprint ? 'fingerprint' : null;
     const supportedBuild = method !== 'faceId' || Constants.executionEnvironment !== ExecutionEnvironment.StoreClient;
-    return { method, available: hardware && enrolled && method !== null && supportedBuild };
+    const strong = Platform.OS !== 'android'
+      || await LocalAuthentication.getEnrolledLevelAsync() === LocalAuthentication.SecurityLevel.BIOMETRIC_STRONG;
+    return { method, available: hardware && enrolled && method !== null && supportedBuild && strong };
   } catch {
     return { method: null, available: false };
   }
 }
 
-export async function authenticateBiometric(promptMessage: string, cancelLabel: string) {
+const options = {
+  keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
+  keychainService: 'nappa.quickUnlock.biometric',
+  requireAuthentication: true,
+};
+
+export function removeBiometricKey(key: string) {
+  return SecureStore.deleteItemAsync(key, options);
+}
+
+/** Only a random marker is bound to enrollment. The backup PIN lives in a separate entry. */
+export async function createBiometricKey(prompt: string): Promise<string | null> {
+  const key = randomUUID();
   try {
-    const result = await LocalAuthentication.authenticateAsync({ promptMessage, cancelLabel, disableDeviceFallback: true });
-    if (result.success) return 'success';
-    if (result.warning || result.error.startsWith('unknown') || result.error === 'not_enrolled'
-      || result.error === 'not_available' || result.error === 'lockout' || result.error === 'passcode_not_set') {
-      return 'unavailable';
+    await SecureStore.setItemAsync(key, key, { ...options, authenticationPrompt: prompt });
+    // Android authenticates on creation. iOS authenticates when reading an item.
+    if (Platform.OS === 'ios' && await authenticateBiometricKey(key, prompt) !== 'success') {
+      await removeBiometricKey(key).catch(() => {});
+      return null;
     }
-    return 'cancelled';
+    return key;
   } catch {
-    return 'unavailable';
+    await removeBiometricKey(key).catch(() => {});
+    return null;
+  }
+}
+
+export async function authenticateBiometricKey(key: string, prompt: string) {
+  try {
+    const marker = await SecureStore.getItemAsync(key, { ...options, authenticationPrompt: prompt });
+    return marker === key ? 'success' : 'unavailable';
+  } catch {
+    // OS errors include cancellation, interruption, denied permission, and lockout.
+    return 'fallback';
   }
 }

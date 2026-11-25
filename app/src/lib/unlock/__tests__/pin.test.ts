@@ -3,9 +3,12 @@ import {
   canAttemptPin,
   createPinRecord,
   emptyAttempts,
+  DEFAULT_LOCK_PREFERENCES,
+  shouldLockAfterExit,
   nextFailedAttempt,
   parseUnlockRecord,
   PIN_ATTEMPT_LIMIT,
+  serializeUnlockRecord,
   verifyPin,
 } from '../pin';
 
@@ -49,4 +52,28 @@ describe('device PIN', () => {
     expect(parseUnlockRecord('{"kind":"reset"}')).toEqual({ kind: 'reset' });
     expect(BACKGROUND_LOCK_MS).toBe(60_000);
   });
+  it('restores the legacy default and persists the selected lock policy', async () => {
+    const record = await createPinRecord('0123', null);
+    const { preferences: _preferences, ...legacy } = record;
+    expect(parseUnlockRecord(JSON.stringify(legacy))).toMatchObject({ preferences: DEFAULT_LOCK_PREFERENCES });
+    const preferences = { autoLockMinutes: 15, lockOnExit: true };
+    expect(parseUnlockRecord(JSON.stringify({ ...record, preferences }))).toMatchObject({ preferences });
+    expect(() => parseUnlockRecord(JSON.stringify({ ...record, preferences: { autoLockMinutes: 2, lockOnExit: false } }))).toThrow();
+  });
+
+  it('locks at the grace period boundary or immediately on exit', () => {
+    expect(shouldLockAfterExit(DEFAULT_LOCK_PREFERENCES, 59_999)).toBe(false);
+    expect(shouldLockAfterExit(DEFAULT_LOCK_PREFERENCES, 60_000)).toBe(true);
+    expect(shouldLockAfterExit({ autoLockMinutes: 15, lockOnExit: true }, 0)).toBe(true);
+    expect(shouldLockAfterExit({ autoLockMinutes: 0, lockOnExit: false }, 0)).toBe(true);
+    expect(shouldLockAfterExit({ autoLockMinutes: 15, lockOnExit: false }, -1)).toBe(true);
+  });
+
+  it('keeps rollback builds on PIN unlock when the record uses enrollment-bound biometrics', async () => {
+    const record = { ...await createPinRecord('0123', 'face'), biometricKey: '20000000-0000-4000-8000-000000000000' };
+    const saved = serializeUnlockRecord(record);
+    expect(JSON.parse(saved)).toMatchObject({ biometric: null, preferredBiometric: 'face' });
+    expect(parseUnlockRecord(saved)).toEqual(record);
+  });
+
 });
